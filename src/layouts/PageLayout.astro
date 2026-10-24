@@ -1,0 +1,16 @@
+---
+// Simple prose page (About, legal pages).
+import BaseLayout from './BaseLayout.astro';
+import LastReviewed from '../components/LastReviewed.astro';
+interface Props { title: string; description: string; updated?: Date; searchable?: boolean }
+const { title, description, updated, searchable = true } = Astro.props;
+---
+<BaseLayout title={title} description={description} breadcrumbs={[{ label: title }]} searchable={searchable}>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>{title}</h1>
+      {updated && <div class="mt-3"><LastReviewed date={updated} /></div>}
+    </header>
+    <div class="prose"><slot /></div>
+  </div>
+</BaseLayout>

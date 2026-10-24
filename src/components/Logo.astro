@@ -1,0 +1,9 @@
+---
+// Original mark: a house outline with a tick inside it. No licensed artwork.
+interface Props { size?: number }
+const { size = 34 } = Astro.props;
+---
+<svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" focusable="false" class="logo-mark">
+  <path d="M16 2.5 2.5 13.2a1.5 1.5 0 0 0-.5 1.1V28a1.5 1.5 0 0 0 1.5 1.5h25A1.5 1.5 0 0 0 30 28V14.3a1.5 1.5 0 0 0-.5-1.1Z" fill="var(--primary)"></path>
+  <path d="m9.5 19.5 4.5 4.5 9-10" fill="none" stroke="var(--bg)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>

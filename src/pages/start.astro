@@ -1,0 +1,47 @@
+---
+import HubLayout from '../layouts/HubLayout.astro';
+import Callout from '../components/Callout.astro';
+const steps = [
+  { title: 'Check where you are', text: 'Take the Home Preparedness Score to find your three biggest gaps.', href: '/tools/preparedness-score/', link: 'Take the score' },
+  { title: 'Store 3 days of water', text: 'Water matters most. Work out your household total, pets included.', href: '/tools/water-storage-calculator/', link: 'Water calculator' },
+  { title: 'Stock 3 days of food', text: 'Food that needs no fridge or mains power, and that you already eat.', href: '/tools/food-storage-calculator/', link: 'Food calculator' },
+  { title: 'Get ready for a power cut', text: 'Torches, a radio, a charged power bank and ways to keep warm.', href: '/guides/preparing-for-a-power-cut/', link: 'Power cut guide' },
+  { title: 'Agree a household plan', text: 'Meeting places, contacts, and who collects whom.', href: '/guides/family-emergency-plan/', link: 'Family plan guide' },
+  { title: 'Pack a grab bag', text: 'The essentials, ready by the door in case you need to leave.', href: '/guides/72-hour-emergency-bag/', link: 'Grab bag guide' },
+  { title: 'Gather your documents', text: 'Originals safe, copies elsewhere, nothing that helps a fraudster.', href: '/guides/essential-documents/', link: 'Documents guide' },
+];
+---
+<HubLayout
+  title="Start Prepping"
+  seoTitle="Start prepping: a beginner's guide for UK households"
+  description="New to emergency preparedness? A simple, step-by-step path for UK households, from storing water to making a family plan. Free tools and checklists included."
+  intro="You do not need to buy a lot or think about the worst. Being prepared mostly means a few sensible things, done once and checked now and then. Follow these steps in order, at your own pace."
+  extraGuides={['prepping-for-beginners']}
+  toolSlugs={['preparedness-score', 'water-storage-calculator', 'food-storage-calculator']}
+>
+  <section aria-labelledby="path-title" class="max-w-3xl">
+    <h2 id="path-title">Your path, step by step</h2>
+    <ol class="path mt-4">
+      {steps.map((s, i) => (
+        <li>
+          <span class="path-num" aria-hidden="true">{i + 1}</span>
+          <div>
+            <h3 class="text-lg">{s.title}</h3>
+            <p>{s.text}</p>
+            <a href={s.href}>{s.link}</a>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <Callout title="Aim for 3 days first">
+      <p>The UK government's Be Ready campaign suggests being ready to cope for 3 days. Once you have that, build towards a week or two if you can.</p>
+    </Callout>
+  </section>
+</HubLayout>
+<style>
+  .path { display: grid; }
+  .path li { display: grid; grid-template-columns: 2.75rem 1fr; gap: 1rem; padding-block: 1rem; border-top: 1px solid var(--rule); }
+  .path-num { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 2px solid var(--primary); color: var(--primary); font-family: var(--font-head); font-weight: 700; font-size: 1.15rem; }
+  .path p { color: var(--text-muted); }
+  .path a { font-weight: 700; }
+</style>

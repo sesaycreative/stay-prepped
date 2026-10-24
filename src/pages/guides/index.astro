@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import CategoryCard from '../../components/CategoryCard.astro';
+import { GUIDE_CATEGORIES, GUIDE_CATEGORY_KEYS } from '../../lib/site';
+
+const guides = (await getCollection('guides')).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime() || a.data.title.localeCompare(b.data.title));
+const counts = Object.fromEntries(GUIDE_CATEGORY_KEYS.map((k) => [k, guides.filter((g) => g.data.category === k).length]));
+const withGuides = GUIDE_CATEGORY_KEYS.filter((k) => counts[k] > 0);
+const withoutGuides = GUIDE_CATEGORY_KEYS.filter((k) => counts[k] === 0);
+---
+<BaseLayout
+  title="Emergency preparedness guides"
+  description="Practical, UK-focused guides to emergency preparedness: water, food, grab bags, power cuts, family plans and essential documents."
+  breadcrumbs={[{ label: 'Guides' }]}
+>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>Guides</h1>
+      <p class="mt-3 text-lg">Plain-English guides to getting your household ready for emergencies, from your first steps to longer-term resilience.</p>
+    </header>
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <section aria-labelledby="all-guides">
+        <h2 id="all-guides" class="sr-only">All guides</h2>
+        <div class="grid gap-x-8 sm:grid-cols-2">
+          {guides.map((g) => <GuideCard guide={g} />)}
+        </div>
+      </section>
+      <aside aria-labelledby="cats-title">
+        <h2 id="cats-title" class="text-xl">Topics</h2>
+        <div class="mt-2">
+          {withGuides.map((k) => (
+            <CategoryCard href={`/guides/category/${k}/`} label={GUIDE_CATEGORIES[k].label} blurb={GUIDE_CATEGORIES[k].blurb} icon={GUIDE_CATEGORIES[k].icon} count={counts[k]} />
+          ))}
+        </div>
+        {withoutGuides.length > 0 && (
+          <p class="mt-4 text-sm muted">Guides on {withoutGuides.map((k) => GUIDE_CATEGORIES[k].label.toLowerCase()).join(', ')} are being written.</p>
+        )}
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

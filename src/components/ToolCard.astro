@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import ComingSoonBadge from './ComingSoonBadge.astro';
+interface Props { tool: CollectionEntry<'tools'>; headingLevel?: 'h2' | 'h3' | 'h4' }
+const { tool, headingLevel = 'h3' } = Astro.props;
+const t = tool.data;
+const live = t.status === 'live';
+const H = headingLevel;
+---
+{live ? (
+  <article class="tool-card is-live">
+    <span class="tool-icon"><Icon name={t.icon} size={26} /></span>
+    <H class="tool-title"><a href={`/tools/${t.slug}/`} class="stretched">{t.title}</a></H>
+    <p class="tool-summary">{t.summary}</p>
+    <span class="tool-cta" aria-hidden="true">Open the tool</span>
+  </article>
+) : (
+  <article class="tool-card is-soon" aria-label={`${t.title} (coming soon)`}>
+    <span class="tool-icon"><Icon name={t.icon} size={26} /></span>
+    <H class="tool-title">{t.title}</H>
+    <p class="tool-summary">{t.summary}</p>
+    <ComingSoonBadge />
+  </article>
+)}
+<style>
+  .tool-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 'icon title' 'icon summary' 'icon cta';
+    column-gap: 0.9rem;
+    row-gap: 0.25rem;
+    align-content: start;
+    padding: 1.1rem 1.1rem 1.15rem;
+    border-radius: var(--radius-m);
+    height: 100%;
+  }
+  .is-live {
+    background: var(--surface);
+    border: 2px solid var(--primary);
+  }
+  .is-live:hover { background: var(--surface-2); }
+  .is-live:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .is-soon {
+    border: 1.5px dashed var(--rule-strong);
+    background: transparent;
+  }
+  .is-soon .tool-icon { color: var(--c-earth-text); background: transparent; border: 1.5px dashed var(--rule-strong); }
+  .tool-icon {
+    grid-area: icon;
+    display: grid; place-items: center;
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    background: var(--primary); color: var(--primary-ink);
+  }
+  .tool-title { grid-area: title; font-size: 1.12rem; }
+  .tool-title a { color: var(--heading); text-decoration: none; }
+  .stretched::after { content: ''; position: absolute; inset: 0; }
+  .stretched:focus-visible { outline: none; }
+  .tool-summary { grid-area: summary; font-size: 0.95rem; color: var(--text-muted); }
+  .tool-cta { grid-area: cta; margin-top: 0.4rem; font-weight: 700; color: var(--link); text-decoration: underline; text-underline-offset: 0.18em; }
+  .is-soon :global(.badge) { grid-area: cta; justify-self: start; margin-top: 0.4rem; }
+</style>

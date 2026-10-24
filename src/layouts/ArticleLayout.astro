@@ -1,0 +1,68 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import LastReviewed from '../components/LastReviewed.astro';
+import type { Crumb } from '../components/Breadcrumbs.astro';
+import { SITE } from '../lib/site';
+import { absolute, articleLd } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  publishedAt: Date;
+  reviewedAt: Date;
+  headings: MarkdownHeading[];
+  breadcrumbs: Crumb[];
+  sources: { title: string; url: string; publisher: string }[];
+}
+const { title, description, eyebrow, publishedAt, reviewedAt, headings, breadcrumbs, sources } = Astro.props;
+const url = absolute(Astro.url.pathname, Astro.site);
+const ld = [articleLd({ title, description, url, published: publishedAt, modified: reviewedAt, site: Astro.site })];
+const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sources', text: 'Sources and further reading' }] : [])];
+---
+<BaseLayout title={title} description={description} breadcrumbs={breadcrumbs} jsonLd={ld} ogType="article">
+  <article class="wrap">
+    <header class="article-head">
+      {eyebrow && <p class="article-eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+      <div class="article-meta">
+        <span>By {SITE.author}</span>
+        <LastReviewed date={reviewedAt} published={publishedAt} />
+      </div>
+    </header>
+    <div class="article-grid">
+      <aside class="article-aside"><TableOfContents headings={tocHeadings} /></aside>
+      <div class="article-main">
+        <div class="prose">
+          <slot />
+          {sources.length > 0 && (
+            <>
+              <h2 id="sources">Sources and further reading</h2>
+              <ul>
+                {sources.map((s) => (
+                  <li><a href={s.url} rel="noopener">{s.title}</a> ({s.publisher})</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+        <slot name="after" />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+<style>
+  .article-head { padding-block: 1.5rem 2rem; max-width: 48rem; display: grid; gap: 0.75rem; }
+  .article-eyebrow { color: var(--c-earth-text); font-weight: 700; }
+  .lede { font-size: 1.2rem; line-height: 1.55; }
+  .article-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; color: var(--text-muted); font-size: 0.92rem; align-items: center; }
+  .article-grid { display: grid; gap: 2rem; }
+  @media (min-width: 1000px) {
+    .article-grid { grid-template-columns: 15rem minmax(0, 1fr); gap: 3.5rem; }
+    .article-aside { order: 0; }
+    .article-aside :global(.toc) { position: sticky; top: 7rem; }
+  }
+</style>

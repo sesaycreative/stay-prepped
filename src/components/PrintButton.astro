@@ -1,0 +1,9 @@
+---
+import Icon from './Icon.astro';
+interface Props { label?: string }
+const { label = 'Print this page' } = Astro.props;
+---
+<button type="button" class="btn btn-secondary" data-print><Icon name="printer" size={20} /> {label}</button>
+<script>
+  document.querySelectorAll('[data-print]').forEach((b) => b.addEventListener('click', () => window.print()));
+</script>

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Callout from '../../components/Callout.astro';
+import { formatDate, isoDate } from '../../lib/site';
+const guides = (await getCollection('gear')).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+<BaseLayout
+  title="Gear buying guides"
+  description="What to look for when buying emergency-preparedness gear: features that matter, who each type suits, limitations and price bands. No sponsored picks."
+  breadcrumbs={[{ label: 'Gear' }]}
+>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>Gear buying guides</h1>
+      <p class="mt-3 text-lg">Guides that help you judge kit for yourself: what each type of product does, what to check on the label, who it suits and where it falls short.</p>
+    </header>
+    <div class="measure">
+      <Callout title="How we write these guides">
+        <p>We do not name or rank specific products, and we do not claim to have tested anything we have not. Each guide explains the features to compare so you can choose with confidence. If we ever add affiliate links, we will say so on the page and in our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>
+      </Callout>
+    </div>
+
+    <section aria-labelledby="gear-list" class="mt-8">
+      <h2 id="gear-list">Buying guides</h2>
+      <ul class="mt-4 grid gap-4 md:grid-cols-2">
+        {guides.map((g) => (
+          <li class="panel">
+            <h3 class="text-xl"><a href={`/gear/${g.id}/`}>{g.data.title}</a></h3>
+            <p class="mt-2">{g.data.description}</p>
+            <p class="mt-2 text-sm muted">Reviewed <time datetime={isoDate(g.data.reviewedAt)}>{formatDate(g.data.reviewedAt)}</time></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="template-title" class="mt-12 measure">
+      <h2 id="template-title">What every buying guide covers</h2>
+      <p class="mt-2">Each guide follows the same structure so they are easy to compare:</p>
+      <ol class="mt-3 grid gap-2" style="list-style: decimal; padding-left: 1.3rem">
+        <li><strong>What it is for</strong>: the job the gear does in an emergency, and whether you need it at all.</li>
+        <li><strong>Types</strong>: the main kinds available and how they differ.</li>
+        <li><strong>What to look for</strong>: the specifications and standards worth checking.</li>
+        <li><strong>Who it suits</strong>: matching types to households and situations.</li>
+        <li><strong>Limitations</strong>: what it cannot do, and common mistakes.</li>
+        <li><strong>Price bands</strong>: broad ranges, so you know what to expect to pay.</li>
+        <li><strong>Care and storage</strong>: keeping it ready for when you need it.</li>
+      </ol>
+      <p class="mt-4">More buying guides will be added over time.</p>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+// Renders nothing unless PUBLIC_ADS_ENABLED is "true" (brief §13). No ad
+// network is wired up; when one is chosen, render its markup here and update
+// the privacy and cookie policies first.
+interface Props { slot: string }
+const { slot } = Astro.props;
+const enabled = import.meta.env.PUBLIC_ADS_ENABLED === 'true';
+---
+{enabled && (
+  <aside class="ad-slot no-print" data-slot={slot} aria-label="Advertisement">
+    <slot />
+  </aside>
+)}

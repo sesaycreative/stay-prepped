@@ -1,0 +1,21 @@
+---
+import HubLayout from '../layouts/HubLayout.astro';
+---
+<HubLayout
+  title="Emergency Kits"
+  seoTitle="Emergency kits and grab bags"
+  description="How to put together a home emergency kit and a 72-hour grab bag, with printable checklists and practical advice for families, older relatives and pets."
+  intro="Two kits cover most situations: a home kit for staying put through a power cut or water outage, and a grab bag for leaving quickly. Here is how to build both."
+  guideCategories={['emergency-kits']}
+  extraGuides={['essential-documents']}
+  toolSlugs={['72-hour-bag-checklist', 'emergency-supplies-checklist', 'first-aid-kit-checklist', 'vehicle-kit-checklist']}
+>
+  <section slot="after" class="mt-12" aria-labelledby="kits-print">
+    <h2 id="kits-print">Printable checklists</h2>
+    <ul class="mt-3 grid gap-2" style="list-style: disc; padding-left: 1.3rem">
+      <li><a href="/resources/checklists/home-emergency-supplies/">3-day home emergency supplies checklist</a></li>
+      <li><a href="/resources/checklists/grab-bag/">72-hour grab bag checklist</a></li>
+      <li><a href="/resources/checklists/essential-documents/">Essential documents checklist</a></li>
+    </ul>
+  </section>
+</HubLayout>

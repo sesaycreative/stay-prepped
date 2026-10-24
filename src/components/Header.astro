@@ -1,0 +1,181 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { NAV } from '../lib/site';
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<header class="site-header">
+  <div class="wrap header-bar">
+    <a href="/" class="brand" aria-label="Stay Prepped home">
+      <Logo />
+      <span class="brand-name">Stay Prepped</span>
+    </a>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" data-search-open aria-haspopup="dialog" aria-controls="search-dialog">
+        <Icon name="search" size={22} />
+        <span class="icon-btn-label">Search</span>
+      </button>
+      <button type="button" class="icon-btn theme-btn" data-theme-toggle aria-label="Switch to dark theme">
+        <span class="theme-light"><Icon name="moon" size={22} /></span>
+        <span class="theme-dark"><Icon name="sun" size={22} /></span>
+      </button>
+      <button type="button" class="icon-btn menu-btn" aria-expanded="false" aria-controls="primary-nav" data-menu-toggle>
+        <span class="menu-open"><Icon name="menu" size={24} /></span>
+        <span class="menu-close"><Icon name="x" size={24} /></span>
+        <span class="icon-btn-label">Menu</span>
+      </button>
+    </div>
+  </div>
+  <nav id="primary-nav" class="primary-nav" aria-label="Main">
+    <ul class="wrap nav-list">
+      {NAV.map((item) => (
+        <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<dialog id="search-dialog" class="search-dialog" aria-labelledby="search-title">
+  <div class="search-head">
+    <h2 id="search-title">Search Stay Prepped</h2>
+    <button type="button" class="icon-btn" data-search-close aria-label="Close search"><Icon name="x" size={22} /></button>
+  </div>
+  <div id="search" class="search-body"></div>
+  <noscript><p>Search needs JavaScript. You can browse all <a href="/guides/">guides</a> and <a href="/tools/">tools</a> instead.</p></noscript>
+</dialog>
+
+<script>
+  // Mobile menu
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.getElementById('primary-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav?.classList.remove('is-open');
+      toggle.focus();
+    }
+  });
+
+  // Theme toggle (stores preference locally; no cookie)
+  const themeBtn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const currentTheme = () =>
+    document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const syncThemeLabel = () =>
+    themeBtn?.setAttribute('aria-label', currentTheme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+  syncThemeLabel();
+  themeBtn?.addEventListener('click', () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('stayprepped:theme', next); } catch {}
+    syncThemeLabel();
+  });
+
+  // Search: Pagefind UI is loaded on first open so pages stay light.
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null;
+  let loaded = false;
+  async function openSearch() {
+    if (!dialog) return;
+    dialog.showModal();
+    if (!loaded) {
+      loaded = true;
+      try {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = '/pagefind/pagefind-ui.css';
+        document.head.appendChild(css);
+        await new Promise<void>((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = '/pagefind/pagefind-ui.js';
+          s.onload = () => resolve();
+          s.onerror = () => reject(new Error('Search index not found'));
+          document.head.appendChild(s);
+        });
+        // @ts-expect-error PagefindUI is a global from the script above
+        new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false, autofocus: true });
+      } catch {
+        const el = document.getElementById('search');
+        if (el) el.innerHTML = '<p>Search is not available in this preview. It works on the built site. Browse all <a href="/guides/">guides</a> and <a href="/tools/">tools</a> instead.</p>';
+      }
+    }
+    dialog.querySelector<HTMLInputElement>('input')?.focus();
+  }
+  document.querySelectorAll('[data-search-open]').forEach((b) => b.addEventListener('click', openSearch));
+  document.querySelector('[data-search-close]')?.addEventListener('click', () => dialog?.close());
+  dialog?.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      e.preventDefault();
+      openSearch();
+    }
+  });
+</script>
+
+<style>
+  .site-header { background: var(--bg); border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 40; }
+  .header-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--heading); }
+  .brand-name { font-family: var(--font-head); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.01em; }
+  .header-actions { display: flex; align-items: center; gap: 0.25rem; }
+  .icon-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    min-height: 2.75rem; min-width: 2.75rem; justify-content: center;
+    padding: 0.3rem 0.6rem; border-radius: var(--radius-s);
+    background: transparent; color: var(--text); border: 0; cursor: pointer; font: inherit; font-weight: 700;
+  }
+  .icon-btn:hover { background: var(--surface-2); }
+  .theme-dark { display: none; }
+  :global([data-theme='dark']) .theme-light { display: none; }
+  :global([data-theme='dark']) .theme-dark { display: inline-flex; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .theme-light { display: none; }
+    :global(:root:not([data-theme='light'])) .theme-dark { display: inline-flex; }
+  }
+  .menu-close { display: none; }
+  .menu-btn[aria-expanded='true'] .menu-open { display: none; }
+  .menu-btn[aria-expanded='true'] .menu-close { display: inline-flex; }
+
+  .primary-nav { display: none; border-top: 1px solid var(--rule); }
+  .primary-nav.is-open { display: block; }
+  .nav-list { display: grid; padding-block: 0.5rem 1rem; }
+  .nav-list a {
+    display: block; padding: 0.65rem 0.2rem; color: var(--text); text-decoration: none; font-weight: 700;
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-list a[aria-current='page'] { color: var(--primary); box-shadow: inset 4px 0 0 var(--primary); padding-left: 0.75rem; }
+
+  @media (min-width: 1100px) {
+    .menu-btn { display: none; }
+    .primary-nav { display: block; }
+    .nav-list { display: flex; flex-wrap: wrap; gap: 0 1.35rem; padding-block: 0; }
+    .nav-list a { border: 0; padding: 0.6rem 0 0.55rem; font-size: 0.95rem; border-bottom: 3px solid transparent; }
+    .nav-list a:hover { border-bottom-color: var(--rule-strong); }
+    .nav-list a[aria-current='page'] { box-shadow: none; padding-left: 0; border-bottom-color: var(--primary); }
+  }
+  @media (max-width: 520px) {
+    .icon-btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  }
+
+  .search-dialog {
+    width: min(42rem, calc(100vw - 2rem)); max-height: min(80vh, 44rem);
+    margin: 8vh auto auto; padding: 1.25rem; border: 1px solid var(--rule); border-radius: var(--radius-m);
+    background: var(--surface); color: var(--text);
+  }
+  .search-dialog::backdrop { background: rgb(26 29 31 / 0.55); }
+  .search-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .search-head h2 { font-size: 1.25rem; }
+  .search-body {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--primary);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--surface);
+    --pagefind-ui-border: var(--rule-strong);
+    --pagefind-ui-tag: var(--surface-2);
+    --pagefind-ui-font: var(--font-body);
+  }
+</style>

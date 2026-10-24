@@ -1,0 +1,80 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs, { type Crumb } from '../components/Breadcrumbs.astro';
+import { SITE } from '../lib/site';
+import { absolute, breadcrumbLd, ldJson, websiteLd } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  breadcrumbs?: Crumb[];
+  jsonLd?: unknown[];
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  /** Set false to exclude a page from the search index. */
+  searchable?: boolean;
+}
+const { title, description, breadcrumbs, jsonLd = [], ogType = 'website', noindex = false, searchable = true } = Astro.props;
+const isHome = Astro.url.pathname === '/';
+const fullTitle = isHome ? `${SITE.name}: ${SITE.tagline}` : `${title} | ${SITE.name}`;
+const canonical = absolute(Astro.url.pathname, Astro.site);
+const ogImage = absolute('/og-default.png', Astro.site);
+const ld: unknown[] = [...jsonLd];
+if (isHome) ld.unshift(websiteLd(Astro.site));
+if (breadcrumbs?.length) ld.push(breadcrumbLd(breadcrumbs, Astro.url.pathname, Astro.site));
+
+const analytics = import.meta.env.PUBLIC_ANALYTICS;
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1A1D1F" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={isHome ? SITE.name : title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Stay Prepped: Be Prepared. Stay Ready. Protect What Matters." />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {ld.map((d) => <script type="application/ld+json" set:html={ldJson(d)} />)}
+
+    <script is:inline>
+      // Apply a saved theme before paint to avoid a flash. Stored locally, never sent anywhere.
+      try { var t = localStorage.getItem('stayprepped:theme'); if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    {analytics === 'plausible' && plausibleDomain && (
+      <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>
+    )}
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      {breadcrumbs?.length ? (
+        <div class="wrap pt-5"><Breadcrumbs items={breadcrumbs} /></div>
+      ) : null}
+      <div data-pagefind-body={searchable ? '' : undefined}>
+        <slot />
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

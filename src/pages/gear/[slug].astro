@@ -1,0 +1,49 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import Callout from '../../components/Callout.astro';
+
+export async function getStaticPaths() {
+  const items = await getCollection('gear');
+  return items.map((item) => ({ params: { slug: item.id }, props: { item } }));
+}
+interface Props { item: CollectionEntry<'gear'> }
+const { item } = Astro.props;
+const d = item.data;
+const { Content, headings } = await render(item);
+const guides = await getCollection('guides');
+const tools = await getCollection('tools');
+const relatedGuides = d.relatedGuides.map((s) => guides.find((g) => g.id === s) ?? (() => { throw new Error(`Unknown guide ${s}`); })());
+const relatedTools = d.relatedTools.map((s) => tools.find((t) => t.data.slug === s) ?? (() => { throw new Error(`Unknown tool ${s}`); })());
+---
+<ArticleLayout
+  title={d.title}
+  description={d.description}
+  eyebrow="Gear buying guide"
+  publishedAt={d.publishedAt}
+  reviewedAt={d.reviewedAt}
+  headings={headings}
+  sources={d.sources}
+  breadcrumbs={[{ label: 'Gear', href: '/gear/' }, { label: d.title }]}
+>
+  <Callout title="No product picks here">
+    <p>This guide does not name, rank or review specific products, and we have not tested any. It explains what to look for so you can compare options yourself.</p>
+  </Callout>
+  <Content />
+  <Fragment slot="after">
+    {relatedTools.length > 0 && (
+      <section class="mt-14 no-print" aria-labelledby="gear-tools">
+        <h2 id="gear-tools">Related tools</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">{relatedTools.map((t) => <ToolCard tool={t} />)}</div>
+      </section>
+    )}
+    {relatedGuides.length > 0 && (
+      <section class="mt-12 no-print" aria-labelledby="gear-guides">
+        <h2 id="gear-guides">Related guides</h2>
+        <div class="mt-3 grid gap-x-8 sm:grid-cols-2">{relatedGuides.map((g) => <GuideCard guide={g} />)}</div>
+      </section>
+    )}
+  </Fragment>
+</ArticleLayout>

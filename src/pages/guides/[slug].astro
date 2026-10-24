@@ -1,0 +1,63 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { GUIDE_CATEGORIES } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}
+interface Props { guide: CollectionEntry<'guides'> }
+const { guide } = Astro.props;
+const g = guide.data;
+const { Content, headings } = await render(guide);
+
+const allGuides = await getCollection('guides');
+const allTools = await getCollection('tools');
+const relatedTools = g.relatedTools.map((s) => {
+  const t = allTools.find((x) => x.data.slug === s);
+  if (!t) throw new Error(`Guide ${guide.id}: unknown related tool "${s}"`);
+  return t;
+});
+let relatedGuides = g.relatedGuides.map((s) => {
+  const r = allGuides.find((x) => x.id === s);
+  if (!r) throw new Error(`Guide ${guide.id}: unknown related guide "${s}"`);
+  return r;
+});
+if (relatedGuides.length === 0) {
+  relatedGuides = allGuides.filter((x) => x.id !== guide.id && x.data.category === g.category).slice(0, 3);
+}
+const cat = GUIDE_CATEGORIES[g.category];
+---
+<ArticleLayout
+  title={g.title}
+  description={g.description}
+  eyebrow={cat.label}
+  publishedAt={g.publishedAt}
+  reviewedAt={g.reviewedAt}
+  headings={headings}
+  sources={g.sources}
+  breadcrumbs={[{ label: 'Guides', href: '/guides/' }, { label: cat.label, href: `/guides/category/${g.category}/` }, { label: g.title }]}
+>
+  <Content />
+  <Fragment slot="after">
+    {relatedTools.length > 0 && (
+      <section class="mt-14 no-print" aria-labelledby="related-tools">
+        <h2 id="related-tools">Tools for this guide</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          {relatedTools.map((t) => <ToolCard tool={t} />)}
+        </div>
+      </section>
+    )}
+    {relatedGuides.length > 0 && (
+      <section class="mt-12 no-print" aria-labelledby="related-guides">
+        <h2 id="related-guides">Related guides</h2>
+        <div class="mt-3 grid gap-x-8 sm:grid-cols-2">
+          {relatedGuides.map((r) => <GuideCard guide={r} />)}
+        </div>
+      </section>
+    )}
+  </Fragment>
+</ArticleLayout>

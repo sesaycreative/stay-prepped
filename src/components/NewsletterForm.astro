@@ -1,0 +1,77 @@
+---
+// Posts to /api/newsletter. The endpoint only subscribes people when
+// RESEND_API_KEY is configured; otherwise it says plainly that sign-up is not
+// live yet. Progressive enhancement: works without JavaScript too.
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<section class={`newsletter ${compact ? 'is-compact' : ''}`} aria-labelledby="newsletter-title">
+  <div class="newsletter-copy">
+    <h2 id="newsletter-title">Get new guides and tools by email</h2>
+    <p>One short email when we publish something useful. No spam, and you can unsubscribe at any time. See our <a href="/privacy/">privacy policy</a>.</p>
+  </div>
+  <form method="post" action="/api/newsletter" class="newsletter-form" data-newsletter novalidate>
+    <div class="field">
+      <label class="field-label" for="newsletter-email">Email address</label>
+      <input id="newsletter-email" class="input" type="email" name="email" autocomplete="email" required maxlength="254" aria-describedby="newsletter-status" />
+    </div>
+    <!-- Honeypot: humans leave this empty. -->
+    <div class="sr-only" aria-hidden="true">
+      <label for="newsletter-website">Leave this field empty</label>
+      <input id="newsletter-website" type="text" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+    <button type="submit" class="btn btn-primary">Sign up</button>
+    <p id="newsletter-status" class="newsletter-status" role="status" aria-live="polite"></p>
+  </form>
+</section>
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-newsletter]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = form.querySelector<HTMLElement>('.newsletter-status')!;
+      const email = form.querySelector<HTMLInputElement>('input[name="email"]')!;
+      const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      if (!email.value.trim() || !email.checkValidity()) {
+        email.setAttribute('aria-invalid', 'true');
+        status.textContent = 'Enter a valid email address, like name@example.com.';
+        status.dataset.state = 'error';
+        email.focus();
+        return;
+      }
+      email.removeAttribute('aria-invalid');
+      btn.disabled = true;
+      status.textContent = 'Signing you up…';
+      status.dataset.state = '';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        status.textContent = data.message ?? (res.ok ? 'Thanks, you are signed up.' : 'Sign-up failed. Please try again later.');
+        status.dataset.state = res.ok && data.ok ? 'ok' : 'error';
+        if (res.ok && data.ok) form.reset();
+      } catch {
+        status.textContent = 'We could not reach the server. Check your connection and try again.';
+        status.dataset.state = 'error';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+</script>
+<style>
+  .newsletter {
+    display: grid; gap: 1.25rem;
+    background: var(--surface-2);
+    padding: 1.75rem 1.25rem;
+    border-radius: var(--radius-m);
+  }
+  @media (min-width: 860px) {
+    .newsletter:not(.is-compact) { grid-template-columns: 1.1fr 1fr; align-items: end; padding: 2.25rem; }
+  }
+  .newsletter h2 { font-size: 1.5rem; }
+  .newsletter-copy p { margin-top: 0.4rem; max-width: 34rem; }
+  .newsletter-form { display: grid; grid-template-columns: 1fr auto; gap: 0.6rem; align-items: end; }
+  .newsletter-status { grid-column: 1 / -1; min-height: 1.4em; font-size: 0.95rem; }
+  .newsletter-status[data-state='error'] { color: var(--error); font-weight: 700; }
+  .newsletter-status[data-state='ok'] { color: var(--primary); font-weight: 700; }
+  @media (max-width: 480px) { .newsletter-form { grid-template-columns: 1fr; } }
+</style>

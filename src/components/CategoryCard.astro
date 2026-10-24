@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+interface Props { href: string; label: string; blurb: string; icon: string; count?: number }
+const { href, label, blurb, icon, count } = Astro.props;
+---
+<a href={href} class="cat-card">
+  <Icon name={icon} size={24} />
+  <span>
+    <span class="cat-label">{label}</span>
+    <span class="cat-blurb">{blurb}{typeof count === 'number' && count > 0 && <> · {count} {count === 1 ? 'guide' : 'guides'}</>}</span>
+  </span>
+</a>
+<style>
+  .cat-card {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    padding: 0.9rem 0.2rem; border-bottom: 1px solid var(--rule);
+    color: var(--text); text-decoration: none;
+  }
+  .cat-card :global(.icon) { color: var(--primary); margin-top: 0.15rem; }
+  .cat-card:hover .cat-label { text-decoration: underline; }
+  .cat-label { display: block; font-weight: 700; font-family: var(--font-head); font-size: 1.08rem; color: var(--heading); }
+  .cat-blurb { display: block; color: var(--text-muted); font-size: 0.93rem; }
+</style>

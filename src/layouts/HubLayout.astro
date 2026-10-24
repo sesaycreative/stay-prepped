@@ -1,0 +1,60 @@
+---
+// Section hub pages (Start Prepping, Food & Water, Emergency Kits, Survival Skills).
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import GuideCard from '../components/GuideCard.astro';
+import ToolCard from '../components/ToolCard.astro';
+import type { GuideCategory } from '../lib/site';
+
+interface Props {
+  title: string;
+  seoTitle?: string;
+  description: string;
+  intro: string;
+  guideCategories?: GuideCategory[];
+  extraGuides?: string[];
+  toolSlugs?: string[];
+}
+const { title, seoTitle, description, intro, guideCategories = [], extraGuides = [], toolSlugs = [] } = Astro.props;
+const allGuides = await getCollection('guides');
+const guides: CollectionEntry<'guides'>[] = [
+  ...allGuides.filter((g) => guideCategories.includes(g.data.category)),
+  ...extraGuides.map((s) => {
+    const g = allGuides.find((x) => x.id === s);
+    if (!g) throw new Error(`Hub ${title}: unknown guide ${s}`);
+    return g;
+  }),
+].filter((g, i, arr) => arr.findIndex((x) => x.id === g.id) === i);
+const allTools = await getCollection('tools');
+const tools = toolSlugs.map((s) => {
+  const t = allTools.find((x) => x.data.slug === s);
+  if (!t) throw new Error(`Hub ${title}: unknown tool ${s}`);
+  return t;
+}).sort((a, b) => (a.data.status === b.data.status ? a.data.order - b.data.order : a.data.status === 'live' ? -1 : 1));
+---
+<BaseLayout title={seoTitle ?? title} description={description} breadcrumbs={[{ label: title }]}>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>{title}</h1>
+      <p class="mt-3 text-lg">{intro}</p>
+    </header>
+    <slot />
+    {guides.length > 0 && (
+      <section class="mt-12" aria-labelledby="hub-guides">
+        <h2 id="hub-guides">Guides</h2>
+        <div class="mt-3 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+          {guides.map((g) => <GuideCard guide={g} />)}
+        </div>
+      </section>
+    )}
+    {tools.length > 0 && (
+      <section class="mt-12" aria-labelledby="hub-tools">
+        <h2 id="hub-tools">Tools</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tools.map((t) => <ToolCard tool={t} />)}
+        </div>
+      </section>
+    )}
+    <slot name="after" />
+  </div>
+</BaseLayout>

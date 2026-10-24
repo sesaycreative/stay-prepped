@@ -1,0 +1,117 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Callout from '../../components/Callout.astro';
+import Icon from '../../components/Icon.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import LastReviewed from '../../components/LastReviewed.astro';
+import FoodStorageCalculator from '../../components/tools/FoodStorageCalculator';
+import WaterStorageCalculator from '../../components/tools/WaterStorageCalculator';
+import PreparednessScore from '../../components/tools/PreparednessScore';
+import { faqLd } from '../../lib/seo';
+import { TOOL_CATEGORIES } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const tools = await getCollection('tools', (t) => t.data.status === 'live');
+  return tools.map((tool) => ({ params: { slug: tool.data.slug }, props: { tool } }));
+}
+
+interface Props { tool: CollectionEntry<'tools'> }
+const { tool } = Astro.props;
+const t = tool.data;
+const { Content } = await render(tool);
+
+const allGuides = await getCollection('guides');
+const related = t.relatedGuides
+  .map((slug) => allGuides.find((g) => g.id === slug))
+  .filter((g): g is CollectionEntry<'guides'> => Boolean(g));
+if (related.length !== t.relatedGuides.length) {
+  throw new Error(`Tool ${t.slug} lists a related guide that does not exist: ${t.relatedGuides.join(', ')}`);
+}
+const otherTools = (await getCollection('tools', (x) => x.data.status === 'live' && x.data.slug !== t.slug)).sort((a, b) => a.data.order - b.data.order);
+const jsonLd = t.faq.length ? [faqLd(t.faq)] : [];
+---
+<BaseLayout
+  title={t.seoTitle ?? t.title}
+  description={t.seoDescription ?? t.summary}
+  breadcrumbs={[{ label: 'Free Tools', href: '/tools/' }, { label: t.title }]}
+  jsonLd={jsonLd}
+>
+  <div class="wrap">
+    <header class="tool-head">
+      <p class="tool-cat"><Icon name={t.icon} size={20} /> {TOOL_CATEGORIES[t.category].label} · Free tool</p>
+      <h1>{t.title}</h1>
+      <p class="lede measure">{t.summary}</p>
+      {t.reviewedAt && <LastReviewed date={t.reviewedAt} />}
+    </header>
+
+    {t.instructions.length > 0 && (
+      <section class="no-print how-to" aria-labelledby="how-to-title">
+        <h2 id="how-to-title" class="text-lg" style="font-family: var(--font-body)">How to use it</h2>
+        <ol>
+          {t.instructions.map((s) => <li>{s}</li>)}
+        </ol>
+      </section>
+    )}
+
+    <div class="tool-island" data-tool={t.slug}>
+      {t.slug === 'food-storage-calculator' && <FoodStorageCalculator client:load />}
+      {t.slug === 'water-storage-calculator' && <WaterStorageCalculator client:load />}
+      {t.slug === 'preparedness-score' && <PreparednessScore client:load />}
+      <noscript>
+        <Callout type="warning" title="This tool needs JavaScript">
+          <p>The calculator runs entirely in your browser. Turn on JavaScript to use it. The method is explained below so you can work it out by hand.</p>
+        </Callout>
+      </noscript>
+    </div>
+
+    <div class="tool-body">
+      <div class="prose">
+        {t.safetyNotes.length > 0 && (
+          <Callout type="safety" title="Safety notes">
+            <ul>{t.safetyNotes.map((n) => <li>{n}</li>)}</ul>
+          </Callout>
+        )}
+        <Content />
+
+        {t.faq.length > 0 && (
+          <>
+            <h2 id="faq">Frequently asked questions</h2>
+            {t.faq.map((f) => (
+              <>
+                <h3>{f.q}</h3>
+                <p>{f.a}</p>
+              </>
+            ))}
+          </>
+        )}
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <section class="mt-14 no-print" aria-labelledby="related-guides">
+        <h2 id="related-guides">Related guides</h2>
+        <div class="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((g) => <GuideCard guide={g} />)}
+        </div>
+      </section>
+    )}
+
+    <section class="mt-12 no-print" aria-labelledby="other-tools">
+      <h2 id="other-tools">More free tools</h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        {otherTools.map((o) => <ToolCard tool={o} />)}
+      </div>
+      <p class="mt-4"><a href="/tools/">See all tools, including those coming soon</a></p>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  .tool-head { padding-block: 1.5rem 1.25rem; display: grid; gap: 0.6rem; }
+  .tool-cat { display: inline-flex; gap: 0.4rem; align-items: center; color: var(--c-earth-text); font-weight: 700; font-size: 0.95rem; }
+  .lede { font-size: 1.15rem; }
+  .how-to { margin-bottom: 1.5rem; max-width: 52rem; }
+  .how-to ol { list-style: decimal; padding-left: 1.3rem; display: grid; gap: 0.2rem; margin-top: 0.4rem; }
+  .tool-body { margin-top: 3rem; }
+</style>

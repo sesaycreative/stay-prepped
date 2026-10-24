@@ -1,0 +1,33 @@
+---
+import HubLayout from '../layouts/HubLayout.astro';
+import Callout from '../components/Callout.astro';
+const skills = [
+  { title: 'Making water safer to drink', text: 'Boiling, filters and tablets, and when not to drink water at all.', href: '/guides/emergency-water-purification/' },
+  { title: 'Coping with a power cut', text: 'Light, warmth and food safety when the electricity goes off.', href: '/guides/preparing-for-a-power-cut/' },
+  { title: 'Planning as a household', text: 'Meeting places, contacts and who does what.', href: '/guides/family-emergency-plan/' },
+  { title: 'Packing to leave quickly', text: 'What to carry, and how to keep the weight down.', href: '/guides/72-hour-emergency-bag/' },
+];
+---
+<HubLayout
+  title="Survival Skills"
+  seoTitle="Practical survival skills for everyday emergencies"
+  description="Practical skills that help when normal services stop: making water safer, coping with power cuts, planning as a household and packing to leave quickly."
+  intro="For most UK households, survival skills are less about the wilderness and more about coping calmly at home when the power, water or phone network stops working."
+>
+  <section aria-labelledby="skills-title">
+    <h2 id="skills-title">Skills covered so far</h2>
+    <ul class="mt-4 grid gap-4 md:grid-cols-2">
+      {skills.map((s) => (
+        <li class="panel">
+          <h3 class="text-lg"><a href={s.href}>{s.title}</a></h3>
+          <p class="mt-1">{s.text}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="measure">
+      <Callout title="More to come">
+        <p>Dedicated guides on first aid basics, safe emergency cooking and keeping warm are being written. We only publish guides once they have been carefully checked.</p>
+      </Callout>
+    </div>
+  </section>
+</HubLayout>

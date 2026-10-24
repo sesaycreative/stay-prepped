@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { CHECKLISTS, OFFICIAL_LINKS } from '../../data/checklists';
+---
+<BaseLayout
+  title="Printable checklists and official links"
+  description="Free printable emergency checklists for your home, grab bag, power cuts and documents, plus links to official UK emergency-preparedness advice."
+  breadcrumbs={[{ label: 'Resources' }]}
+>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>Resources</h1>
+      <p class="mt-3 text-lg">Printable checklists to stick on the fridge or keep in your grab bag, and the official sources we rely on.</p>
+    </header>
+
+    <section aria-labelledby="checklists-title">
+      <h2 id="checklists-title">Printable checklists</h2>
+      <ul class="mt-4 grid gap-4 md:grid-cols-2">
+        {CHECKLISTS.map((c) => (
+          <li class="panel flex gap-4">
+            <Icon name="list-checks" size={28} class="text-primary" />
+            <div>
+              <h3 class="text-lg"><a href={`/resources/checklists/${c.slug}/`}>{c.title}</a></h3>
+              <p class="mt-1">{c.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4 measure muted">Our <a href="/tools/">free tools</a> also produce printable and downloadable lists tailored to your household.</p>
+    </section>
+
+    <section aria-labelledby="official-title" class="mt-14">
+      <h2 id="official-title">Official advice</h2>
+      <p class="mt-2 measure">In an emergency, always follow instructions from the emergency services, your local council and official sources. These are the ones we refer to most.</p>
+      <ul class="mt-4 grid gap-x-10 md:grid-cols-2">
+        {OFFICIAL_LINKS.map((l) => (
+          <li class="official">
+            <a href={l.url} rel="noopener" class="font-bold">{l.title}</a>
+            <span class="muted text-sm"> ({l.publisher})</span>
+            <p class="text-[0.95rem]">{l.note}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="numbers-title" class="mt-14 panel measure">
+      <h2 id="numbers-title" class="text-xl">Numbers to know (UK)</h2>
+      <dl class="mt-3 grid grid-cols-[5rem_1fr] gap-y-2">
+        <dt class="font-bold">999</dt><dd>Emergency services when life is at risk.</dd>
+        <dt class="font-bold">111</dt><dd>NHS 111 for urgent medical help that is not an emergency.</dd>
+        <dt class="font-bold">105</dt><dd>Report a power cut (England, Scotland and Wales).</dd>
+      </dl>
+    </section>
+  </div>
+</BaseLayout>
+<style>
+  .official { padding-block: 0.8rem; border-bottom: 1px solid var(--rule); }
+</style>

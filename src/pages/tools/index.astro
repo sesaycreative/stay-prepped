@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import Icon from '../../components/Icon.astro';
+import { TOOL_CATEGORIES, TOOL_CATEGORY_KEYS } from '../../lib/site';
+
+const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
+const live = tools.filter((t) => t.data.status === 'live');
+const groups = TOOL_CATEGORY_KEYS.map((key) => ({
+  key,
+  ...TOOL_CATEGORIES[key],
+  tools: tools
+    .filter((t) => t.data.category === key)
+    .sort((a, b) => (a.data.status === b.data.status ? a.data.order - b.data.order : a.data.status === 'live' ? -1 : 1)),
+})).filter((g) => g.tools.length);
+---
+<BaseLayout
+  title="Free prepper tools and calculators"
+  description="Free emergency-preparedness calculators that run in your browser: food storage, water storage and a home preparedness score. No sign-up, nothing stored on our servers."
+  breadcrumbs={[{ label: 'Free Tools' }]}
+>
+  <div class="wrap">
+    <header class="py-6 measure">
+      <h1>Free prepper tools</h1>
+      <p class="mt-3 text-lg">Calculators and checklists that do the sums for you. They are free, need no account, and run entirely in your browser, so your answers never leave your device.</p>
+    </header>
+
+    <section aria-labelledby="live-title" class="mb-12">
+      <h2 id="live-title">Ready to use</h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        {live.map((t) => <ToolCard tool={t} />)}
+      </div>
+    </section>
+
+    <h2>All tools by category</h2>
+    <p class="muted mt-1 measure">Tools marked coming soon are planned. We build one at a time and only publish a tool when it works properly.</p>
+    {groups.map((g) => (
+      <section aria-labelledby={`cat-${g.key}`} class="mt-10">
+        <h3 id={`cat-${g.key}`} class="flex items-center gap-2 text-xl"><Icon name={g.icon} size={22} /> {g.label}</h3>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {g.tools.map((t) => <ToolCard tool={t} headingLevel="h4" />)}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

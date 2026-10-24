@@ -1,0 +1,13 @@
+---
+import Icon from './Icon.astro';
+import { formatDate, isoDate } from '../lib/site';
+interface Props { date: Date; published?: Date }
+const { date, published } = Astro.props;
+---
+<p class="inline-flex flex-wrap items-center gap-x-2 text-sm muted">
+  <Icon name="calendar-check" size={18} />
+  <span>Last reviewed <time datetime={isoDate(date)}>{formatDate(date)}</time></span>
+  {published && published.getTime() !== date.getTime() && (
+    <span>(first published <time datetime={isoDate(published)}>{formatDate(published)}</time>)</span>
+  )}
+</p>
