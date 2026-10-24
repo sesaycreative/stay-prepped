@@ -3,6 +3,7 @@
 // outward postcode) lives here, under one localStorage key, and nowhere else.
 // Nothing is ever sent to a server. See docs/PROGRESS_STATE.md.
 import { itemIds } from './checklist-ids.mjs';
+import { medicationReady, type MedicineRow } from './calculators/medication';
 
 export const STORAGE_KEY = 'stayprepped:v1';
 export const SCHEMA_VERSION = 1;
@@ -32,7 +33,7 @@ export const AREAS: AreaInfo[] = [
   { id: 'food', label: 'Food', tone: 'food', href: '/guides/how-much-food-to-store/', rule: 'Use the food calculator, or tick every item on the food storage checklist.' },
   { id: 'bag', label: 'Emergency bag', tone: 'kits', href: '/guides/72-hour-emergency-bag/', rule: 'Tick every item on the "What to pack" checklist in the 72-hour bag guide.' },
   { id: 'power', label: 'Power cuts', tone: 'power', href: '/guides/preparing-for-a-power-cut/', rule: 'Tick every item on the power cut checklist.' },
-  { id: 'first-aid', label: 'First aid & medicine', tone: 'health', href: '/guides/prepping-for-beginners/#8-check-your-first-aid-kit-and-medicines', rule: 'Tick every item on the first aid checklist in the beginners guide.' },
+  { id: 'first-aid', label: 'First aid & medicine', tone: 'health', href: '/guides/prepping-for-beginners/#8-check-your-first-aid-kit-and-medicines', rule: 'Tick every item on the first aid checklist in the beginners guide, or list your medicines in the medication planner with none running low (under 7 days).' },
   { id: 'family', label: 'Family plan', tone: 'home', href: '/guides/family-emergency-plan/', rule: 'Tick every item on the "write it down and share it" checklist in the family plan guide.' },
   { id: 'home-docs', label: 'Home & documents', tone: 'docs', href: '/guides/essential-documents/', rule: 'Tick every item on the "which documents matter most" checklist.' },
   { id: 'weather', label: 'Severe weather & flooding', tone: 'gov', href: '/local-risk/', rule: 'Visit "Why prepare?" and tick "I\'ve checked my flood risk" on the local risk page.' },
@@ -81,6 +82,20 @@ export interface ProgressState {
   seen: Record<string, string>;
   /** Outward postcode only (e.g. "SW1A"), never the full postcode. */
   localRisk: { outward?: string };
+  /** Tool timers and inputs that must survive a reload. */
+  outage?: OutageState;
+  waterTimer?: { endsAt: string; litres: number; method: string };
+  /** Medication planner rows. Names stay on this device only. */
+  medicines?: { rows: MedicineRow[]; leadDays: number };
+}
+
+export interface OutageState {
+  offAt: string;
+  restoredAt?: string;
+  fridgeDoor: 'shut' | 'few' | 'lots';
+  hasFridge: boolean;
+  freezerFill: 'full' | 'half' | 'none';
+  freezerDoor: 'shut' | 'few' | 'lots';
 }
 
 export const DEFAULT_HOUSEHOLD: Household = { adults: 2, children: 0, pets: { dogs: 0, cats: 0 }, set: false };
@@ -157,6 +172,39 @@ export function parseState(raw: unknown): ProgressState {
   if (isObj(data.localRisk) && typeof data.localRisk.outward === 'string' && OUTWARD_RE.test(data.localRisk.outward)) {
     s.localRisk.outward = data.localRisk.outward;
   }
+  const door = (v: unknown) => (v === 'shut' || v === 'few' || v === 'lots' ? v : 'shut');
+  if (isObj(data.outage) && isIso(data.outage.offAt)) {
+    const o = data.outage;
+    s.outage = {
+      offAt: o.offAt as string,
+      ...(isIso(o.restoredAt) ? { restoredAt: o.restoredAt as string } : {}),
+      fridgeDoor: door(o.fridgeDoor),
+      hasFridge: o.hasFridge !== false,
+      freezerFill: o.freezerFill === 'half' || o.freezerFill === 'none' ? o.freezerFill : 'full',
+      freezerDoor: door(o.freezerDoor),
+    };
+  }
+  if (isObj(data.waterTimer) && isIso(data.waterTimer.endsAt)) {
+    const w = data.waterTimer;
+    s.waterTimer = { endsAt: w.endsAt as string, litres: typeof w.litres === 'number' ? w.litres : 0, method: typeof w.method === 'string' ? w.method : 'bleach' };
+  }
+  if (isObj(data.medicines) && Array.isArray(data.medicines.rows)) {
+    const rows: MedicineRow[] = [];
+    for (const r of data.medicines.rows.slice(0, 10)) {
+      if (!isObj(r)) continue;
+      const n = (v: unknown, max: number) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max ? v : null);
+      const perDay = n(r.perDay, 50), perPack = n(r.perPack, 1000), packs = n(r.packs, 100);
+      if (typeof r.id !== 'string' || typeof r.name !== 'string' || !perDay || !perPack || packs === null) continue;
+      rows.push({
+        id: r.id.slice(0, 40), name: r.name.slice(0, 60), perDay, perPack, packs,
+        loose: n(r.loose, 5000) ?? 0,
+        countedOn: typeof r.countedOn === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.countedOn) ? r.countedOn : new Date().toISOString().slice(0, 10),
+        ...(typeof r.nextRepeat === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.nextRepeat) ? { nextRepeat: r.nextRepeat } : {}),
+      });
+    }
+    const lead = data.medicines.leadDays;
+    s.medicines = { rows, leadDays: typeof lead === 'number' && Number.isInteger(lead) && lead >= 0 && lead <= 60 ? lead : 7 };
+  }
   if (isObj(data.areas)) {
     for (const [k, v] of Object.entries(data.areas)) {
       if (AREA_IDS.has(k) && isObj(v) && v.done === true && isIso(v.at)) {
@@ -178,6 +226,7 @@ export function listComplete(s: ProgressState, id: string): boolean {
 export function areaSource(s: ProgressState, area: AreaId): string | null {
   if (area === 'water' && s.tools.water) return 'tool:water';
   if (area === 'food' && s.tools.food) return 'tool:food';
+  if (area === 'first-aid' && s.medicines?.rows.length && medicationReady(s.medicines.rows, new Date())) return 'tool:medication';
   if (area === 'weather') {
     return s.seen['why-prepare'] && s.checklists[LOCAL_RISK_LIST]?.includes(FLOOD_ITEM) ? `checklist:${LOCAL_RISK_LIST}` : null;
   }
@@ -318,6 +367,30 @@ export function createStore(storage: StorageLike | null) {
     markSeen(page: string) {
       if (read().seen[page]) return;
       update((s) => ({ ...s, seen: { ...s.seen, [page]: new Date().toISOString() } }));
+    },
+    setOutage(o: OutageState | undefined) {
+      update((s) => {
+        const next = { ...s };
+        if (o) next.outage = o;
+        else delete next.outage;
+        return next;
+      });
+    },
+    setWaterTimer(t: ProgressState['waterTimer']) {
+      update((s) => {
+        const next = { ...s };
+        if (t) next.waterTimer = t;
+        else delete next.waterTimer;
+        return next;
+      });
+    },
+    setMedicines(m: ProgressState['medicines']) {
+      update((s) => {
+        const next = { ...s };
+        if (m && m.rows.length) next.medicines = m;
+        else delete next.medicines;
+        return next;
+      });
     },
     setOutward(outward: string | undefined) {
       update((s) => ({ ...s, localRisk: outward ? { outward } : {} }));

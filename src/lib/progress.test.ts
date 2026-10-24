@@ -240,3 +240,33 @@ describe('seasonal line', () => {
     expect(seasonalMessage(new Date(2026, 8, 10))).toBeNull();
   });
 });
+
+describe('tool state in the store (round 2)', () => {
+  it('keeps a valid outage and medicines, drops junk', () => {
+    const s = parseState({
+      outage: { offAt: '2026-10-25T10:00:00.000Z', fridgeDoor: 'lots', freezerFill: 'weird' },
+      medicines: { rows: [{ id: 'a', name: 'A', perDay: 1, perPack: 28, packs: 1, countedOn: '2026-10-25' }, { id: 'b', name: 'B', perDay: -1, perPack: 28, packs: 1 }, 'x'], leadDays: 99 },
+      waterTimer: { endsAt: 'nope' },
+    });
+    expect(s.outage).toMatchObject({ fridgeDoor: 'lots', freezerFill: 'full', hasFridge: true });
+    expect(s.medicines?.rows.map((r) => r.id)).toEqual(['a']);
+    expect(s.medicines?.leadDays).toBe(7);
+    expect(s.waterTimer).toBeUndefined();
+  });
+
+  it('a medicine list with none running low completes first aid', () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const ok = parseState({ medicines: { rows: [{ id: 'a', name: 'A', perDay: 1, perPack: 28, packs: 1, loose: 0, countedOn: today }], leadDays: 7 } });
+    expect(ok.areas['first-aid']?.source).toBe('tool:medication');
+    const low = parseState({ medicines: { rows: [{ id: 'a', name: 'A', perDay: 1, perPack: 28, packs: 0, loose: 3, countedOn: today }], leadDays: 7 } });
+    expect(low.areas['first-aid']).toBeUndefined();
+  });
+
+  it('clearing medicines removes them', () => {
+    const store = createStore(memStorage());
+    store.setMedicines({ rows: [{ id: 'a', name: 'A', perDay: 1, perPack: 28, packs: 1, loose: 0, countedOn: '2026-10-25' }], leadDays: 7 });
+    expect(store.get().medicines?.rows).toHaveLength(1);
+    store.setMedicines(undefined);
+    expect(store.get().medicines).toBeUndefined();
+  });
+});
