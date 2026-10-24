@@ -21,6 +21,16 @@ inShort:
   - "Keep originals together in one folder, somewhere safe from flooding."
   - "Make copies: paper in your grab bag, a set with someone you trust, and encrypted digital scans."
   - "Never store PINs or passwords with them, and check everything once a year."
+keyFacts:
+  - value: "1 folder"
+    label: "for all your originals"
+    note: "Somewhere safe from flooding"
+  - value: "3 kinds"
+    label: "of copy"
+    note: "Paper, off-site and encrypted digital"
+  - value: "Once a year"
+    label: "check them"
+    note: "Expiry dates, policies, medical lists"
 ---
 
 After a flood, fire or burglary, one of the hardest jobs is proving who you are and what you own. Insurance claims, replacement bank cards and medical care are all quicker if you can lay your hands on the right documents. A little organising now saves a lot of stress later.

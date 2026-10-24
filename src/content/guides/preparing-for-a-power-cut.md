@@ -29,6 +29,16 @@ inShort:
   - "Keep torches, spare batteries, a radio and a charged power bank where everyone can find them."
   - "Save 105 in your phone and on paper to report a cut or get updates."
   - "Never use a barbecue, camping stove or outdoor heater indoors."
+keyFacts:
+  - value: "105"
+    label: "to report a power cut"
+    note: "Free, in England, Scotland and Wales"
+  - value: "1 torch"
+    label: "per adult, at least"
+    note: "With spare batteries"
+  - value: "1 light"
+    label: "left switched on"
+    note: "So you know when power returns"
 ---
 
 Most power cuts in the UK are short and fixed within hours. But storms, flooding and faults can sometimes leave homes without electricity for longer, especially in winter and in rural areas. A little preparation makes a power cut much easier to cope with.
@@ -63,7 +73,9 @@ Most power cuts in the UK are short and fixed within hours. But storms, flooding
 
 ### Extra support
 
-If anyone in your home relies on medical equipment that needs power, or is older, disabled or unwell, register for the [Priority Services Register](https://www.thepsr.co.uk/). It is free. Network operators can then give you extra help and updates during a power cut. Also make a plan with your healthcare team for what to do if equipment loses power.
+If anyone in your home relies on medical equipment that needs power, or is older, disabled or unwell, register for the [Priority Services Register](https://www.thepsr.co.uk/). It is free. Network operators can then give you extra help and updates during a power cut.
+
+Also make a plan with your healthcare team for what to do if equipment loses power.
 
 ## When the power goes off
 

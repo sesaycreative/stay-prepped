@@ -23,9 +23,21 @@ inShort:
   - "Stored water is safest. Always follow your water company's notices first."
   - "Boiling kills germs but does not remove chemicals, fuel or dirt."
   - "Never drink water that may contain floodwater, sewage, fuel or chemicals."
+keyFacts:
+  - value: "Rolling boil"
+    label: "kills germs"
+    note: "Large bubbles breaking the surface continuously"
+  - value: "1 day"
+    label: "to use boiled water within"
+    note: "If you can; keep it clean and covered"
+  - value: "Chemicals"
+    label: "are not removed by boiling"
+    note: "If unsure what is wrong, use stored water"
 ---
 
-In the UK, tap water is treated and tested, and you should always follow your water company's advice first. But if the supply is interrupted or you are told water may be unsafe, you may need to treat water before drinking it. This guide covers the three main methods and their limits.
+In the UK, tap water is treated and tested, and you should always follow your water company's advice first.
+
+But if the supply is interrupted or you are told water may be unsafe, you may need to treat water before drinking it. This guide covers the three main methods and their limits.
 
 Stored water is always the safest option. If you have not yet built a water store, start with [how much water should you store?](/guides/how-much-water-to-store/)
 

@@ -8,6 +8,7 @@ import Icon from '../components/Icon.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import { SITE, type IllustrationKey, type Tone } from '../lib/site';
 import { absolute, articleLd } from '../lib/seo';
+import { sectionNumbering } from '../lib/rehype-stayprepped.mjs';
 
 interface Props {
   title: string;
@@ -25,7 +26,8 @@ interface Props {
 const { title, description, eyebrow, publishedAt, reviewedAt, headings, breadcrumbs, sources, tone = 'neutral', art, inShort } = Astro.props;
 const url = absolute(Astro.url.pathname, Astro.site);
 const ld = [articleLd({ title, description, url, published: publishedAt, modified: reviewedAt, site: Astro.site })];
-const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sources', text: 'Sources and further reading' }] : [])];
+const tocHeadings = headings;
+const { numbered } = sectionNumbering(headings.filter((h) => h.depth === 2).map((h) => h.text));
 ---
 <BaseLayout title={title} description={description} breadcrumbs={breadcrumbs} jsonLd={ld} ogType="article">
   <article class={`tone-${tone}`}>
@@ -45,28 +47,28 @@ const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sourc
     </div>
     <div class="wrap">
     {inShort && (
-      <aside class="in-short" aria-labelledby="in-short-title">
+      <aside class="in-short article-in-short" aria-labelledby="in-short-title">
         <h2 id="in-short-title" class="in-short-title"><Icon name="zap" size={18} /> In short</h2>
         <ul>{inShort.map((b) => <li>{b}</li>)}</ul>
       </aside>
     )}
     <div class="article-grid">
-      <aside class="article-aside"><TableOfContents headings={tocHeadings} /></aside>
+      <aside class="article-aside"><TableOfContents headings={tocHeadings} numbered={numbered} /></aside>
       <div class="article-main">
-        <div class="prose">
+        <div class="prose article-body" data-article-body>
           <slot />
-          {sources.length > 0 && (
-            <>
-              <h2 id="sources">Sources and further reading</h2>
-              <ul>
-                {sources.map((s) => (
-                  <li><a href={s.url} rel="noopener">{s.title}</a> ({s.publisher})</li>
-                ))}
-              </ul>
-            </>
-          )}
         </div>
         <slot name="after" />
+        {sources.length > 0 && (
+          <footer class="sources-note" aria-labelledby="sources">
+            <h2 id="sources">Sources and further reading</h2>
+            <ol>
+              {sources.map((s) => (
+                <li><a href={s.url} rel="noopener">{s.title}</a> <span>({s.publisher})</span></li>
+              ))}
+            </ol>
+          </footer>
+        )}
       </div>
     </div>
     </div>
@@ -81,7 +83,7 @@ const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sourc
   @media (min-width: 760px) { .article-art { display: block; } }
   .lede { font-size: 1.2rem; line-height: 1.55; }
   .article-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; color: var(--text-muted); font-size: 0.92rem; align-items: center; }
-  .in-short { max-width: 48rem; margin-block: -1.5rem 2.5rem; position: relative; }
+  .in-short { max-width: 46rem; margin-block: 1.75rem 0.5rem; }
   .article-grid { display: grid; gap: 2rem; margin-top: 2rem; }
   .in-short + .article-grid { margin-top: 0; }
   @media (min-width: 1000px) {
@@ -89,4 +91,8 @@ const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sourc
     .article-aside { order: 0; }
     .article-aside :global(.toc) { position: sticky; top: 6rem; }
   }
+  .sources-note { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); max-width: 62ch; font-size: 0.88rem; color: var(--text-muted); }
+  .sources-note h2 { font-family: var(--font-body); font-size: 0.92rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0; }
+  .sources-note ol { margin-top: 0.5rem; padding-left: 1.2rem; list-style: decimal; display: grid; gap: 0.3rem; }
+  .sources-note a { color: var(--text); }
 </style>

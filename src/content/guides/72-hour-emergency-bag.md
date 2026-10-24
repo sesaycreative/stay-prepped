@@ -23,6 +23,19 @@ inShort:
   - "Pack one rucksack per adult, light enough to carry for a long walk (well under 10 kg)."
   - "Cover water, food, light, first aid, warmth, copies of documents and some cash."
   - "Keep it by the door and check it every 6 months. Never delay leaving to fetch it."
+keyFacts:
+  - value: "1 bag"
+    label: "per adult"
+    note: "Older children can carry a small one"
+  - value: "Under 10 kg"
+    label: "packed weight for most adults"
+    note: "Light enough for a long walk"
+  - value: "1 kg"
+    label: "per litre of water"
+    note: "So you may not manage 3 full days"
+  - value: "6 months"
+    label: "between checks"
+    note: "Food, water, medicines, batteries"
 ---
 
 A 72-hour emergency bag, often called a grab bag or go bag, holds what you would need if you had to leave home quickly and could not come back for a few days. It might be a flood warning, a gas leak, a fire nearby or being told to evacuate.

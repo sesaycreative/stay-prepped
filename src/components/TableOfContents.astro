@@ -1,20 +1,150 @@
 ---
+// Article navigator. Desktop: a sticky, numbered list of h2s; the h3s of the
+// active section unfold beneath it, and the active item follows the reader
+// (IntersectionObserver). Mobile: a closed "Jump to…" disclosure. A thin
+// reading-progress bar sits under the sticky header. No library; tiny script.
 import type { MarkdownHeading } from 'astro';
-interface Props { headings: MarkdownHeading[] }
-const items = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3);
+import Icon from './Icon.astro';
+interface Props { headings: MarkdownHeading[]; numbered?: boolean }
+const { headings, numbered = true } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+type Group = { h2: MarkdownHeading; subs: MarkdownHeading[] };
+const groups: Group[] = [];
+for (const h of items) {
+  if (h.depth === 2) groups.push({ h2: h, subs: [] });
+  else groups[groups.length - 1]?.subs.push(h);
+}
+// Mirror the visible heading text: drop a leading "1. " or "Step 1: " when the
+// number is shown in the chip instead.
+const label = (text: string) => {
+  const t = numbered ? text.replace(/^(?:Step\s+)?\d+[.:]\s+/i, '') : text;
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
 ---
-{items.length > 2 && (
-  <nav class="toc" aria-labelledby="toc-title">
-    <h2 id="toc-title" class="text-base font-bold" style="font-family: var(--font-body)">On this page</h2>
-    <ol class="mt-2 grid gap-1.5 text-[0.95rem]">
-      {items.map((h) => (
-        <li class={h.depth === 3 ? 'pl-4' : ''}>
-          <a href={`#${h.slug}`} class="no-underline hover:underline" style="color: var(--text)">{h.text}</a>
-        </li>
-      ))}
-    </ol>
-  </nav>
+{groups.length > 2 && (
+  <>
+    <div class="read-progress" aria-hidden="true"><span data-read-progress></span></div>
+    <details class="toc-mobile disclosure">
+      <summary><Icon name="list" size={20} /> Jump to a section</summary>
+      <ol class="disclosure-body toc-m-list">
+        {groups.map((g, i) => (
+          <li><a href={`#${g.h2.slug}`}>{numbered && <span class="toc-n" aria-hidden="true">{i + 1}</span>}{label(g.h2.text)}</a></li>
+        ))}
+      </ol>
+    </details>
+    <nav class="toc" aria-labelledby="toc-title" data-toc>
+      <h2 id="toc-title" class="toc-title">On this page</h2>
+      <ol class="toc-list">
+        {groups.map((g, i) => (
+          <li class="toc-item" data-toc-item={g.h2.slug}>
+            <a href={`#${g.h2.slug}`} class="toc-link">
+              {numbered ? <span class="toc-n" aria-hidden="true">{i + 1}</span> : <span class="toc-dot" aria-hidden="true"></span>}
+              <span>{label(g.h2.text)}</span>
+            </a>
+            {g.subs.length > 0 && (
+              <ol class="toc-subs">
+                {g.subs.map((s) => <li><a href={`#${s.slug}`}>{s.text}</a></li>)}
+              </ol>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </>
 )}
+
+<script>
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  const bar = document.querySelector<HTMLElement>('[data-read-progress]');
+  const article = document.querySelector<HTMLElement>('[data-article-body]');
+  if (toc && article) {
+    const items = new Map<string, HTMLElement>();
+    toc.querySelectorAll<HTMLElement>('[data-toc-item]').forEach((li) => items.set(li.dataset.tocItem!, li));
+    const headings = [...items.keys()].map((id) => document.getElementById(id)).filter((h): h is HTMLElement => !!h);
+    let current = '';
+    const setActive = (id: string) => {
+      if (id === current) return;
+      current = id;
+      items.forEach((li, key) => {
+        const on = key === id;
+        li.classList.toggle('is-active', on);
+        const a = li.querySelector('a');
+        if (on) a?.setAttribute('aria-current', 'location');
+        else a?.removeAttribute('aria-current');
+      });
+    };
+    // The active section is the last h2 whose top has passed ~30% of the viewport.
+    const pick = () => {
+      const line = innerHeight * 0.3;
+      let id = headings[0]?.id ?? '';
+      for (const h of headings) if (h.getBoundingClientRect().top <= line) id = h.id;
+      setActive(id);
+    };
+    const io = new IntersectionObserver(pick, { rootMargin: '0px 0px -60% 0px', threshold: [0, 1] });
+    headings.forEach((h) => io.observe(h));
+    pick();
+  }
+  if (bar && article) {
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const track = bar.parentElement!;
+    let ticking = false;
+    const update = () => {
+      track.style.top = `${header ? header.getBoundingClientRect().bottom : 0}px`;
+      const r = article.getBoundingClientRect();
+      const total = r.height - innerHeight * 0.6;
+      const done = Math.min(1, Math.max(0, -r.top / Math.max(total, 1)));
+      bar.style.transform = `scaleX(${done})`;
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+</script>
+
 <style>
-  .toc { border-left: 3px solid var(--t-strong); padding-left: 1rem; }
+  .read-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 39; pointer-events: none;
+  }
+  .read-progress span {
+    display: block; height: 100%; background: var(--t-strong, var(--primary));
+    transform: scaleX(0); transform-origin: 0 50%;
+  }
+
+  .toc-mobile { margin-bottom: 1.5rem; }
+  .toc-m-list { display: grid; gap: 0.15rem; }
+  .toc-m-list a {
+    display: flex; align-items: center; gap: 0.6rem; min-height: 2.75rem;
+    color: var(--text); text-decoration: none; font-weight: 700;
+  }
+  .toc { display: none; }
+
+  .toc-n {
+    flex-shrink: 0; display: inline-grid; place-items: center;
+    width: 1.6rem; height: 1.6rem; border-radius: 0.55rem;
+    font-family: var(--font-head); font-weight: 700; font-size: 0.8rem;
+    background: var(--t-band); color: var(--t-ink); border: 1px solid var(--t-border);
+  }
+  .toc-dot { flex-shrink: 0; width: 0.5rem; height: 0.5rem; margin-inline: 0.55rem; border-radius: 50%; background: var(--t-border); }
+
+  @media (min-width: 1000px) {
+    .toc-mobile { display: none; }
+    .toc { display: block; }
+    .toc-title { font-family: var(--font-body); font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; }
+    .toc-list { display: grid; gap: 0.1rem; }
+    .toc-link {
+      display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.35rem 0.5rem; border-radius: 0.75rem;
+      color: var(--text-muted); text-decoration: none; font-size: 0.9rem; line-height: 1.35;
+      transition: background-color 150ms ease-out, color 150ms ease-out;
+    }
+    .toc-link:hover { color: var(--heading); background: var(--t-band); }
+    .toc-link > span:last-child { padding-top: 0.12rem; }
+    .toc-subs { display: none; margin: 0.15rem 0 0.4rem 2.7rem; border-left: 2px solid var(--t-border); }
+    .toc-subs a { display: block; padding: 0.2rem 0 0.2rem 0.7rem; font-size: 0.85rem; color: var(--text-muted); text-decoration: none; }
+    .toc-subs a:hover { color: var(--heading); text-decoration: underline; }
+    .is-active > .toc-subs { display: block; }
+    .is-active > .toc-link { color: var(--heading); font-weight: 700; background: var(--t-surface); box-shadow: inset 0 0 0 1px var(--t-border); }
+    .is-active .toc-n { background: var(--t-chip); color: var(--t-chip-ink); border-color: var(--t-strong); }
+    .is-active .toc-dot { background: var(--t-strong); }
+  }
+  @media print { .read-progress, .toc-mobile { display: none; } }
 </style>

@@ -28,6 +28,19 @@ inShort:
   - "Agree an out-of-area contact and two meeting places, one near home and one further away."
   - "Decide who collects whom, who checks on others, and who takes the grab bag and pets."
   - "Put it on one page, give everyone a copy, and practise it now and then."
+keyFacts:
+  - value: "About an hour"
+    label: "to make your plan"
+    note: "A sheet of paper per person works well"
+  - value: "2 places"
+    label: "to meet"
+    note: "One near home, one further away"
+  - value: "1 page"
+    label: "for the whole plan"
+    note: "A copy for everyone"
+  - value: "6 months"
+    label: "between reviews"
+    note: "Or when something changes"
 ---
 
 In an emergency, people do not always think clearly, and phones may not work. A family emergency plan means everyone already knows what to do, where to go and who to contact. It takes about an hour to make and can save a lot of worry.

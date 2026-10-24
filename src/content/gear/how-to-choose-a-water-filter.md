@@ -19,7 +19,9 @@ sources:
 
 ## What it is for
 
-A portable water filter lets you make water from a doubtful source safer to drink when your mains supply is interrupted or you are away from home. In the UK, most households will rely on stored water and their water company's advice first. A filter is a useful backup, not a replacement for a water store.
+A portable water filter lets you make water from a doubtful source safer to drink when your mains supply is interrupted or you are away from home.
+
+In the UK, most households will rely on stored water and their water company's advice first. A filter is a useful backup, not a replacement for a water store.
 
 Before buying one, ask yourself:
 
@@ -70,7 +72,9 @@ Filters are often described by their pore size in microns. A smaller pore size s
 
 ### Capacity
 
-Capacity is how many litres the filter can treat before it needs replacing. Compare this with your household's needs. A household of four using 4 litres per person a day needs 16 litres a day, so a filter rated for a few hundred litres would last only a few weeks of full-time use.
+Capacity is how many litres the filter can treat before it needs replacing. Compare this with your household's needs.
+
+A household of four using 4 litres per person a day needs 16 litres a day, so a filter rated for a few hundred litres would last only a few weeks of full-time use.
 
 ### Flow rate
 

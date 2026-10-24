@@ -784,6 +784,156 @@ legend {
 .sources-box h2 { font-size: 1.15rem; }
 .sources-box ul { margin-top: 0.5rem; display: grid; gap: 0.4rem; }
 
+
+/* ---------------------------------------------------------------------------
+   Article reading experience (guides, gear guides). Markup comes from
+   src/lib/rehype-stayprepped.mjs: .lead, .key-facts, .g-section, .g-h2,
+   .term-list, .step-list, .table-wrap, .prose-ticks.
+   ------------------------------------------------------------------------- */
+.article-body { max-width: 46rem; }
+.article-body p,
+.article-body li { max-width: 62ch; }
+.prose.article-body > * + * { margin-top: 1.25em; }
+.article-body p + p { margin-top: 1.1em; }
+.article-body p > strong:first-child { color: var(--heading); }
+
+/* Lead paragraph */
+.article-body > .lead {
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: var(--heading);
+  max-width: 60ch;
+  padding-left: 1.1rem;
+  border-left: 4px solid var(--t-strong);
+}
+@media (min-width: 640px) { .article-body > .lead { font-size: 1.28rem; } }
+
+/* Key numbers */
+.key-facts {
+  list-style: none !important; padding: 0 !important;
+  display: grid; gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.6rem !important;
+}
+@media (min-width: 760px) {
+  .key-facts:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .key-facts:has(> li:nth-child(4)) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.key-fact {
+  display: grid; align-content: start; gap: 0.2rem;
+  padding: 0.95rem 1rem 1rem; margin: 0 !important; max-width: none !important;
+  background: var(--t-surface); border: 1px solid var(--t-border); border-radius: 1.1rem;
+}
+.kf-value { font-family: var(--font-head); font-weight: 800; font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--t-ink); }
+.kf-label { font-weight: 700; font-size: 0.92rem; line-height: 1.3; color: var(--heading); }
+.kf-note { font-size: 0.82rem; line-height: 1.35; color: var(--text-muted); }
+
+/* Sections */
+.article-body > .g-section {
+  margin-top: 0.75rem;
+  padding: 2rem 1rem 2.1rem;
+  margin-inline: -1rem;
+}
+.article-body > .key-facts + .g-section,
+.article-body > .lead + .g-section,
+.article-body > p + .g-section { margin-top: 2rem; }
+.article-body > .g-section:nth-of-type(even) {
+  background: color-mix(in srgb, var(--t-band) 60%, transparent);
+}
+@media (min-width: 640px) {
+  .article-body > .g-section { padding: 2.25rem 1.5rem 2.4rem; margin-inline: -1.5rem; border-radius: 1.5rem; }
+}
+.prose .g-section > * + * { margin-top: 1.1em; }
+.prose .g-section > h3 { margin-top: 1.9em; font-size: 1.08rem; }
+.prose .g-section > h3 + * { margin-top: 0.55em; }
+.prose .g-h2 {
+  margin: 0; padding: 0; border: 0;
+  display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start;
+  font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+  scroll-margin-top: 6rem;
+}
+.prose .g-h2::before {
+  content: attr(data-n);
+  display: inline-grid; place-items: center;
+  width: 2.1rem; height: 2.1rem; margin-top: -0.12rem; border-radius: 0.7rem;
+  background: var(--t-chip); color: var(--t-chip-ink);
+  font-size: 1rem; font-weight: 800; letter-spacing: 0;
+}
+.prose .is-unnumbered > .g-h2::before {
+  content: ''; width: 0.75rem; height: 0.75rem; margin: 0.45rem 0.35rem 0 0.15rem; border-radius: 0.25rem;
+  background: var(--t-strong);
+}
+.prose .g-h2 + * { margin-top: 0.9em; }
+
+/* Option lists: "**Term:** detail" bullets become a two-column card list */
+.prose ul.term-list {
+  list-style: none; padding-left: 0;
+  display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+}
+.prose ul.term-list > li {
+  margin: 0; max-width: none;
+  display: grid; gap: 0.2rem; align-content: start;
+  padding: 0.8rem 1rem; border-radius: 1rem;
+  background: var(--surface); border: 1px solid var(--t-border);
+  font-size: 0.97rem; line-height: 1.5;
+}
+.prose .term-label { color: var(--t-ink); font-size: 0.95rem; }
+.prose .term-body { color: var(--text); }
+
+/* Short plain items as a chip row */
+.prose ul.chip-list { list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; max-width: none; }
+.prose ul.chip-list > li {
+  margin: 0; padding: 0.3rem 0.85rem; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--t-border); font-size: 0.95rem;
+}
+
+/* Numbered steps: chips joined by a vertical line */
+.prose ol.step-list { list-style: none; padding-left: 0; counter-reset: step; }
+.prose ol.step-list > li {
+  counter-increment: step; position: relative;
+  padding: 0.1rem 0 1rem 2.9rem; margin: 0;
+}
+.prose ol.step-list > li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 0;
+  display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 0.65rem;
+  background: var(--t-chip); color: var(--t-chip-ink);
+  font-family: var(--font-head); font-weight: 800; font-size: 0.9rem;
+}
+.prose ol.step-list > li:not(:last-child)::after {
+  content: ''; position: absolute; left: calc(0.95rem - 1px); top: 2.15rem; bottom: 0.2rem;
+  width: 2px; background: var(--t-border);
+}
+.prose ol.step-list > li:last-child { padding-bottom: 0; }
+
+/* Tables */
+.prose .table-wrap { overflow-x: auto; border: 1px solid var(--t-border); border-radius: 1rem; }
+.prose .table-wrap:focus-visible { outline-offset: 2px; }
+.prose .table-wrap table { margin: 0; }
+.prose .table-wrap thead th { background: var(--t-band); color: var(--heading); border-bottom: 1px solid var(--t-border); }
+.prose .table-wrap th,
+.prose .table-wrap td { padding: 0.6rem 0.9rem; border-bottom: 1px solid color-mix(in srgb, var(--t-border) 60%, transparent); }
+.prose .table-wrap tbody tr:nth-child(even) { background: color-mix(in srgb, var(--t-band) 55%, transparent); }
+.prose .table-wrap tbody tr:last-child td,
+.prose .table-wrap tbody tr:last-child th { border-bottom: 0; }
+
+/* Checklists inside articles */
+.prose ul.prose-ticks {
+  list-style: none; padding: 0.35rem 1.1rem; max-width: none;
+  background: var(--surface); border: 1px solid var(--t-border); border-radius: 1.1rem;
+}
+.prose ul.prose-ticks > li { margin: 0; max-width: none; }
+.prose ul.prose-ticks > li:last-child { border-bottom: 0; }
+
+/* "In short": lighter, so the key numbers lead */
+.article-in-short {
+  background: transparent; box-shadow: none;
+  border: 1px dashed var(--t-strong);
+  padding: 0.9rem 1.15rem;
+}
+.article-in-short .in-short-title { font-size: 0.92rem; }
+.article-in-short ul { margin-top: 0.4rem; gap: 0.3rem; font-size: 0.97rem; }
+
 /* Spot illustrations (src/components/illustrations). Colours come from the
    surrounding area tone so one drawing works in every area and in dark mode. */
 .ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--c-orange); stroke: var(--ill-line); display: block; height: auto; }
@@ -802,7 +952,7 @@ legend {
 .prose {
   max-width: var(--measure);
   font-size: 1.05rem;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 .prose > * + * {
   margin-top: 1.1em;

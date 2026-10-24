@@ -30,6 +30,19 @@ inShort:
   - "Aim to cope on your own for 3 days. You do not need to do it all at once."
   - "Water first, then food, light, a radio and a way to charge your phone."
   - "Write down key numbers and agree a simple household plan."
+keyFacts:
+  - value: "3 days"
+    label: "your first goal"
+    note: "From the UK government's Be Ready campaign"
+  - value: "3 litres"
+    label: "of drinking water per person per day"
+    note: "More for cooking and washing"
+  - value: "10 steps"
+    label: "in this guide"
+    note: "At your own pace"
+  - value: "6 months"
+    label: "to replace stored tap water"
+    note: "Label containers with the date"
 ---
 
 Being prepared is not about bunkers or fear. It is about a household that can cope calmly for a few days if something normal stops working: the power goes off, the water supply is interrupted, roads are closed by snow or flooding, or you are unwell and cannot get to the shops.
@@ -72,7 +85,9 @@ A fully charged power bank, or a car charger, means you can keep your phone work
 
 ## 7. Write down important numbers
 
-If your phone is lost, broken or flat, would you know anyone's number? Write key contacts on a card for each member of your household: family, a neighbour, school, work, your GP, your energy supplier and your insurer. Add **105**, the free number to report a power cut in England, Scotland and Wales.
+If your phone is lost, broken or flat, would you know anyone's number?
+
+Write key contacts on a card for each member of your household: family, a neighbour, school, work, your GP, your energy supplier and your insurer. Add **105**, the free number to report a power cut in England, Scotland and Wales.
 
 ## 8. Check your first aid kit and medicines
 
@@ -90,7 +105,9 @@ Our [family emergency plan guide](/guides/family-emergency-plan/) walks you thro
 
 ## 10. Know about extra support
 
-If anyone in your home is disabled, has a long-term health condition, relies on medical equipment, is of pensionable age, or has young children, you may be eligible for the [Priority Services Register](https://www.thepsr.co.uk/). It is free, and it means your energy and water companies know to give you extra help during an interruption.
+If anyone in your home is disabled, has a long-term health condition, relies on medical equipment, is of pensionable age, or has young children, you may be eligible for the [Priority Services Register](https://www.thepsr.co.uk/).
+
+It is free, and it means your energy and water companies know to give you extra help during an interruption.
 
 ## Your first-week checklist
 

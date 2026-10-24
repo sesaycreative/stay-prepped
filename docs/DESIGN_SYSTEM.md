@@ -138,3 +138,13 @@ All text pairs (body, muted, links, area ink, chip ink) were checked at 4.5:1 or
 
 ### Navigation
 Six top items: Start here, Guides (dropdown of `GUIDE_HUBS`), Free tools, Gear, Resources, About, plus a "Why prepare?" pill. Below 1080px the nav becomes a full-screen drawer. The dropdown is a disclosure button (`aria-expanded`), with Arrow keys inside, Escape to close and close on focus-out. Exact page matches get `aria-current="page"`; parent sections get `aria-current="true"`. The header shrinks after scrolling.
+
+### Guide reading experience (October 2026, round 4)
+Guides and gear guides are restructured at build time by `src/lib/rehype-stayprepped.mjs`, so Markdown stays plain:
+- **Lead:** the first paragraph gets `.lead` (larger, 60ch, area-coloured rule).
+- **Key numbers:** `keyFacts` in frontmatter (2-4 items of `value`, `label`, optional `note`) render as tiles after the lead. Only use figures already in the guide.
+- **Sections:** each `##` and its content becomes a `.g-section`; every other one gets a light area tint. Headings get a numbered chip, unless the headings carry their own conflicting numbers (e.g. "Method 1"), in which case a plain marker is used. A leading "1." or "Step 1:" is hidden visually (still read out and kept in the anchor) because the chip shows it.
+- **Lists:** bullets that all start with a bold term become a two-column `.term-list`; four or more short plain bullets become a `.chip-list`; ordered lists become a `.step-list` with numbered chips and a connector; task lists are tick lists; tables are wrapped in a scrollable `.table-wrap` with a tinted header and row banding.
+- **Navigator:** `TableOfContents.astro` shows numbered h2s, unfolds the active section's h3s, tracks scroll with an IntersectionObserver, and draws a reading-progress bar under the header. Below 1000px it is a closed "Jump to a section" disclosure.
+- **Sources:** a quiet footnote block after the related cards.
+- The plugin's source hash is passed as an option in `astro.config.mjs` so Astro's Markdown cache is cleared whenever the plugin changes.

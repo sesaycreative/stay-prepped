@@ -25,6 +25,8 @@ const guides = defineCollection({
     featured: z.boolean().default(false),
     /** "In short" box: exactly 3 bullets giving the gist of the guide. */
     inShort: z.array(z.string()).length(3).optional(),
+    /** 2-4 stat tiles under the lead. Only figures already in the guide's text. */
+    keyFacts: z.array(z.object({ value: z.string(), label: z.string(), note: z.string().optional() })).min(2).max(4).optional(),
   }),
 });
 

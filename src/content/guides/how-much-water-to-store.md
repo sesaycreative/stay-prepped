@@ -26,6 +26,19 @@ inShort:
   - "Plan 4 litres per person per day: about 3 to drink and 1 for cooking and washing."
   - "Aim for 3 days first. A household of four needs about 48 litres."
   - "Use food-grade containers, label them with the date, and replace self-filled water every 6 months."
+keyFacts:
+  - value: "4 litres"
+    label: "per person, per day"
+    note: "About 3 to drink and 1 for cooking and washing"
+  - value: "3 days"
+    label: "your first target"
+    note: "Then build up at your own pace"
+  - value: "48 litres"
+    label: "for a household of four"
+    note: "4 people × 4 litres × 3 days"
+  - value: "6 months"
+    label: "to replace tap water you stored"
+    note: "Bottled water: by the printed date"
 ---
 
 Water is the first thing to store. Mains water in the UK is very reliable, but supplies can be interrupted by burst mains, flooding, drought, freezing weather or contamination. When it happens, bottled water in the shops can sell out quickly.

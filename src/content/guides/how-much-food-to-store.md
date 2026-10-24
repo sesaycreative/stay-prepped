@@ -26,6 +26,19 @@ inShort:
   - "Start with 3 days of food that needs no fridge, freezer or mains power."
   - "Plan on about 2,000 kcal a day for adults and 1,500 kcal for children under 12."
   - "Buy what you already eat, keep a manual tin opener, and rotate it into your meals."
+keyFacts:
+  - value: "3 days"
+    label: "your first target"
+    note: "Non-perishable food, as Be Ready suggests"
+  - value: "2,000 kcal"
+    label: "per adult, per day"
+    note: "The reference intake on UK food labels"
+  - value: "1,500 kcal"
+    label: "per child under 12, per day"
+    note: "An average across ages"
+  - value: "21,000 kcal"
+    label: "2 adults and 2 children, 3 days"
+    note: "About 7,000 kcal a day"
 ---
 
 An emergency food store is simply extra food that keeps well and does not need a fridge, freezer or mains power to prepare. It helps if you cannot get to the shops because of illness, bad weather, a power cut or supply problems.

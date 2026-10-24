@@ -6,6 +6,16 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeStayPrepped from './src/lib/rehype-stayprepped.mjs';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+
+// Astro caches rendered Markdown and only clears that cache when the config
+// changes. Passing a hash of the plugin source as an option makes any plugin
+// edit change the config, so local and Vercel builds never serve stale output.
+const rehypeVersion = createHash('sha1')
+  .update(readFileSync(new URL('./src/lib/rehype-stayprepped.mjs', import.meta.url)))
+  .digest('hex')
+  .slice(0, 12);
 
 // Production domain is https://stayprepped.co.uk. SITE_URL overrides it
 // (useful for a preview deployment); otherwise the canonical domain is used.
@@ -21,7 +31,7 @@ export default defineConfig({
   }),
   trailingSlash: 'ignore',
   markdown: {
-    rehypePlugins: [rehypeStayPrepped],
+    rehypePlugins: [[rehypeStayPrepped, { version: rehypeVersion }]],
   },
   integrations: [
     react(),
