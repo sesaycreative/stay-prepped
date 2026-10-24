@@ -1,17 +1,50 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { NAV } from '../lib/site';
+import { NAV, GUIDE_HUBS, inSection } from '../lib/site';
 const path = Astro.url.pathname;
-const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const inGuides = path.startsWith('/guides/') || GUIDE_HUBS.some((h) => inSection(path, h.href, h.match));
+// Exact-match the hub link first so only one item in the dropdown is current.
+const hubCurrent = GUIDE_HUBS.find((h) => path === h.href) ?? GUIDE_HUBS.find((h) => h.href !== '/guides/' && inSection(path, h.href, h.match)) ?? (path.startsWith('/guides/') ? GUIDE_HUBS.find((h) => h.href === '/guides/') : undefined);
 ---
-<header class="site-header">
+<header class="site-header" data-header>
   <div class="wrap header-bar">
     <a href="/" class="brand" aria-label="Stay Prepped home">
       <Logo />
       <span class="brand-name">Stay Prepped</span>
     </a>
+
+    <nav id="primary-nav" class="primary-nav" aria-label="Main" data-nav>
+      <ul class="nav-list">
+        {NAV.map((item) =>
+          'group' in item ? (
+            <li class="nav-group" data-dropdown>
+              <button type="button" class={`nav-link nav-trigger ${inGuides ? 'is-current' : ''}`} aria-expanded="false" aria-controls="nav-guides" data-dropdown-trigger>
+                Guides <Icon name="chevron-down" size={18} class="nav-caret" />
+              </button>
+              <span class="nav-group-label" aria-hidden="true">Guides</span>
+              <ul id="nav-guides" class="dropdown" data-dropdown-panel aria-label="Guides">
+                {item.group.map((h) => (
+                  <li class={`tone-${h.tone}`}>
+                    <a href={h.href} class="dropdown-link" aria-current={hubCurrent?.href === h.href ? (path === h.href ? 'page' : 'true') : undefined}>
+                      <span class="chip"><Icon name={h.icon} size={20} /></span>
+                      <span>{h.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li><a href={item.href} class="nav-link" aria-current={path === item.href ? 'page' : inSection(path, item.href) ? 'true' : undefined}>{item.label}</a></li>
+          )
+        )}
+      </ul>
+    </nav>
+
     <div class="header-actions">
+      <a href="/why-prepare/" class="why-link" aria-current={path === '/why-prepare/' ? 'page' : undefined}>
+        <Icon name="landmark" size={18} /> Why prepare?
+      </a>
       <button type="button" class="icon-btn" data-search-open aria-haspopup="dialog" aria-controls="search-dialog">
         <Icon name="search" size={22} />
         <span class="icon-btn-label">Search</span>
@@ -27,13 +60,6 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
       </button>
     </div>
   </div>
-  <nav id="primary-nav" class="primary-nav" aria-label="Main">
-    <ul class="wrap nav-list">
-      {NAV.map((item) => (
-        <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
-      ))}
-    </ul>
-  </nav>
 </header>
 
 <dialog id="search-dialog" class="search-dialog" aria-labelledby="search-title">
@@ -46,20 +72,65 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
 </dialog>
 
 <script>
-  // Mobile menu
-  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const nav = document.getElementById('primary-nav');
-  toggle?.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!open));
-    nav?.classList.toggle('is-open', !open);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
-      toggle.setAttribute('aria-expanded', 'false');
-      nav?.classList.remove('is-open');
-      toggle.focus();
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const desktop = matchMedia('(min-width: 1080px)');
+
+  // Compact header after scrolling a little.
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+
+  // Guides dropdown (desktop). On mobile the list is always shown in the drawer.
+  const dd = document.querySelector<HTMLElement>('[data-dropdown]');
+  const trigger = dd?.querySelector<HTMLButtonElement>('[data-dropdown-trigger]');
+  const panel = dd?.querySelector<HTMLElement>('[data-dropdown-panel]');
+  const setDropdown = (open: boolean, focusTrigger = false) => {
+    if (!trigger || !dd) return;
+    trigger.setAttribute('aria-expanded', String(open));
+    dd.classList.toggle('is-open', open);
+    if (!open && focusTrigger) trigger.focus();
+  };
+  trigger?.addEventListener('click', () => setDropdown(trigger.getAttribute('aria-expanded') !== 'true'));
+  trigger?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setDropdown(true);
+      panel?.querySelector<HTMLAnchorElement>('a')?.focus();
     }
+  });
+  panel?.addEventListener('keydown', (e) => {
+    const links = [...panel.querySelectorAll<HTMLAnchorElement>('a')];
+    const i = links.indexOf(document.activeElement as HTMLAnchorElement);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const next = e.key === 'ArrowDown' ? (i + 1) % links.length : (i - 1 + links.length) % links.length;
+      links[next]?.focus();
+    }
+  });
+  dd?.addEventListener('focusout', (e) => {
+    if (desktop.matches && !dd.contains(e.relatedTarget as Node)) setDropdown(false);
+  });
+  document.addEventListener('click', (e) => {
+    if (dd && !dd.contains(e.target as Node)) setDropdown(false);
+  });
+
+  // Mobile drawer
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const setDrawer = (open: boolean, focusToggle = false) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    nav?.classList.toggle('is-open', open);
+    document.documentElement.classList.toggle('drawer-open', open);
+    if (open) nav?.querySelector<HTMLAnchorElement>('a')?.focus();
+    if (!open && focusToggle) toggle?.focus();
+  };
+  toggle?.addEventListener('click', () => setDrawer(toggle.getAttribute('aria-expanded') !== 'true'));
+  desktop.addEventListener('change', () => setDrawer(false));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (trigger?.getAttribute('aria-expanded') === 'true') setDropdown(false, true);
+    else if (toggle?.getAttribute('aria-expanded') === 'true') setDrawer(false, true);
   });
 
   // Theme toggle (stores preference locally; no cookie)
@@ -81,6 +152,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   let loaded = false;
   async function openSearch() {
     if (!dialog) return;
+    setDrawer(false);
     dialog.showModal();
     if (!loaded) {
       loaded = true;
@@ -117,15 +189,24 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
 </script>
 
 <style>
-  .site-header { background: var(--bg); border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 40; }
-  .header-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; }
-  .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--heading); }
-  .brand-name { font-family: var(--font-head); font-weight: 700; font-size: 1.35rem; letter-spacing: -0.01em; }
-  .header-actions { display: flex; align-items: center; gap: 0.25rem; }
+  .site-header {
+    --header-h: 4.25rem;
+    /* Solid background: a backdrop-filter here would trap the fixed drawer. */
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    position: sticky; top: 0; z-index: 40;
+  }
+  .site-header.is-scrolled { --header-h: 3.5rem; box-shadow: 0 6px 18px -14px rgb(var(--shadow-rgb) / 0.5); }
+  .header-bar { display: flex; align-items: center; gap: 1rem; min-height: var(--header-h); transition: min-height 180ms ease; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--heading); flex-shrink: 0; }
+  .brand :global(.logo-mark) { transition: width 180ms ease, height 180ms ease; }
+  .is-scrolled .brand :global(.logo-mark) { width: 28px; height: 28px; }
+  .brand-name { font-family: var(--font-head); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.01em; }
+  .header-actions { display: flex; align-items: center; gap: 0.25rem; margin-left: auto; }
   .icon-btn {
     display: inline-flex; align-items: center; gap: 0.4rem;
     min-height: 2.75rem; min-width: 2.75rem; justify-content: center;
-    padding: 0.3rem 0.6rem; border-radius: var(--radius-s);
+    padding: 0.3rem 0.6rem; border-radius: 0.8rem;
     background: transparent; color: var(--text); border: 0; cursor: pointer; font: inherit; font-weight: 700;
   }
   .icon-btn:hover { background: var(--surface-2); }
@@ -140,30 +221,77 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .menu-btn[aria-expanded='true'] .menu-open { display: none; }
   .menu-btn[aria-expanded='true'] .menu-close { display: inline-flex; }
 
-  .primary-nav { display: none; border-top: 1px solid var(--rule); }
-  .primary-nav.is-open { display: block; }
-  .nav-list { display: grid; padding-block: 0.5rem 1rem; }
-  .nav-list a {
-    display: block; padding: 0.65rem 0.2rem; color: var(--text); text-decoration: none; font-weight: 700;
-    border-bottom: 1px solid var(--rule);
+  .why-link {
+    display: none; align-items: center; gap: 0.35rem;
+    min-height: 2.5rem; padding: 0.25rem 0.8rem; margin-right: 0.25rem;
+    border-radius: 999px; font-weight: 700; font-size: 0.92rem; text-decoration: none;
+    background: var(--gov-chip); color: var(--gov-chip-ink);
   }
-  .nav-list a[aria-current='page'] { color: var(--primary); box-shadow: inset 4px 0 0 var(--primary); padding-left: 0.75rem; }
+  .why-link:hover, .why-link[aria-current='page'] { box-shadow: inset 0 0 0 2px var(--gov-strong); }
+  @media (min-width: 640px) { .why-link { display: inline-flex; } }
 
-  @media (min-width: 1100px) {
+  /* ---------- Mobile: full-screen drawer ---------- */
+  .primary-nav {
+    display: none;
+    position: fixed; inset: var(--header-h) 0 0 0; z-index: 39;
+    background: var(--bg); overflow-y: auto; overscroll-behavior: contain;
+    padding: 1rem 1rem 3rem;
+  }
+  .primary-nav.is-open { display: block; }
+  :global(html.drawer-open) { overflow: hidden; }
+  .nav-list { display: grid; gap: 0.35rem; max-width: 40rem; margin-inline: auto; }
+  .nav-link {
+    display: flex; align-items: center; min-height: 3.25rem; padding: 0.5rem 1rem;
+    border-radius: 1rem; color: var(--heading); text-decoration: none; font-weight: 700; font-size: 1.15rem;
+    background: var(--surface); border: 1px solid var(--rule);
+  }
+  .nav-link[aria-current] { border-color: var(--primary); box-shadow: inset 4px 0 0 var(--primary); }
+  .nav-trigger { display: none; }
+  .nav-group-label { display: block; margin: 0.75rem 0.25rem 0.4rem; font-weight: 700; color: var(--text-muted); }
+  .dropdown { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); margin-bottom: 0.75rem; }
+  .dropdown-link {
+    display: flex; align-items: center; gap: 0.75rem; min-height: 3.5rem; padding: 0.5rem 0.75rem;
+    border-radius: 1rem; text-decoration: none; color: var(--heading); font-weight: 700;
+    background: var(--t-surface); border: 1px solid var(--t-border);
+  }
+  .dropdown-link:hover { border-color: var(--t-strong); }
+  .dropdown-link[aria-current] { box-shadow: inset 0 0 0 2px var(--t-strong); }
+  .dropdown-link .chip { width: 2.4rem; height: 2.4rem; border-radius: 0.75rem; }
+
+  /* ---------- Desktop: inline bar with dropdown ---------- */
+  @media (min-width: 1080px) {
     .menu-btn { display: none; }
-    .primary-nav { display: block; }
-    .nav-list { display: flex; flex-wrap: wrap; gap: 0 1.35rem; padding-block: 0; }
-    .nav-list a { border: 0; padding: 0.6rem 0 0.55rem; font-size: 0.95rem; border-bottom: 3px solid transparent; }
-    .nav-list a:hover { border-bottom-color: var(--rule-strong); }
-    .nav-list a[aria-current='page'] { box-shadow: none; padding-left: 0; border-bottom-color: var(--primary); }
+    .primary-nav { display: block; position: static; padding: 0; background: none; overflow: visible; margin-left: 1rem; }
+    .nav-list { display: flex; align-items: center; gap: 0.15rem; max-width: none; margin: 0; }
+    .nav-link {
+      min-height: 2.6rem; padding: 0.3rem 0.8rem; font-size: 0.98rem; border: 0; background: none; border-radius: 0.8rem;
+      color: var(--text); cursor: pointer; font-family: inherit;
+    }
+    .nav-link:hover { background: var(--surface-2); }
+    .nav-link[aria-current], .nav-trigger.is-current { box-shadow: inset 0 -3px 0 var(--primary); color: var(--heading); border-radius: 0.8rem 0.8rem 0.3rem 0.3rem; }
+    .nav-trigger { display: inline-flex; gap: 0.25rem; }
+    .nav-trigger :global(.nav-caret) { transition: transform 180ms ease; }
+    .nav-trigger[aria-expanded='true'] :global(.nav-caret) { transform: rotate(180deg); }
+    .nav-group { position: relative; }
+    .nav-group-label { display: none; }
+    .dropdown {
+      display: none; position: absolute; top: calc(100% + 0.5rem); left: -0.5rem; width: 34rem;
+      grid-template-columns: 1fr 1fr; gap: 0.4rem; margin: 0; padding: 0.6rem;
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 1.4rem;
+      box-shadow: var(--shadow-card-hover);
+    }
+    .nav-group.is-open .dropdown { display: grid; }
+    .dropdown-link { min-height: 3.1rem; background: transparent; border-color: transparent; }
+    .dropdown-link:hover, .dropdown-link:focus-visible { background: var(--t-surface); border-color: var(--t-border); }
   }
   @media (max-width: 520px) {
     .icon-btn-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .brand-name { font-size: 1.15rem; }
   }
 
   .search-dialog {
     width: min(42rem, calc(100vw - 2rem)); max-height: min(80vh, 44rem);
-    margin: 8vh auto auto; padding: 1.25rem; border: 1px solid var(--rule); border-radius: var(--radius-m);
+    margin: 8vh auto auto; padding: 1.25rem; border: 1px solid var(--rule); border-radius: 1.4rem;
     background: var(--surface); color: var(--text);
   }
   .search-dialog::backdrop { background: rgb(26 29 31 / 0.55); }
