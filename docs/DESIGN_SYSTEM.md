@@ -16,8 +16,8 @@ Brand palette from the brief (§2):
 | `--c-charcoal` / `--text` | `#23272A` | `#ECE7DD` | Body text |
 | `--c-earth` | `#8B6B4A` | n/a | Decorative rules only (4.45:1 on the background, so not used for text) |
 | `--c-earth-text` | `#6E5236` | `#C9B99B` | Earth-tone text, such as category labels (6.5:1) |
-| `--c-sand` | `#C9B99B` | n/a | Card top rules, TOC rule, shadows, selection |
-| `--bg` | `#F7F4EE` | `#1A1D1F` | Page background |
+| `--c-sand` | `#D6D8DE` | n/a | Card top rules, TOC rule, shadows, selection |
+| `--bg` | `#FBFBFC` | `#1A1D1F` | Page background |
 | `--accent` | `#2F5D3A` | `#8FC29B` | Filled primary buttons (off-white text in light, charcoal in dark). Orange `--c-orange` is now used **only inside illustrations**. |
 
 ### Contrast (WCAG 2.2 AA, checked)
@@ -27,7 +27,7 @@ Brand palette from the brief (§2):
 | Charcoal text on background | 13.7:1 |
 | Forest on background | 7.0:1 |
 | White on forest | 7.6:1 |
-| Off-white `#F7F4EE` on forest (primary button) | 6.96:1 |
+| White `#FFFFFF` on forest (primary button) | 7.3:1 |
 | Off-white on hover `#244A2E` | 9.14:1 |
 | Muted `#5C6166` on background | 5.7:1 |
 | Earth text `#6E5236` on background | 6.5:1 |

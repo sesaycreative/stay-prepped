@@ -21,15 +21,15 @@
   --c-charcoal: #23272a;
   --c-earth: #8b6b4a; /* decorative only: 4.45:1 on bg, not for body text */
   --c-earth-text: #6e5236; /* earth tone for text: 6.5:1 */
-  --c-sand: #c9b99b;
+  --c-sand: #d6d8de;
   --c-orange: #d9742b; /* illustrations only; never an action colour */
 
   /* Semantic */
-  --bg: #f7f4ee;
-  --surface: #fffdf9;
-  --surface-2: #efe9de;
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f5f5f7;
   --text: #23272a;
-  --text-muted: #5c6166;
+  --text-muted: #5b6069;
   --heading: #23272a;
   --primary: var(--c-forest);
   --primary-ink: var(--c-forest-ink);
@@ -37,18 +37,18 @@
   /* Action colour: filled buttons. Forest green with off-white text (6.96:1). */
   --accent: #2f5d3a;
   --accent-hover: #244a2e;
-  --accent-ink: #f7f4ee;
-  --rule: #d9cfbd;
-  --rule-strong: #8b6b4a;
+  --accent-ink: #ffffff;
+  --rule: #e2e3e8;
+  --rule-strong: #858a94;
   --focus: #2f5d3a;
 
-  --info-bg: #e6eee6;
+  --info-bg: #e8f0e9;
   --info-text: #23272a;
   --info-rule: #2f5d3a;
-  --warn-bg: #fbefe4;
+  --warn-bg: #fdf1e8;
   --warn-text: #23272a;
   --warn-rule: #9a3b12;
-  --safety-bg: #fbefe4;
+  --safety-bg: #fdf1e8;
   --safety-rule: #9a3b12;
   --error: #9a3b12;
 
@@ -65,15 +65,15 @@
   /* Area tones (design pass 2). Each area gets a band, a card surface, a
      border, a stronger border for hover, an icon-chip fill and its ink, and
      a text ink. All text pairs checked at >= 4.5:1. See docs/DESIGN_SYSTEM.md. */
-  --water-band: #e4eee1; --water-surface: #eef4ec; --water-border: #c5d9c1; --water-strong: #8fb38a; --water-chip: #d2e4cd; --water-chip-ink: #2f5d3a; --water-ink: #2f5d3a;
-  --kits-band: #f1e8d6; --kits-surface: #f7f0e3; --kits-border: #e0cfae; --kits-strong: #c2a774; --kits-chip: #ead8b5; --kits-chip-ink: #5e4529; --kits-ink: #6e5236;
-  --power-band: #e6e9ec; --power-surface: #eef0f2; --power-border: #cbd2d8; --power-strong: #98a3ad; --power-chip: #343b40; --power-chip-ink: #f2b56b; --power-ink: #3d464d;
-  --home-band: #f4e4da; --home-surface: #f9ede5; --home-border: #e5c8b6; --home-strong: #c99a7e; --home-chip: #f0d4c2; --home-chip-ink: #7e3f22; --home-ink: #8a4526;
-  --health-band: #f3e3e4; --health-surface: #f8eded; --health-border: #e3c4c6; --health-strong: #c5959a; --health-chip: #efd2d4; --health-chip-ink: #8a2f3a; --health-ink: #8a2f3a;
-  --skills-band: #e1e7d8; --skills-surface: #ebefe4; --skills-border: #c2cdb2; --skills-strong: #8fa27a; --skills-chip: #4a6339; --skills-chip-ink: #ffffff; --skills-ink: #3f5a32;
-  --tools-band: #dcebdd; --tools-surface: #e8f2e9; --tools-border: #a9c7ae; --tools-strong: #5f8f69; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
-  --gov-band: #e2e9ee; --gov-surface: #ecf1f4; --gov-border: #c4d2dc; --gov-strong: #8aa2b3; --gov-chip: #d3dfe7; --gov-chip-ink: #2e4a5a; --gov-ink: #34505f;
-  --neutral-band: #efe9de; --neutral-surface: #fffdf9; --neutral-border: #e3dacb; --neutral-strong: #b9a587; --neutral-chip: #efe9de; --neutral-chip-ink: #6e5236; --neutral-ink: #6e5236;
+  --water-band: #e6f0e6; --water-surface: #f0f6f0; --water-border: #c7dbc7; --water-strong: #8fb38a; --water-chip: #d2e4cd; --water-chip-ink: #2f5d3a; --water-ink: #2f5d3a;
+  --kits-band: #f4eee2; --kits-surface: #f9f5ee; --kits-border: #e2d6c0; --kits-strong: #c2a774; --kits-chip: #ead8b5; --kits-chip-ink: #5e4529; --kits-ink: #6e5236;
+  --power-band: #e9ebef; --power-surface: #f0f2f5; --power-border: #cdd3da; --power-strong: #98a3ad; --power-chip: #343b40; --power-chip-ink: #f2b56b; --power-ink: #3d464d;
+  --home-band: #f6e8e0; --home-surface: #faf1eb; --home-border: #e6cdbd; --home-strong: #c99a7e; --home-chip: #f0d4c2; --home-chip-ink: #7e3f22; --home-ink: #8a4526;
+  --health-band: #f5e6e7; --health-surface: #f9efef; --health-border: #e4c8ca; --health-strong: #c5959a; --health-chip: #efd2d4; --health-chip-ink: #8a2f3a; --health-ink: #8a2f3a;
+  --skills-band: #e4eade; --skills-surface: #edf1e8; --skills-border: #c5cfb7; --skills-strong: #8fa27a; --skills-chip: #4a6339; --skills-chip-ink: #ffffff; --skills-ink: #3f5a32;
+  --tools-band: #e0eee2; --tools-surface: #eaf3ec; --tools-border: #adc9b2; --tools-strong: #5f8f69; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
+  --gov-band: #e6ebf0; --gov-surface: #eef2f6; --gov-border: #c6d3dd; --gov-strong: #8aa2b3; --gov-chip: #d3dfe7; --gov-chip-ink: #2e4a5a; --gov-ink: #34505f;
+  --neutral-band: #f5f5f7; --neutral-surface: #ffffff; --neutral-border: #e2e3e8; --neutral-strong: #b4b8c0; --neutral-chip: #ecedf1; --neutral-chip-ink: #3d434b; --neutral-ink: #3d434b;
   --ill-water: #b5cad7;
   --shadow-rgb: 35 39 42;
   --shadow-card: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 10px 24px -14px rgb(var(--shadow-rgb) / 0.22);
