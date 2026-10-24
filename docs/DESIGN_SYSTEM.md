@@ -197,3 +197,32 @@ Utility colours on the same system:
 `--c-earth-text` now points at the kits ink.
 
 Dark mode is unchanged. The new `food` and `docs` tones reuse the dark water and home values.
+
+### Round 7: no green box fills in light mode
+
+Amara asked for the pale green box tint (`#EDF9EF` and its family) to be removed from every box. Forest green `#2F5D3A` stays the brand and action colour (buttons, links, the wordmark, tool chips, hover rings), but no longer fills a box.
+
+- **No fills in the green range.** At these lightness and chroma values, any hue from about 95° to 200° reads as pale green or mint on the cool grey, so bands and surfaces never use that range; the generator asserts it.
+- **Food** moves from the brand green to coral (15°).
+- **Family** moves to apricot-amber (66°) so it stays at least 51° from Food in the hero grid.
+- **Survival skills** moves from moss (118°) to indigo-blue (265°), the gap between government and power.
+- **Tools** has no tint: white cards on the neutral band, with forest green only for the chip, ink, hover ring and the results panel's top rule. Each tool's illustration takes its subject's colour (food calculator coral, water calculator teal-blue, preparedness score steel blue).
+- **Info callouts and the ghost-button hover** use a cool neutral wash instead of green in light mode.
+- **Checked by scan.** A headless browser checked the computed backgrounds and SVG fills (with hover states) on all 41 built pages in light mode. None has hue 95–200° with L > 0.9.
+- **Hero neighbours** are now at least 51° apart, and the closest pair on the Why prepare grid (power and skills) is 40° apart.
+
+| Area | Hue | Band | Surface | Border | Strong | Chip | Ink | Min text contrast | Min UI contrast |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Water | 215° (teal-blue) | `#e2f4f9` | `#eff9fc` | `#acdae6` | `#1b8fa5` | `#c3e9f3` | `#015463` | 5.58:1 | 3.36:1 |
+| Food | 15° (coral / apricot-red) | `#fdebec` | `#fef4f5` | `#f0c4c6` | `#b4666d` | `#fcd7d8` | `#73333a` | 5.50:1 | 3.61:1 |
+| Emergency kits / grab bag | 85° (olive-gold) | `#f6efe1` | `#fbf7ee` | `#e0cfac` | `#9c7b31` | `#eee0c2` | `#5f4600` | 5.52:1 | 3.47:1 |
+| Power cuts | 305° (violet) | `#f3edfb` | `#f9f5fe` | `#d8c9ec` | `#8e70b0` | `#e8dbf8` | `#563c71` | 5.51:1 | 3.60:1 |
+| First aid & health | 352° (muted rose) | `#fcebf1` | `#fef4f8` | `#ecc4d4` | `#ae6686` | `#f9d6e4` | `#6e344f` | 5.51:1 | 3.63:1 |
+| Family & home (plan) | 66° (apricot-amber) | `#faeee2` | `#fdf6ef` | `#e8cbaf` | `#a97339` | `#f5dcc5` | `#6b3f02` | 5.54:1 | 3.54:1 |
+| Home & documents | 322° (plum) | `#f7ecf8` | `#fbf5fc` | `#e1c7e5` | `#9c6ba4` | `#efd9f2` | `#613867` | 5.51:1 | 3.62:1 |
+| Why prepare / government | 240° (steel blue) | `#e5f2fd` | `#f0f8ff` | `#b4d6ef` | `#4188b6` | `#c9e6fb` | `#085076` | 5.55:1 | 3.40:1 |
+| Survival skills | 265° (indigo-blue) | `#eaf0fe` | `#f3f7ff` | `#c1d1f3` | `#637fbc` | `#d4e2fe` | `#32487b` | 5.54:1 | 3.48:1 |
+| Tools (neutral fill, green accents) | — (no tint) | `#f5f5f7` | `#ffffff` | `#e2e3e8` | `#3e8651` | `#2f5d3a` | `#2f5d3a` | 5.81:1 | 4.07:1 |
+| Neutral (cool grey) | 286° (cool grey) | `#f5f5f7` | `#ffffff` | `#e2e3e8` | `#858a94` | `#e7e7ed` | `#464652` | 5.81:1 | 3.18:1 |
+
+The round 6 table above is kept for history; this table is current.

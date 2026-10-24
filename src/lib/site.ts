@@ -152,6 +152,13 @@ export type IllustrationKey =
   | 'water-storage' | 'food-cupboard' | 'grab-bag' | 'power-cut' | 'flood'
   | 'severe-weather' | 'family-plan' | 'documents' | 'home-safety' | 'preparedness-score' | 'first-aid';
 
+/** Colour family for a tool's illustration (tools themselves have neutral fills). */
+export const TOOL_ART_TONE: Record<string, Tone> = {
+  'food-storage-calculator': 'food',
+  'water-storage-calculator': 'water',
+  'preparedness-score': 'gov',
+};
+
 /** Is `path` inside `href` (or one of its extra match prefixes)? */
 export function inSection(path: string, href: string, match: string[] = []): boolean {
   if (href === '/') return path === '/';

@@ -11,7 +11,7 @@ import WaterStorageCalculator from '../../components/tools/WaterStorageCalculato
 import PreparednessScore from '../../components/tools/PreparednessScore';
 import { faqLd } from '../../lib/seo';
 import Illustration from '../../components/illustrations/Illustration.astro';
-import { SLUG_ILLUSTRATION, TOOL_CATEGORIES } from '../../lib/site';
+import { SLUG_ILLUSTRATION, TOOL_ART_TONE, TOOL_CATEGORIES } from '../../lib/site';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools', (t) => t.data.status === 'live');
@@ -49,7 +49,7 @@ const art = SLUG_ILLUSTRATION[t.slug];
         <p class="lede measure">{t.summary}</p>
         {t.reviewedAt && <LastReviewed date={t.reviewedAt} />}
       </div>
-      {art && <div class="tool-art"><Illustration name={art} width={190} /></div>}
+      {art && <div class={`tool-art tone-${TOOL_ART_TONE[t.slug] ?? "neutral"}`}><Illustration name={art} width={190} /></div>}
     </header>
   </div>
   <div class="wrap">

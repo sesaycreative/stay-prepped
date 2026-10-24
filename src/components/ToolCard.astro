@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import Icon from './Icon.astro';
 import ComingSoonBadge from './ComingSoonBadge.astro';
 import Illustration from './illustrations/Illustration.astro';
-import { SLUG_ILLUSTRATION, TOOL_CATEGORY_TONE } from '../lib/site';
+import { SLUG_ILLUSTRATION, TOOL_ART_TONE, TOOL_CATEGORY_TONE } from '../lib/site';
 interface Props { tool: CollectionEntry<'tools'>; headingLevel?: 'h2' | 'h3' | 'h4'; art?: boolean }
 const { tool, headingLevel = 'h3', art = false } = Astro.props;
 const t = tool.data;
@@ -14,7 +14,7 @@ const tone = live ? 'tools' : TOOL_CATEGORY_TONE[t.category];
 ---
 {live ? (
   <article class={`card is-link tool-card tone-${tone}`}>
-    {ill ? <span class="card-art"><Illustration name={ill} width={144} /></span> : <span class="chip chip-lg"><Icon name={t.icon} size={28} /></span>}
+    {ill ? <span class={`card-art tone-${TOOL_ART_TONE[t.slug] ?? "neutral"}`}><Illustration name={ill} width={144} /></span> : <span class="chip chip-lg"><Icon name={t.icon} size={28} /></span>}
     <H class="card-title"><a href={`/tools/${t.slug}/`} class="stretched">{t.title}</a></H>
     <p class="card-text">{t.cardSummary ?? t.summary}</p>
     <span class="card-cta" aria-hidden="true">Open the tool <Icon name="arrow-right" size={18} /></span>

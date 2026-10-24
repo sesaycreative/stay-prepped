@@ -13,27 +13,33 @@ ROLE = {               #  L      C
   'chip':    (0.910, 0.042),
   'ink':     (0.410, 0.090),
 }
-# Tools: the green family one step stronger.
-TOOLS = {'band':(0.945,0.030),'surface':(0.970,0.018),'border':(0.820,0.070),'strong':(0.560,0.110),'ink':(0.420,0.090)}
+# Round 7: no green or mint box fills in light mode. Hues 95-200 read as pale
+# green on the cool grey at this chroma, so no band/surface uses them.
+# Forest green stays the brand/action colour (buttons, links, chips, rings).
+GREEN_FILL_RANGE = (95, 200)
+# Tools: no tint. Neutral fills; forest green only for chip, ink and ring.
+TOOLS_NEUTRAL = True
 HUES = {  # OKLCH hue (degrees)
-  'water': 215, 'food': 148, 'kits': 85, 'power': 300, 'home': 50,
-  'docs': 322, 'health': 352, 'skills': 118, 'gov': 240, 'tools': 148,
+  'water': 215, 'food': 15, 'kits': 85, 'power': 305, 'home': 66,
+  'docs': 322, 'health': 352, 'skills': 265, 'gov': 240,
 }
 NEUTRAL_H = 286
 out = {}
 for area, h in HUES.items():
-    roles = dict(ROLE); 
-    if area == 'tools': roles.update(TOOLS)
+    assert not (GREEN_FILL_RANGE[0] <= h <= GREEN_FILL_RANGE[1]), f'{area} hue {h} is in the green fill range'
     vals = {}
-    for role,(L,C) in roles.items():
+    for role,(L,C) in ROLE.items():
         hexv, c_used = oklch_to_hex(L, C, h)
         vals[role] = (hexv, L, round(c_used,3), h)
-    if area == 'tools':
-        vals['chip'] = ('#2f5d3a',)+hex_to_oklch('#2f5d3a')
-        vals['chip-ink'] = ('#ffffff',1,0,0)
-    else:
-        vals['chip-ink'] = vals['ink']
+    vals['chip-ink'] = vals['ink']
     out[area] = vals
+# Tools: neutral fills, green accents.
+fh = 150
+out['tools'] = {
+  'band': ('#f5f5f7',)+hex_to_oklch('#f5f5f7'), 'surface': ('#ffffff',1,0,0), 'border': ('#e2e3e8',)+hex_to_oklch('#e2e3e8'),
+  'strong': (oklch_to_hex(0.560,0.110,fh)[0],0.560,0.11,fh), 'chip': ('#2f5d3a',)+hex_to_oklch('#2f5d3a'),
+  'chip-ink': ('#ffffff',1,0,0), 'ink': ('#2f5d3a',)+hex_to_oklch('#2f5d3a'),
+}
 # Neutral tone on the same system (cool grey, near-zero chroma)
 out['neutral'] = {
   'band': ('#f5f5f7',)+hex_to_oklch('#f5f5f7'), 'surface': ('#ffffff',1,0,0), 'border': ('#e2e3e8',)+hex_to_oklch('#e2e3e8'),
@@ -44,7 +50,7 @@ for role,(L,C) in [('chip',(0.930,0.008)),('ink',(0.400,0.020))]:
 out['neutral']['chip-ink']=out['neutral']['ink']
 # Utility tints on the same system
 util = {}
-for name,(L,C,h) in {'sand':(0.890,0.012,NEUTRAL_H),'info-bg':(0.950,0.024,150),'warn-bg':(0.950,0.024,50),'ill-water':(0.830,0.045,220)}.items():
+for name,(L,C,h) in {'sand':(0.890,0.012,NEUTRAL_H),'info-bg':(0.955,0.012,250),'warn-bg':(0.950,0.024,50),'ill-water':(0.830,0.045,220)}.items():
     util[name]=oklch_to_hex(L,C,h)[0]
 json.dump({'areas':out,'util':util}, sys.stdout if False else open(os.devnull,'w'))
 
@@ -71,6 +77,20 @@ for a,v,mt,mu,bs,dn in rows:
 print('util', util)
 # neighbours in hero grid and topic grid
 hero=[['water','food','kits','power'],['health','home','docs','gov']]
+def hd(a,b): d=abs(HUES[a]-HUES[b])%360; return min(d,360-d)
+hp=[]
+for r in hero:
+    for i in range(3): hp.append((r[i],r[i+1]))
+for i in range(4): hp.append((hero[0][i],hero[1][i]))
+why=[['power','water','home'],['skills','kits','gov']]
+wp=[]
+for r in why:
+    for i in range(2): wp.append((r[i],r[i+1]))
+for i in range(3): wp.append((why[0][i],why[1][i]))
+print('hero neighbour hue gaps:', ', '.join(f'{a}-{b} {hd(a,b)}°' for a,b in hp))
+print('why-prepare grid gaps:  ', ', '.join(f'{a}-{b} {hd(a,b)}°' for a,b in wp))
+bad=[(a,b,hd(a,b)) for a,b in hp+wp if hd(a,b)<37]
+print('NEIGHBOURS < 37°:', bad or 'none')
 pairs=set()
 for r in hero:
     for i in range(3): pairs.add((r[i],r[i+1]))

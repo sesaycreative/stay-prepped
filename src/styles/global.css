@@ -25,6 +25,7 @@
   --c-orange: #d9742b; /* illustrations only; never an action colour */
   /* Light-mode neutrals for small UI bits; dark mode keeps the sand values. */
   --badge-ink: #3d434b;
+  --btn-ghost-hover: #ecedf1;
   --list-marker: #858a94;
   --soon-border: #b4b8c0;
 
@@ -46,7 +47,7 @@
   --rule-strong: #858a94;
   --focus: #2f5d3a;
 
-  --info-bg: #e4f3e6;
+  --info-bg: #eaf1f8;
   --info-text: #23272a;
   --info-rule: #2f5d3a;
   --warn-bg: #fdeae1;
@@ -70,14 +71,14 @@
      border, a stronger border for hover, an icon-chip fill and its ink, and
      a text ink. All text pairs checked at >= 4.5:1. See docs/DESIGN_SYSTEM.md. */
   --water-band: #e2f4f9; --water-surface: #eff9fc; --water-border: #acdae6; --water-strong: #1b8fa5; --water-chip: #c3e9f3; --water-chip-ink: #015463; --water-ink: #015463;
-  --food-band: #e8f4e9; --food-surface: #f2f9f3; --food-border: #bcdbbf; --food-strong: #54915d; --food-chip: #cfead2; --food-chip-ink: #22572d; --food-ink: #22572d;
+  --food-band: #fdebec; --food-surface: #fef4f5; --food-border: #f0c4c6; --food-strong: #b4666d; --food-chip: #fcd7d8; --food-chip-ink: #73333a; --food-ink: #73333a;
   --kits-band: #f6efe1; --kits-surface: #fbf7ee; --kits-border: #e0cfac; --kits-strong: #9c7b31; --kits-chip: #eee0c2; --kits-chip-ink: #5f4600; --kits-ink: #5f4600;
-  --power-band: #f2edfc; --power-surface: #f8f5fe; --power-border: #d6caee; --power-strong: #8972b3; --power-chip: #e5dcfa; --power-chip-ink: #523e74; --power-ink: #523e74;
-  --home-band: #fcede5; --home-surface: #fef5f0; --home-border: #edc8b4; --home-strong: #b06d47; --home-chip: #fadac9; --home-chip-ink: #703a17; --home-ink: #703a17;
+  --power-band: #f3edfb; --power-surface: #f9f5fe; --power-border: #d8c9ec; --power-strong: #8e70b0; --power-chip: #e8dbf8; --power-chip-ink: #563c71; --power-ink: #563c71;
+  --home-band: #faeee2; --home-surface: #fdf6ef; --home-border: #e8cbaf; --home-strong: #a97339; --home-chip: #f5dcc5; --home-chip-ink: #6b3f02; --home-ink: #6b3f02;
   --docs-band: #f7ecf8; --docs-surface: #fbf5fc; --docs-border: #e1c7e5; --docs-strong: #9c6ba4; --docs-chip: #efd9f2; --docs-chip-ink: #613867; --docs-ink: #613867;
   --health-band: #fcebf1; --health-surface: #fef4f8; --health-border: #ecc4d4; --health-strong: #ae6686; --health-chip: #f9d6e4; --health-chip-ink: #6e344f; --health-ink: #6e344f;
-  --skills-band: #eff2e3; --skills-surface: #f6f8ef; --skills-border: #ced6b1; --skills-strong: #7b883e; --skills-chip: #dee6c7; --skills-chip-ink: #46500a; --skills-ink: #46500a;
-  --tools-band: #e0f3e2; --tools-surface: #edf9ee; --tools-border: #a6d1ab; --tools-strong: #42864e; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #255a2f;
+  --skills-band: #eaf0fe; --skills-surface: #f3f7ff; --skills-border: #c1d1f3; --skills-strong: #637fbc; --skills-chip: #d4e2fe; --skills-chip-ink: #32487b; --skills-ink: #32487b;
+  --tools-band: #f5f5f7; --tools-surface: #ffffff; --tools-border: #e2e3e8; --tools-strong: #3e8651; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
   --gov-band: #e5f2fd; --gov-surface: #f0f8ff; --gov-border: #b4d6ef; --gov-strong: #4188b6; --gov-chip: #c9e6fb; --gov-chip-ink: #085076; --gov-ink: #085076;
   --neutral-band: #f5f5f7; --neutral-surface: #ffffff; --neutral-border: #e2e3e8; --neutral-strong: #858a94; --neutral-chip: #e7e7ed; --neutral-chip-ink: #464652; --neutral-ink: #464652;
   --ill-water: #a8cfdc;
@@ -118,6 +119,8 @@
     --error: #f2b48a;
     --c-earth-text: #c9b99b;
     --badge-ink: #c9b99b;
+  --btn-ghost-hover: color-mix(in srgb, var(--accent) 12%, transparent);
+    --btn-ghost-hover: color-mix(in srgb, var(--accent) 12%, transparent);
     --list-marker: #c9b99b;
     --soon-border: #c9b99b;
     --shadow-panel: 0 1px 0 var(--rule);
@@ -169,6 +172,7 @@
   --error: #f2b48a;
   --c-earth-text: #c9b99b;
   --badge-ink: #c9b99b;
+  --btn-ghost-hover: color-mix(in srgb, var(--accent) 12%, transparent);
   --list-marker: #c9b99b;
   --soon-border: #c9b99b;
   --shadow-panel: 0 1px 0 var(--rule);
@@ -369,7 +373,8 @@ a:hover {
 }
 .btn-secondary:hover,
 .btn-ghost:hover {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  /* Light: neutral wash (no green fills). Dark keeps the green wash. */
+  background: var(--btn-ghost-hover);
 }
 .btn-sm {
   min-height: 2.25rem;
