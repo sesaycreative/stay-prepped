@@ -100,7 +100,7 @@ Follows the system setting by default. The header toggle stores an override in `
 ## Accessibility checklist
 
 - Skip link, landmarks (`header`, `nav`, `main`, `footer`), one `h1` per page.
-- Visible focus: a 3px orange outline.
+- Visible focus: a 3px green outline (offset 2px).
 - Every input has a visible `<label>`. Errors are linked with `aria-describedby` and `aria-invalid`.
 - Results announce through `aria-live`.
 - The score stepper moves focus to the new step heading, and uses `aria-current="step"`.
