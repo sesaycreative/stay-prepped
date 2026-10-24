@@ -104,6 +104,7 @@ const carKit = ['A torch', 'An in-car phone charger', 'Warm clothes and blankets
             </li>
           ))}
         </ul>
+        <p class="mt-6"><a href="/local-risk/" class="btn btn-secondary"><Icon name="map-pin" size={18} /> Check the risks for your postcode</a></p>
         <details class="disclosure mt-6">
           <summary><Icon name="list-checks" size={20} /> Other steps the government recommends</summary>
           <div class="disclosure-body">
@@ -143,6 +144,11 @@ const carKit = ['A torch', 'An in-car phone charger', 'Warm clothes and blankets
     </section>
   </div>
 </BaseLayout>
+<script>
+  import { progress } from '../lib/progress';
+  progress().markSeen('why-prepare');
+</script>
+
 <style>
   .why-meta { display: inline-flex; gap: 0.4rem; align-items: center; margin-top: 0.9rem !important; font-size: 0.9rem !important; }
   .risk-card .card-art { margin-bottom: 0.1rem; }

@@ -1,0 +1,177 @@
+---
+// Local risk by postcode. The postcode never leaves the browser: the form is
+// handled by a script, has no action, and only the outward code ("SM6") is
+// kept in the progress store. Every link was checked; none is pre-filled.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import { CARDS, FLOOD_RISK } from '../data/local-links';
+import { LOCAL_RISK_ITEMS, LOCAL_RISK_LIST } from '../lib/progress';
+import { domId, itemIds } from '../lib/checklist-ids.mjs';
+const ids = itemIds(LOCAL_RISK_ITEMS);
+---
+<BaseLayout
+  title="Local risk: check your area"
+  description="Use your postcode to find your flood risk, flood warnings, electricity network operator, water company, council and weather warnings. Your postcode stays in your browser."
+  breadcrumbs={[{ label: 'Guides', href: '/guides/' }, { label: 'Local risk' }]}
+>
+  <div class="tone-gov">
+    <div class="wrap">
+      <header class="page-head page-head-tone">
+        <div>
+          <h1>Check the risks where you live</h1>
+          <p>Enter your postcode to get the right official checks for your area in one place.</p>
+        </div>
+        <div class="page-head-art"><Illustration name="flood" width={180} /></div>
+      </header>
+
+      <form class="lr-form card" data-lr-form novalidate autocomplete="off">
+        <label for="lr-postcode" class="field-label">Your postcode</label>
+        <p id="lr-help" class="field-help">For example SM6 9ES, or just the first part (SM6).</p>
+        <div class="lr-row">
+          <input id="lr-postcode" class="input lr-input" name="postcode" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="10" aria-describedby="lr-help lr-private lr-error" />
+          <button type="submit" class="btn btn-primary">Show my checks</button>
+        </div>
+        <p id="lr-error" class="field-error" role="alert" data-lr-error></p>
+        <p id="lr-private" class="lr-private"><Icon name="shield-check" size={18} /> Your postcode stays in this browser. It is not sent to us or to any of the sites below. We only remember the first part (like SM6).</p>
+        <noscript><p class="mt-2">This page needs JavaScript to show your checks. All the links are also listed below.</p></noscript>
+      </form>
+    </div>
+
+    <section class="band mt-10" aria-labelledby="lr-results-title" data-lr-results>
+      <div class="wrap">
+        <div class="band-head">
+          <div>
+            <h2 id="lr-results-title" tabindex="-1" data-lr-title>Official checks for your area</h2>
+            <p data-lr-sub>Each link opens the official site in a new tab. Paste your postcode there.</p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-lr-copy hidden><Icon name="copy" size={18} /> <span data-lr-copy-label>Copy postcode</span></button>
+        </div>
+
+        <ul class="card-grid card-grid-wide">
+          <li class="card tone-water lr-card" data-lr-flood>
+            <span class="chip"><Icon name="map-pin" size={22} /></span>
+            <h3 class="card-title">Long-term flood risk</h3>
+            <p class="card-text">Whether your area is at risk from rivers, the sea, surface water or reservoirs, and how likely it is.</p>
+            <ul class="lr-links" data-lr-flood-links>
+              {(['england', 'scotland', 'wales', 'ni'] as const).map((n) => (
+                <li data-nation={n}><a href={FLOOD_RISK[n].url} target="_blank" rel="noopener">{FLOOD_RISK[n].label}<Icon name="external-link" size={16} /><span class="sr-only"> (opens in a new tab)</span></a></li>
+              ))}
+            </ul>
+          </li>
+          {CARDS.map((c) => (
+            <li class={`card tone-${c.tone} lr-card`}>
+              <span class="chip"><Icon name={c.icon} size={22} /></span>
+              <h3 class="card-title">{c.heading}</h3>
+              <p class="card-text">{c.tells}</p>
+              <ul class="lr-links">
+                {c.links.map((l) => (
+                  <li><a href={l.url} target="_blank" rel="noopener">{l.label}<Icon name="external-link" size={16} /><span class="sr-only"> (opens in a new tab)</span></a></li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band-plain" aria-labelledby="lr-check-title">
+      <div class="wrap lr-check">
+        <h2 id="lr-check-title">Your local checks</h2>
+        <p class="muted mt-1">Tick these off as you go. Checking your flood risk, plus reading <a href="/why-prepare/">Why prepare?</a>, marks the severe weather area as ready.</p>
+        <div class="checklist-bar mt-4" data-checklist-bar={LOCAL_RISK_LIST}>
+          <span class="checklist-count" data-checklist-count={LOCAL_RISK_LIST} aria-live="polite">{LOCAL_RISK_ITEMS.length} items</span>
+          <button type="button" class="checklist-reset" data-checklist-reset={LOCAL_RISK_LIST} hidden>Reset this list</button>
+        </div>
+        <ul class="tick-list lr-ticks card" data-checklist={LOCAL_RISK_LIST} data-checklist-total={String(LOCAL_RISK_ITEMS.length)} data-checklist-title="Your local checks" data-checklist-href="/local-risk/" data-checklist-area="weather">
+          {LOCAL_RISK_ITEMS.map((item, i) => (
+            <li class="check-row" data-item={ids[i]}>
+              <input class="check-box" type="checkbox" id={domId(LOCAL_RISK_LIST, ids[i])} data-item={ids[i]} disabled />
+              <label class="check-label" for={domId(LOCAL_RISK_LIST, ids[i])}>{item}</label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { nationHint, parsePostcode, progress } from '../lib/progress';
+  const store = progress();
+  const form = document.querySelector<HTMLFormElement>('[data-lr-form]')!;
+  const input = form.querySelector<HTMLInputElement>('#lr-postcode')!;
+  const error = form.querySelector<HTMLElement>('[data-lr-error]')!;
+  const title = document.querySelector<HTMLElement>('[data-lr-title]')!;
+  const sub = document.querySelector<HTMLElement>('[data-lr-sub]')!;
+  const copy = document.querySelector<HTMLButtonElement>('[data-lr-copy]')!;
+  const copyLabel = document.querySelector<HTMLElement>('[data-lr-copy-label]')!;
+  const floodList = document.querySelector<HTMLElement>('[data-lr-flood-links]')!;
+  let current = '';
+
+  function showFor(outward: string, normalised: string, focus: boolean) {
+    current = normalised;
+    title.textContent = `Your area: ${outward}`;
+    sub.textContent = 'Each link opens the official site in a new tab. Copy your postcode and paste it there.';
+    copy.hidden = false;
+    copyLabel.textContent = 'Copy postcode';
+    // Put the right flood-risk service first. Only Northern Ireland (BT) is
+    // certain from the postcode; otherwise England first, the others beneath.
+    const order = nationHint(outward) === 'ni' ? ['ni', 'england', 'scotland', 'wales'] : ['england', 'scotland', 'wales', 'ni'];
+    for (const n of order) {
+      const li = floodList.querySelector(`[data-nation="${n}"]`);
+      if (li) floodList.append(li);
+    }
+    if (focus) title.focus();
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const r = parsePostcode(input.value);
+    if (!r.ok) {
+      error.textContent = 'Enter a UK postcode, like SM6 9ES, or just the first part, like SM6.';
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+    error.textContent = '';
+    input.removeAttribute('aria-invalid');
+    input.value = r.normalised!;
+    store.setOutward(r.outward);
+    showFor(r.outward!, r.normalised!, true);
+  });
+
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(current || input.value);
+      copyLabel.textContent = 'Copied';
+    } catch {
+      input.select();
+      copyLabel.textContent = 'Press Ctrl+C to copy';
+    }
+  });
+
+  const saved = store.get().localRisk.outward;
+  if (saved) {
+    input.value = saved;
+    showFor(saved, saved, false);
+  }
+</script>
+
+<style>
+  .lr-form { max-width: 44rem; height: auto; gap: 0.35rem; }
+  .lr-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.3rem; }
+  .lr-input { max-width: 14rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+  .lr-private { display: flex; gap: 0.45rem; align-items: flex-start; margin-top: 0.4rem; font-size: 0.92rem; color: var(--text-muted); }
+  .lr-private :global(.icon) { margin-top: 0.15rem; color: var(--t-ink); flex-shrink: 0; }
+  .lr-card { height: auto; }
+  .lr-links { display: grid; gap: 0.35rem; margin-top: auto; padding-top: 0.5rem; }
+  .lr-links a { display: inline; font-weight: 700; color: var(--link); line-height: 1.5; }
+  .lr-links li { padding-block: 0.15rem; }
+  .lr-links a :global(.icon) { display: inline; vertical-align: -0.15em; margin-left: 0.3rem; }
+  .lr-check { max-width: 44rem; }
+  .lr-ticks { height: auto; padding: 0.5rem 1.1rem; }
+  .lr-ticks > li { border-bottom: 1px dashed var(--t-border); padding: 0.55rem 0; }
+  .lr-ticks > li:last-child { border-bottom: 0; }
+  [data-lr-title]:focus { outline: none; }
+</style>

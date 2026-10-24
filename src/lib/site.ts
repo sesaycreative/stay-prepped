@@ -35,6 +35,7 @@ export const GUIDE_HUBS: NavGroupItem[] = [
   { label: 'Family & Home', href: '/family-home/', icon: 'house-heart', tone: 'home', match: ['/guides/category/family/', '/guides/category/home/'] },
   { label: 'Survival Skills', href: '/survival-skills/', icon: 'flame', tone: 'skills', match: ['/guides/category/survival-skills/'] },
   { label: 'Why prepare?', href: '/why-prepare/', icon: 'landmark', tone: 'gov' },
+  { label: 'Local risk', href: '/local-risk/', icon: 'map-pin', tone: 'gov' },
   { label: 'All guides', href: '/guides/', icon: 'library-big', tone: 'neutral' },
 ];
 
@@ -51,6 +52,8 @@ export const NAV: (NavItem | { label: 'Guides'; group: NavGroupItem[] })[] = [
 export const FOOTER_EXPLORE: NavItem[] = [
   { label: 'Start here', href: '/start/' },
   { label: 'Why prepare?', href: '/why-prepare/' },
+  { label: 'Local risk', href: '/local-risk/' },
+  { label: 'My progress', href: '/my-progress/' },
   { label: 'All guides', href: '/guides/' },
   { label: 'Food & Water', href: '/food-water/' },
   { label: 'Emergency Kits', href: '/emergency-kits/' },
@@ -157,6 +160,15 @@ export const TOOL_ART_TONE: Record<string, Tone> = {
   'food-storage-calculator': 'food',
   'water-storage-calculator': 'water',
   'preparedness-score': 'gov',
+};
+
+/** Checklist id prefixes that count towards each hub's "N of M" chip. */
+export const HUB_PROGRESS: Record<string, string> = {
+  '/food-water/': 'guide/how-much-water-to-store/ guide/how-much-food-to-store/ guide/emergency-water-purification/ tool/food-storage-calculator/',
+  '/emergency-kits/': 'guide/72-hour-emergency-bag/ resource/grab-bag/ resource/home-emergency-supplies/',
+  '/guides/category/power-outages/': 'guide/preparing-for-a-power-cut/ resource/power-cut/',
+  '/family-home/': 'guide/family-emergency-plan/ guide/essential-documents/ resource/essential-documents/',
+  '/survival-skills/': 'guide/emergency-water-purification/',
 };
 
 /** Is `path` inside `href` (or one of its extra match prefixes)? */
