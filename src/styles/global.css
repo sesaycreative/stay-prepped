@@ -23,6 +23,10 @@
   --c-earth-text: #6e5236; /* earth tone for text: 6.5:1 */
   --c-sand: #d6d8de;
   --c-orange: #d9742b; /* illustrations only; never an action colour */
+  /* Light-mode neutrals for small UI bits; dark mode keeps the sand values. */
+  --badge-ink: #3d434b;
+  --list-marker: #858a94;
+  --soon-border: #b4b8c0;
 
   /* Semantic */
   --bg: #fbfbfc;
@@ -111,6 +115,9 @@
     --safety-rule: #e89456;
     --error: #f2b48a;
     --c-earth-text: #c9b99b;
+    --badge-ink: #c9b99b;
+    --list-marker: #c9b99b;
+    --soon-border: #c9b99b;
     --shadow-panel: 0 1px 0 var(--rule);
 
     --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
@@ -157,6 +164,9 @@
   --safety-rule: #e89456;
   --error: #f2b48a;
   --c-earth-text: #c9b99b;
+  --badge-ink: #c9b99b;
+  --list-marker: #c9b99b;
+  --soon-border: #c9b99b;
   --shadow-panel: 0 1px 0 var(--rule);
 
   --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
@@ -415,8 +425,8 @@ a:hover {
   font-weight: 700;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid var(--rule-strong);
-  color: var(--c-earth-text);
+  border: 1px solid var(--soon-border);
+  color: var(--badge-ink);
   background: var(--surface);
   white-space: nowrap;
 }
@@ -701,7 +711,7 @@ legend {
 .card-art .ill { width: 100%; max-width: 7.5rem; height: auto; }
 @media (min-width: 640px) { .card-art .ill { max-width: 9.5rem; } }
 .page-head-art .ill, .ill { max-width: 100%; }
-.card-soon { background: transparent; border-style: dashed; border-color: var(--rule-strong); box-shadow: none; }
+.card-soon { background: transparent; border-style: dashed; border-color: var(--soon-border); box-shadow: none; }
 .stretched::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
 .stretched:focus-visible { outline: none; }
 
@@ -988,7 +998,7 @@ legend {
   margin-top: 0.35em;
 }
 .prose li::marker {
-  color: var(--c-earth-text);
+  color: var(--list-marker);
 }
 .prose strong {
   font-weight: 700;
