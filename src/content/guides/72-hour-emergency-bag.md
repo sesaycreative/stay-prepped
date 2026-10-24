@@ -19,6 +19,10 @@ sources:
   - title: Prepare for flooding
     url: https://www.gov.uk/prepare-for-flooding
     publisher: GOV.UK
+inShort:
+  - "Pack one rucksack per adult, light enough to carry for a long walk (well under 10 kg)."
+  - "Cover water, food, light, first aid, warmth, copies of documents and some cash."
+  - "Keep it by the door and check it every 6 months. Never delay leaving to fetch it."
 ---
 
 A 72-hour emergency bag, often called a grab bag or go bag, holds what you would need if you had to leave home quickly and could not come back for a few days. It might be a flood warning, a gas leak, a fire nearby or being told to evacuate.

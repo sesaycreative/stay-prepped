@@ -23,6 +23,8 @@ const guides = defineCollection({
     /** Guide slugs. */
     relatedGuides: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
+    /** "In short" box: exactly 3 bullets giving the gist of the guide. */
+    inShort: z.array(z.string()).length(3).optional(),
   }),
 });
 

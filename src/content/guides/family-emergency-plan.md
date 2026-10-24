@@ -24,6 +24,10 @@ sources:
   - title: About Emergency Alerts
     url: https://www.gov.uk/alerts
     publisher: GOV.UK
+inShort:
+  - "Agree an out-of-area contact and two meeting places, one near home and one further away."
+  - "Decide who collects whom, who checks on others, and who takes the grab bag and pets."
+  - "Put it on one page, give everyone a copy, and practise it now and then."
 ---
 
 In an emergency, people do not always think clearly, and phones may not work. A family emergency plan means everyone already knows what to do, where to go and who to contact. It takes about an hour to make and can save a lot of worry.

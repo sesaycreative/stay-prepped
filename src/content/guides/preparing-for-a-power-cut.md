@@ -25,6 +25,10 @@ sources:
   - title: UK weather warnings
     url: https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings
     publisher: Met Office
+inShort:
+  - "Keep torches, spare batteries, a radio and a charged power bank where everyone can find them."
+  - "Save 105 in your phone and on paper to report a cut or get updates."
+  - "Never use a barbecue, camping stove or outdoor heater indoors."
 ---
 
 Most power cuts in the UK are short and fixed within hours. But storms, flooding and faults can sometimes leave homes without electricity for longer, especially in winter and in rural areas. A little preparation makes a power cut much easier to cope with.

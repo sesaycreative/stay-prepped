@@ -22,6 +22,10 @@ sources:
   - title: Priority Services Register
     url: https://www.thepsr.co.uk/
     publisher: The PSR
+inShort:
+  - "Plan 4 litres per person per day: about 3 to drink and 1 for cooking and washing."
+  - "Aim for 3 days first. A household of four needs about 48 litres."
+  - "Use food-grade containers, label them with the date, and replace self-filled water every 6 months."
 ---
 
 Water is the first thing to store. Mains water in the UK is very reliable, but supplies can be interrupted by burst mains, flooding, drought, freezing weather or contamination. When it happens, bottled water in the shops can sell out quickly.

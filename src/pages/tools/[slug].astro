@@ -10,7 +10,8 @@ import FoodStorageCalculator from '../../components/tools/FoodStorageCalculator'
 import WaterStorageCalculator from '../../components/tools/WaterStorageCalculator';
 import PreparednessScore from '../../components/tools/PreparednessScore';
 import { faqLd } from '../../lib/seo';
-import { TOOL_CATEGORIES } from '../../lib/site';
+import Illustration from '../../components/illustrations/Illustration.astro';
+import { SLUG_ILLUSTRATION, TOOL_CATEGORIES } from '../../lib/site';
 
 export async function getStaticPaths() {
   const tools = await getCollection('tools', (t) => t.data.status === 'live');
@@ -31,6 +32,7 @@ if (related.length !== t.relatedGuides.length) {
 }
 const otherTools = (await getCollection('tools', (x) => x.data.status === 'live' && x.data.slug !== t.slug)).sort((a, b) => a.data.order - b.data.order);
 const jsonLd = t.faq.length ? [faqLd(t.faq)] : [];
+const art = SLUG_ILLUSTRATION[t.slug];
 ---
 <BaseLayout
   title={t.seoTitle ?? t.title}
@@ -38,21 +40,26 @@ const jsonLd = t.faq.length ? [faqLd(t.faq)] : [];
   breadcrumbs={[{ label: 'Free Tools', href: '/tools/' }, { label: t.title }]}
   jsonLd={jsonLd}
 >
-  <div class="wrap">
-    <header class="tool-head">
-      <p class="tool-cat"><Icon name={t.icon} size={20} /> {TOOL_CATEGORIES[t.category].label} · Free tool</p>
-      <h1>{t.title}</h1>
-      <p class="lede measure">{t.summary}</p>
-      {t.reviewedAt && <LastReviewed date={t.reviewedAt} />}
+  <div class="tone-tools">
+  <div class="tool-band">
+    <header class="wrap tool-head">
+      <div class="tool-head-copy">
+        <p class="card-label"><Icon name={t.icon} size={18} /> {TOOL_CATEGORIES[t.category].label} · Free tool</p>
+        <h1>{t.title}</h1>
+        <p class="lede measure">{t.summary}</p>
+        {t.reviewedAt && <LastReviewed date={t.reviewedAt} />}
+      </div>
+      {art && <div class="tool-art"><Illustration name={art} width={190} /></div>}
     </header>
-
+  </div>
+  <div class="wrap">
     {t.instructions.length > 0 && (
-      <section class="no-print how-to" aria-labelledby="how-to-title">
-        <h2 id="how-to-title" class="text-lg" style="font-family: var(--font-body)">How to use it</h2>
-        <ol>
+      <details class="disclosure no-print how-to">
+        <summary><Icon name="list-todo" size={20} /> How to use it ({t.instructions.length} steps)</summary>
+        <ol class="disclosure-body">
           {t.instructions.map((s) => <li>{s}</li>)}
         </ol>
-      </section>
+      </details>
     )}
 
     <div class="tool-island" data-tool={t.slug}>
@@ -67,51 +74,72 @@ const jsonLd = t.faq.length ? [faqLd(t.faq)] : [];
     </div>
 
     <div class="tool-body">
-      <div class="prose">
-        {t.safetyNotes.length > 0 && (
+      {t.safetyNotes.length > 0 && (
+        <div class="measure-wide">
           <Callout type="safety" title="Safety notes">
-            <ul>{t.safetyNotes.map((n) => <li>{n}</li>)}</ul>
+            <ul class="safety-list">{t.safetyNotes.map((n) => <li>{n}</li>)}</ul>
           </Callout>
-        )}
+        </div>
+      )}
+      <h2 class="tool-more-title">The method, in detail</h2>
+      <div class="prose tool-prose">
         <Content />
-
-        {t.faq.length > 0 && (
-          <>
-            <h2 id="faq">Frequently asked questions</h2>
-            {t.faq.map((f) => (
-              <>
-                <h3>{f.q}</h3>
-                <p>{f.a}</p>
-              </>
-            ))}
-          </>
-        )}
       </div>
+      {t.faq.length > 0 && (
+        <section class="mt-10 measure-wide" aria-labelledby="faq">
+          <h2 id="faq">Frequently asked questions</h2>
+          <div class="mt-4">
+            {t.faq.map((f) => (
+              <details class="disclosure faq-item">
+                <summary><h3>{f.q}</h3></summary>
+                <div class="disclosure-body"><p>{f.a}</p></div>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
 
     {related.length > 0 && (
       <section class="mt-14 no-print" aria-labelledby="related-guides">
         <h2 id="related-guides">Related guides</h2>
-        <div class="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
-          {related.map((g) => <GuideCard guide={g} />)}
+        <div class="mt-4 card-grid">
+          {related.map((g) => <GuideCard guide={g} art={false} />)}
         </div>
       </section>
     )}
 
     <section class="mt-12 no-print" aria-labelledby="other-tools">
       <h2 id="other-tools">More free tools</h2>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        {otherTools.map((o) => <ToolCard tool={o} />)}
+      <div class="mt-4 card-grid">
+        {otherTools.map((o) => <ToolCard tool={o} art />)}
       </div>
       <p class="mt-4"><a href="/tools/">See all tools, including those coming soon</a></p>
     </section>
   </div>
+  </div>
 </BaseLayout>
 <style>
-  .tool-head { padding-block: 1.5rem 1.25rem; display: grid; gap: 0.6rem; }
-  .tool-cat { display: inline-flex; gap: 0.4rem; align-items: center; color: var(--c-earth-text); font-weight: 700; font-size: 0.95rem; }
+  .tool-band { background: var(--t-band); border-bottom: 1px solid var(--t-border); margin-top: 1rem; }
+  .tool-head { padding-block: 1.75rem 2rem; display: flex; gap: 2rem; align-items: center; justify-content: space-between; }
+  .tool-head-copy { display: grid; gap: 0.6rem; }
+  .tool-art { display: none; flex-shrink: 0; }
+  .tool-art :global(.ill) { --ill-bg: var(--t-surface); }
+  @media (min-width: 760px) { .tool-art { display: block; } }
   .lede { font-size: 1.15rem; }
-  .how-to { margin-bottom: 1.5rem; max-width: 52rem; }
-  .how-to ol { list-style: decimal; padding-left: 1.3rem; display: grid; gap: 0.2rem; margin-top: 0.4rem; }
+  .how-to { margin-block: 1.5rem; }
+  .how-to ol { list-style: decimal; padding-left: 2.4rem; display: grid; gap: 0.3rem; }
   .tool-body { margin-top: 3rem; }
+  .measure-wide { max-width: 48rem; }
+  .safety-list { list-style: disc; padding-left: 1.2rem; display: grid; gap: 0.3rem; }
+  .tool-more-title { margin-top: 2rem; margin-bottom: 0.9rem; font-size: 1.35rem; }
+  .tool-prose { max-width: 48rem; }
+  .tool-prose :global(.tool-disclosure) { margin-top: 0.75rem; }
+  .tool-prose :global(.tool-disclosure summary h2) { margin: 0; padding: 0; border: 0; font-size: 1.1rem; }
+  .tool-prose :global(.tool-disclosure .disclosure-body h3:first-child) { margin-top: 0.5rem; }
+  .faq-item + .faq-item { margin-top: 0.6rem; }
+  .faq-item summary h3 { font-family: var(--font-body); font-size: 1.02rem; margin: 0; }
+  @media print {
+    .tool-band { background: none; }
+  }
 </style>

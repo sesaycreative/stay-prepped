@@ -26,6 +26,10 @@ sources:
   - title: Priority Services Register
     url: https://www.thepsr.co.uk/
     publisher: The PSR
+inShort:
+  - "Aim to cope on your own for 3 days. You do not need to do it all at once."
+  - "Water first, then food, light, a radio and a way to charge your phone."
+  - "Write down key numbers and agree a simple household plan."
 ---
 
 Being prepared is not about bunkers or fear. It is about a household that can cope calmly for a few days if something normal stops working: the power goes off, the water supply is interrupted, roads are closed by snow or flooding, or you are unwell and cannot get to the shops.

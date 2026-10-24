@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+import rehypeStayPrepped from './src/lib/rehype-stayprepped.mjs';
 
 // Production domain is https://stayprepped.co.uk. SITE_URL overrides it
 // (useful for a preview deployment); otherwise the canonical domain is used.
@@ -19,6 +20,9 @@ export default defineConfig({
     webAnalytics: { enabled: process.env.PUBLIC_ANALYTICS === 'vercel' },
   }),
   trailingSlash: 'ignore',
+  markdown: {
+    rehypePlugins: [rehypeStayPrepped],
+  },
   integrations: [
     react(),
     mdx(),

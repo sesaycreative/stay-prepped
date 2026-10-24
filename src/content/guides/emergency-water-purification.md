@@ -19,6 +19,10 @@ sources:
   - title: Water
     url: https://www.ready.gov/water
     publisher: Ready.gov (US Government)
+inShort:
+  - "Stored water is safest. Always follow your water company's notices first."
+  - "Boiling kills germs but does not remove chemicals, fuel or dirt."
+  - "Never drink water that may contain floodwater, sewage, fuel or chemicals."
 ---
 
 In the UK, tap water is treated and tested, and you should always follow your water company's advice first. But if the supply is interrupted or you are told water may be unsafe, you may need to treat water before drinking it. This guide covers the three main methods and their limits.

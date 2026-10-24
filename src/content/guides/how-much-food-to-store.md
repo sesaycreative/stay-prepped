@@ -22,6 +22,10 @@ sources:
   - title: Food
     url: https://www.ready.gov/food
     publisher: Ready.gov (US Government)
+inShort:
+  - "Start with 3 days of food that needs no fridge, freezer or mains power."
+  - "Plan on about 2,000 kcal a day for adults and 1,500 kcal for children under 12."
+  - "Buy what you already eat, keep a manual tin opener, and rotate it into your meals."
 ---
 
 An emergency food store is simply extra food that keeps well and does not need a fridge, freezer or mains power to prepare. It helps if you cannot get to the shops because of illness, bad weather, a power cut or supply problems.

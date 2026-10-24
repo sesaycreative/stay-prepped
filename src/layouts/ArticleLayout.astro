@@ -4,7 +4,9 @@ import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import LastReviewed from '../components/LastReviewed.astro';
 import type { Crumb } from '../components/Breadcrumbs.astro';
-import { SITE } from '../lib/site';
+import Icon from '../components/Icon.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import { SITE, type IllustrationKey, type Tone } from '../lib/site';
 import { absolute, articleLd } from '../lib/seo';
 
 interface Props {
@@ -16,23 +18,38 @@ interface Props {
   headings: MarkdownHeading[];
   breadcrumbs: Crumb[];
   sources: { title: string; url: string; publisher: string }[];
+  tone?: Tone;
+  art?: IllustrationKey;
+  inShort?: string[];
 }
-const { title, description, eyebrow, publishedAt, reviewedAt, headings, breadcrumbs, sources } = Astro.props;
+const { title, description, eyebrow, publishedAt, reviewedAt, headings, breadcrumbs, sources, tone = 'neutral', art, inShort } = Astro.props;
 const url = absolute(Astro.url.pathname, Astro.site);
 const ld = [articleLd({ title, description, url, published: publishedAt, modified: reviewedAt, site: Astro.site })];
 const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sources', text: 'Sources and further reading' }] : [])];
 ---
 <BaseLayout title={title} description={description} breadcrumbs={breadcrumbs} jsonLd={ld} ogType="article">
-  <article class="wrap">
-    <header class="article-head">
-      {eyebrow && <p class="article-eyebrow">{eyebrow}</p>}
-      <h1>{title}</h1>
-      <p class="lede">{description}</p>
-      <div class="article-meta">
-        <span>By {SITE.author}</span>
-        <LastReviewed date={reviewedAt} published={publishedAt} />
-      </div>
-    </header>
+  <article class={`tone-${tone}`}>
+    <div class="article-band">
+      <header class="wrap article-head">
+        <div class="article-head-copy">
+          {eyebrow && <p class="card-label article-eyebrow">{eyebrow}</p>}
+          <h1>{title}</h1>
+          <p class="lede">{description}</p>
+          <div class="article-meta">
+            <span>By {SITE.author}</span>
+            <LastReviewed date={reviewedAt} published={publishedAt} />
+          </div>
+        </div>
+        {art && <div class="article-art"><Illustration name={art} width={200} /></div>}
+      </header>
+    </div>
+    <div class="wrap">
+    {inShort && (
+      <aside class="in-short" aria-labelledby="in-short-title">
+        <h2 id="in-short-title" class="in-short-title"><Icon name="zap" size={18} /> In short</h2>
+        <ul>{inShort.map((b) => <li>{b}</li>)}</ul>
+      </aside>
+    )}
     <div class="article-grid">
       <aside class="article-aside"><TableOfContents headings={tocHeadings} /></aside>
       <div class="article-main">
@@ -52,17 +69,24 @@ const tocHeadings = [...headings, ...(sources.length ? [{ depth: 2, slug: 'sourc
         <slot name="after" />
       </div>
     </div>
+    </div>
   </article>
 </BaseLayout>
 <style>
-  .article-head { padding-block: 1.5rem 2rem; max-width: 48rem; display: grid; gap: 0.75rem; }
-  .article-eyebrow { color: var(--c-earth-text); font-weight: 700; }
+  .article-band { background: var(--t-band); border-bottom: 1px solid var(--t-border); margin-top: 1rem; }
+  .article-head { padding-block: 2rem 2.25rem; display: flex; gap: 2rem; align-items: center; justify-content: space-between; }
+  .article-head-copy { display: grid; gap: 0.75rem; max-width: 46rem; }
+  .article-art { display: none; flex-shrink: 0; }
+  .article-art :global(.ill) { --ill-bg: var(--t-surface); }
+  @media (min-width: 760px) { .article-art { display: block; } }
   .lede { font-size: 1.2rem; line-height: 1.55; }
   .article-meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; color: var(--text-muted); font-size: 0.92rem; align-items: center; }
-  .article-grid { display: grid; gap: 2rem; }
+  .in-short { max-width: 48rem; margin-block: -1.5rem 2.5rem; position: relative; }
+  .article-grid { display: grid; gap: 2rem; margin-top: 2rem; }
+  .in-short + .article-grid { margin-top: 0; }
   @media (min-width: 1000px) {
     .article-grid { grid-template-columns: 15rem minmax(0, 1fr); gap: 3.5rem; }
     .article-aside { order: 0; }
-    .article-aside :global(.toc) { position: sticky; top: 7rem; }
+    .article-aside :global(.toc) { position: sticky; top: 6rem; }
   }
 </style>
