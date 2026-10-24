@@ -8,8 +8,9 @@ import CategoryCard from '../components/CategoryCard.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
 import Icon from '../components/Icon.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
+import HouseholdHero from '../components/HouseholdHero.astro';
 import { RISKS } from '../data/risks';
-import { GUIDE_HUBS, SITE, type IllustrationKey, type Tone } from '../lib/site';
+import { GUIDE_HUBS, HUB_PROGRESS, SITE, type IllustrationKey, type Tone } from '../lib/site';
 
 const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
 const live = tools.filter((t) => t.data.status === 'live');
@@ -28,17 +29,17 @@ const hubBlurbs: Record<string, { blurb: string; art?: IllustrationKey }> = {
 const hubs = GUIDE_HUBS.filter((h) => h.href in hubBlurbs);
 
 // The 8 areas of preparedness, shown as the hero grid.
-const areas: { title: string; text: string; href: string; tone: Tone; art: IllustrationKey }[] = [
-  { title: 'Water', text: '3 days of drinking water, stored and rotated', href: '/guides/how-much-water-to-store/', tone: 'water', art: 'water-storage' },
-  { title: 'Food', text: 'A cupboard that feeds everyone without power', href: '/food-water/', tone: 'food', art: 'food-cupboard' },
-  { title: 'Emergency bag', text: 'A grab bag ready by the door', href: '/emergency-kits/', tone: 'kits', art: 'grab-bag' },
-  { title: 'Power cuts', text: 'Light, warmth and a charged phone', href: '/guides/category/power-outages/', tone: 'power', art: 'power-cut' },
+const areas: { id: string; title: string; text: string; href: string; tone: Tone; art: IllustrationKey }[] = [
+  { id: 'water', title: 'Water', text: '3 days of drinking water, stored and rotated', href: '/guides/how-much-water-to-store/', tone: 'water', art: 'water-storage' },
+  { id: 'food', title: 'Food', text: 'A cupboard that feeds everyone without power', href: '/food-water/', tone: 'food', art: 'food-cupboard' },
+  { id: 'bag', title: 'Emergency bag', text: 'A grab bag ready by the door', href: '/emergency-kits/', tone: 'kits', art: 'grab-bag' },
+  { id: 'power', title: 'Power cuts', text: 'Light, warmth and a charged phone', href: '/guides/category/power-outages/', tone: 'power', art: 'power-cut' },
   // No first aid guides yet, so the category page is not built; link to the
   // first aid section of the beginners guide until one exists.
-  { title: 'First aid & medicine', text: 'A kit, your prescriptions, basic skills', href: '/guides/prepping-for-beginners/#8-check-your-first-aid-kit-and-medicines', tone: 'health', art: 'first-aid' },
-  { title: 'Family plan', text: 'Who calls whom, where you meet', href: '/family-home/', tone: 'home', art: 'family-plan' },
-  { title: 'Home & documents', text: 'Alarms, shut-offs, copies of what matters', href: '/guides/category/home/', tone: 'docs', art: 'home-safety' },
-  { title: 'Severe weather & flooding', text: 'Know your local risk and what to do', href: '/why-prepare/', tone: 'gov', art: 'flood' },
+  { id: 'first-aid', title: 'First aid & medicine', text: 'A kit, your prescriptions, basic skills', href: '/guides/prepping-for-beginners/#8-check-your-first-aid-kit-and-medicines', tone: 'health', art: 'first-aid' },
+  { id: 'family', title: 'Family plan', text: 'Who calls whom, where you meet', href: '/family-home/', tone: 'home', art: 'family-plan' },
+  { id: 'home-docs', title: 'Home & documents', text: 'Alarms, shut-offs, copies of what matters', href: '/guides/category/home/', tone: 'docs', art: 'home-safety' },
+  { id: 'weather', title: 'Severe weather & flooding', text: 'Know your local risk and what to do', href: '/local-risk/', tone: 'gov', art: 'flood' },
 ];
 const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
 ---
@@ -60,18 +61,21 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
           </div>
         </div>
       </div>
+      <HouseholdHero />
       <h2 class="sr-only">The 8 areas of preparedness</h2>
       <ul class="areas">
         {areas.map((a) => (
-          <li class={`card is-link area tone-${a.tone}`}>
+          <li class={`card is-link area tone-${a.tone}`} data-area-box={a.id}>
             <span class="area-art"><Illustration name={a.art} width={96} /></span>
             <span class="area-body">
-              <h3 class="area-title"><a href={a.href} class="stretched">{a.title}</a></h3>
-              <p class="area-text">{a.text}</p>
+              <h3 class="area-title"><a href={a.href} class="stretched">{a.title}<span class="sr-only area-done-label"> (ready)</span></a></h3>
+              <p class="area-text" data-area-text>{a.text}</p>
             </span>
+            <span class="area-done" aria-hidden="true"></span>
           </li>
         ))}
       </ul>
+      <p class="seasonal" data-seasonal hidden></p>
     </div>
   </section>
 
@@ -123,7 +127,7 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
       </div>
       <div class="card-grid hub-grid">
         {hubs.map((h) => (
-          <CategoryCard href={h.href} label={h.label} icon={h.icon} tone={h.tone} blurb={hubBlurbs[h.href].blurb} art={hubBlurbs[h.href].art} />
+          <CategoryCard href={h.href} label={h.label} icon={h.icon} tone={h.tone} blurb={hubBlurbs[h.href].blurb} art={hubBlurbs[h.href].art} progressLists={HUB_PROGRESS[h.href]} />
         ))}
       </div>
     </div>
@@ -165,6 +169,21 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
   </div>
 </BaseLayout>
 
+<script>
+  import { seasonalMessage } from '../lib/seasonal';
+  const el = document.querySelector<HTMLElement>('[data-seasonal]');
+  const m = seasonalMessage(new Date());
+  if (el && m) {
+    const icon = { clocks: '<path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>', cold: '<path d="M2 12h20M12 2v20M20 16l-4-4 4-4M4 8l4 4-4 4M16 4l-4 4-4-4M8 20l4-4 4 4"/>', heat: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>' }[m.id];
+    el.innerHTML = `<svg class="seasonal-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><span>${m.text}</span>`;
+    const a = document.createElement('a');
+    a.href = m.href;
+    a.textContent = m.link;
+    el.append(a);
+    el.hidden = false;
+  }
+</script>
+
 <style>
   .hero { position: relative; overflow: hidden; }
   .hero-contours { position: absolute; inset: 0 0 0 30%; opacity: 0.9; pointer-events: none; }
@@ -183,7 +202,7 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
     .hero-side { padding-bottom: 0.2rem; }
   }
 
-  .areas { margin-top: 1.75rem; display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .areas { margin-top: 1rem; display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (min-width: 960px) { .areas { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; } }
   .area { padding: 0.85rem; gap: 0.5rem; border-radius: 1.25rem; }
   @supports (corner-shape: squircle) { .area { border-radius: 2.25rem; } }
@@ -193,6 +212,25 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
   .area-title a { color: var(--heading); text-decoration: none; }
   .area:hover .area-title a { text-decoration: underline; text-decoration-thickness: 2px; }
   .area-text { font-size: 0.9rem; line-height: 1.4; color: var(--text-muted); }
+  .area-text :global(strong) { color: var(--t-ink); font-weight: 700; }
+  .area-text:global(.is-updated) { animation: area-text-in 260ms ease-out; }
+  @keyframes area-text-in { from { opacity: 0.25; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .area-text:global(.is-updated) { animation: none; } }
+  .area { position: relative; }
+  .area-done {
+    position: absolute; top: 0.55rem; right: 0.55rem; width: 1.5rem; height: 1.5rem; border-radius: 999px;
+    background: var(--t-strong); display: none; place-items: center;
+  }
+  .area-done::after { content: ''; width: 0.65rem; height: 0.38rem; border-left: 2.4px solid var(--surface); border-bottom: 2.4px solid var(--surface); transform: translateY(-1px) rotate(-45deg); }
+  .area:global(.is-done) .area-done { display: grid; }
+  .area-done-label { display: none; }
+  .area:global(.is-done) .area-done-label { display: inline; }
+  .seasonal {
+    margin-top: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.75rem;
+    font-size: 0.95rem; color: var(--text);
+  }
+  .seasonal :global(.seasonal-icon) { color: var(--gov-ink); flex-shrink: 0; }
+  .seasonal :global(a) { font-weight: 700; }
   @media (min-width: 640px) {
     .area { flex-direction: row; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; }
     .area-art { flex-shrink: 0; }

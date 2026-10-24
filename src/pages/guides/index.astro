@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GuideCard from '../../components/GuideCard.astro';
 import CategoryCard from '../../components/CategoryCard.astro';
-import { GUIDE_CATEGORIES, GUIDE_CATEGORY_KEYS, GUIDE_HUBS } from '../../lib/site';
+import { GUIDE_CATEGORIES, GUIDE_CATEGORY_KEYS, GUIDE_HUBS, HUB_PROGRESS } from '../../lib/site';
 
 const guides = (await getCollection('guides')).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime() || a.data.title.localeCompare(b.data.title));
 const counts = Object.fromEntries(GUIDE_CATEGORY_KEYS.map((k) => [k, guides.filter((g) => g.data.category === k).length]));
@@ -31,7 +31,7 @@ const hubBlurb: Record<string, string> = {
     <nav aria-labelledby="topics-title">
       <h2 id="topics-title" class="sr-only">Topics</h2>
       <div class="card-grid topic-grid">
-        {hubs.map((h) => <CategoryCard href={h.href} label={h.label} icon={h.icon} tone={h.tone} blurb={hubBlurb[h.href] ?? ''} compact />)}
+        {hubs.map((h) => <CategoryCard href={h.href} label={h.label} icon={h.icon} tone={h.tone} blurb={hubBlurb[h.href] ?? ''} compact progressLists={HUB_PROGRESS[h.href]} />)}
       </div>
     </nav>
   </div>

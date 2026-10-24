@@ -1,0 +1,180 @@
+---
+// "Who's at home?" control for the homepage hero. Server-renders the static
+// box lines; the script sizes them from the household using the calculators'
+// own functions (src/lib/household.ts). Counts are stored only in the browser.
+---
+<div class="hh" id="who-at-home" data-hh>
+  <div class="hh-head">
+    <h2 class="hh-title" data-hh-title>Tell us who's at home and we'll size everything</h2>
+    <button type="button" class="hh-clear" data-hh-clear hidden>Clear</button>
+  </div>
+  <div class="hh-controls" role="group" aria-labelledby="hh-group-label">
+    <span id="hh-group-label" class="sr-only">Who is at home</span>
+    {[
+      { key: 'adults', label: 'Adults', min: 0, max: 20, value: 2 },
+      { key: 'children', label: 'Children under 12', min: 0, max: 20, value: 0 },
+      { key: 'dogs', label: 'Dogs', min: 0, max: 10, value: 0 },
+      { key: 'cats', label: 'Cats', min: 0, max: 10, value: 0 },
+    ].map((f) => (
+      <div class="hh-field" data-hh-field={f.key}>
+        <span class="hh-label" id={`hh-${f.key}-label`}>{f.label}</span>
+        <div class="hh-stepper">
+          <button type="button" class="hh-step" data-hh-dec={f.key} aria-label={`Fewer ${f.label.toLowerCase()}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
+          </button>
+          <output class="hh-value" data-hh-value={f.key} aria-labelledby={`hh-${f.key}-label`} aria-live="polite">{f.value}</output>
+          <button type="button" class="hh-step" data-hh-inc={f.key} aria-label={`More ${f.label.toLowerCase()}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+  <p class="hh-foot" data-hh-foot hidden>For 3 days: water at 4 L per person per day (temperate, no extras) plus 1 L per dog and 0.25 L per cat; food at 2,000 kcal per adult, 1,500 per child. Saved in this browser only.</p>
+</div>
+
+<script>
+  import { householdFigures, calculatorQuery } from '../lib/household';
+  import { AREAS, progress, type Household } from '../lib/progress';
+  const store = progress();
+  const root = document.querySelector<HTMLElement>('[data-hh]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const LIMITS: Record<string, [number, number]> = { adults: [0, 20], children: [0, 20], dogs: [0, 10], cats: [0, 10] };
+  const nf = new Intl.NumberFormat('en-GB');
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+
+  function values(h: Household) {
+    return { adults: h.adults, children: h.children, dogs: h.pets.dogs, cats: h.pets.cats };
+  }
+
+  /** Animate a number from its current value (none under reduced motion). */
+  function countTo(el: HTMLElement, to: number, format: (n: number) => string) {
+    const from = Number(el.dataset.n ?? to);
+    el.dataset.n = String(to);
+    if (reduce.matches || from === to) { el.textContent = format(to); return; }
+    const start = performance.now();
+    const dur = 450;
+    const step = (t: number) => {
+      const p = Math.min(1, (t - start) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = format(from + (to - from) * e);
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function boxLine(id: string, html: string) {
+    const box = document.querySelector<HTMLElement>(`[data-area-box="${id}"] [data-area-text]`);
+    if (!box) return;
+    if (!box.dataset.static) box.dataset.static = box.innerHTML;
+    if (box.innerHTML === html) return;
+    box.innerHTML = html;
+    if (!reduce.matches) {
+      box.classList.remove('is-updated');
+      void box.offsetWidth;
+      box.classList.add('is-updated');
+    }
+  }
+
+  function render() {
+    if (!root) return;
+    const s = store.get();
+    const h = s.household;
+    const v = values(h);
+    for (const [k, n] of Object.entries(v)) {
+      root.querySelector(`[data-hh-value="${k}"]`)!.textContent = String(n);
+      root.querySelector<HTMLButtonElement>(`[data-hh-dec="${k}"]`)!.disabled = n <= LIMITS[k][0];
+      root.querySelector<HTMLButtonElement>(`[data-hh-inc="${k}"]`)!.disabled = n >= LIMITS[k][1];
+    }
+    root.querySelector('[data-hh-title]')!.textContent = h.set ? "Who's at home" : "Tell us who's at home and we'll size everything";
+    root.querySelector<HTMLElement>('[data-hh-clear]')!.hidden = !h.set;
+    root.querySelector<HTMLElement>('[data-hh-foot]')!.hidden = !h.set;
+
+    // Done ticks on the boxes (independent of the household).
+    for (const a of AREAS) document.querySelector(`[data-area-box="${a.id}"]`)?.classList.toggle('is-done', !!s.areas[a.id]?.done);
+
+    const q = calculatorQuery(h);
+    const waterLink = document.querySelector<HTMLAnchorElement>('[data-area-box="water"] a.stretched');
+    const foodLink = document.querySelector<HTMLAnchorElement>('[data-area-box="food"] a.stretched');
+    if (!h.set) {
+      for (const el of document.querySelectorAll<HTMLElement>('[data-area-text]')) if (el.dataset.static) el.innerHTML = el.dataset.static;
+      if (waterLink?.dataset.base) waterLink.href = waterLink.dataset.base;
+      if (foodLink?.dataset.base) foodLink.href = foodLink.dataset.base;
+      return;
+    }
+    const f = householdFigures(h);
+    const people = f.people;
+    boxLine('water', `About <strong data-count="water">${nf.format(f.waterLitres)} litres</strong> for your home for 3 days`);
+    boxLine('food', `About <strong>${nf.format(f.foodKcal)} kcal</strong>, roughly <strong>${f.foodKg} kg</strong> of food for 3 days`);
+    const bags = f.bags.adults + f.bags.children;
+    const bagDetail = f.bags.children ? `${f.bags.adults} full-size, ${f.bags.children} small` : 'one per adult';
+    boxLine('bag', `<strong>${plural(bags, 'bag', 'bags')}</strong>, ${bagDetail}${f.pets ? ', plus pet supplies' : ''}`);
+    boxLine('first-aid', people > 1 ? `A kit, plus <strong>${people} people's</strong> medicines and prescriptions` : `A kit, your medicines and prescriptions`);
+    boxLine('family', people > 1 ? `<strong>${people} people</strong> to list, one meeting point` : `Your contacts and one meeting point`);
+
+    // Animate the water figure; keep the formatted text otherwise.
+    const waterNum = document.querySelector<HTMLElement>('[data-count="water"]');
+    if (waterNum) countTo(waterNum, f.waterLitres, (n) => `${nf.format(Math.round(n))} litres`);
+
+    // Carry the household into the calculators (counts only).
+    for (const link of [waterLink, foodLink]) {
+      if (!link) continue;
+      link.dataset.base ??= link.getAttribute('href')!;
+      const base = link.dataset.base.startsWith('/tools/') ? link.dataset.base : link === waterLink ? '/tools/water-storage-calculator/' : '/tools/food-storage-calculator/';
+      link.href = base + q;
+    }
+  }
+
+  root?.addEventListener('click', (e) => {
+    const t = (e.target as Element).closest<HTMLButtonElement>('button');
+    if (!t || t.disabled) return;
+    if (t.matches('[data-hh-clear]')) {
+      store.clearHousehold();
+      return;
+    }
+    const key = t.dataset.hhInc ?? t.dataset.hhDec;
+    if (!key) return;
+    const v = values(store.get().household);
+    const delta = t.dataset.hhInc ? 1 : -1;
+    const [min, max] = LIMITS[key];
+    (v as Record<string, number>)[key] = Math.max(min, Math.min(max, (v as Record<string, number>)[key] + delta));
+    store.setHousehold({ adults: v.adults, children: v.children, pets: { dogs: v.dogs, cats: v.cats } });
+    // Keep focus on the pressed button even if it becomes disabled at a limit.
+    if (t.disabled) t.closest('.hh-stepper')?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
+  });
+
+  store.subscribe(render);
+  render();
+</script>
+
+<style>
+  .hh {
+    margin-top: 1.25rem; padding: 0.7rem 1rem; border-radius: 1.25rem;
+    background: var(--surface); border: 1px solid var(--rule); box-shadow: var(--shadow-card);
+  }
+  @supports (corner-shape: squircle) { .hh { corner-shape: squircle; border-radius: 2.25rem; } }
+  .hh-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .hh-title { font-family: var(--font-body); font-size: 1rem; font-weight: 700; color: var(--heading); letter-spacing: 0; }
+  .hh-clear { border: 0; background: none; font: inherit; font-size: 0.9rem; color: var(--link); text-decoration: underline; cursor: pointer; min-height: 2.75rem; padding: 0 0.25rem; }
+  .hh-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 1rem; margin-top: 0.5rem; }
+  @media (min-width: 760px) { .hh-controls { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 1080px) {
+    .hh { display: grid; grid-template-columns: 13rem 1fr; column-gap: 1.25rem; align-items: center; }
+    .hh-head { flex-direction: column; align-items: flex-start; gap: 0; }
+    .hh-controls { margin-top: 0; }
+    .hh-field { grid-template-columns: auto auto; align-items: center; justify-content: start; gap: 0.6rem; }
+    .hh-foot { grid-column: 1 / -1; margin-top: 0.4rem; }
+    .hh-clear { min-height: 2rem; padding: 0; }
+  }
+  .hh-field { display: grid; gap: 0.25rem; }
+  .hh-label { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); }
+  .hh-stepper { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .hh-step {
+    display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 0.85rem; cursor: pointer;
+    border: 2px solid var(--accent); background: var(--surface); color: var(--link);
+  }
+  .hh-step:hover:not(:disabled) { background: var(--btn-ghost-hover); }
+  .hh-step:disabled { border-color: var(--rule); color: var(--text-muted); cursor: default; opacity: 0.7; }
+  .hh-value { min-width: 2.2rem; text-align: center; font-family: var(--font-head); font-weight: 800; font-size: 1.35rem; color: var(--heading); font-variant-numeric: tabular-nums; }
+  .hh-foot { margin-top: 0.6rem; font-size: 0.8rem; line-height: 1.4; color: var(--text-muted); }
+</style>
