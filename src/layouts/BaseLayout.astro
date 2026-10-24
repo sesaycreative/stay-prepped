@@ -18,7 +18,7 @@ interface Props {
 }
 const { title, description, breadcrumbs, jsonLd = [], ogType = 'website', noindex = false, searchable = true } = Astro.props;
 const isHome = Astro.url.pathname === '/';
-const fullTitle = isHome ? `${SITE.name}: ${SITE.tagline}` : `${title} | ${SITE.name}`;
+const fullTitle = isHome ? `${SITE.name} | Emergency Preparedness Guides & Free Prepper Tools (UK)` : `${title} | ${SITE.name}`;
 const canonical = absolute(Astro.url.pathname, Astro.site);
 const ogImage = absolute('/og-default.png', Astro.site);
 const ld: unknown[] = [...jsonLd];
