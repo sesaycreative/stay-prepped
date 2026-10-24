@@ -231,6 +231,7 @@ body {
 }
 main {
   flex: 1;
+  padding-bottom: 4rem;
 }
 
 h1,
@@ -959,6 +960,65 @@ legend {
 }
 .article-in-short .in-short-title { font-size: 0.92rem; }
 .article-in-short ul { margin-top: 0.4rem; gap: 0.3rem; font-size: 0.97rem; }
+
+
+/* ---------------------------------------------------------------------------
+   Interactive checklists (src/scripts/checklists.ts). Real checkboxes, styled
+   as tinted tick chips; disabled until the script enables them.
+   ------------------------------------------------------------------------- */
+.checklist-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem; margin-bottom: 0.6rem; }
+.prose .checklist-bar { margin-top: 1rem; }
+.checklist-count {
+  display: inline-flex; align-items: center; gap: 0.35rem; min-height: 1.9rem; padding: 0.15rem 0.7rem;
+  border-radius: 999px; font-size: 0.86rem; font-weight: 700;
+  background: var(--surface); border: 1px solid var(--t-border); color: var(--text-muted);
+}
+.checklist-count.is-started { color: var(--t-ink); border-color: var(--t-strong); }
+.checklist-count.is-complete { background: var(--t-chip); color: var(--t-chip-ink); border-color: var(--t-strong); }
+.checklist-count.is-complete::before { content: '\2713'; }
+.checklist-reset {
+  border: 0; background: none; padding: 0.4rem 0.2rem; min-height: 2.25rem; cursor: pointer;
+  font: inherit; font-size: 0.9rem; color: var(--link); text-decoration: underline; text-underline-offset: 0.18em;
+}
+.check-row { display: grid !important; grid-template-columns: auto 1fr; gap: 0.7rem; align-items: start; }
+.check-box {
+  appearance: none; -webkit-appearance: none; margin: 0.1rem 0 0; flex-shrink: 0;
+  width: 1.6rem; height: 1.6rem; border-radius: 0.55rem; cursor: pointer;
+  border: 2px solid var(--t-strong); background: var(--surface);
+  display: inline-grid; place-content: center;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+.check-box::after {
+  content: ''; width: 0.75rem; height: 0.42rem; margin-top: -0.15rem;
+  border-left: 2.6px solid var(--t-chip-ink); border-bottom: 2.6px solid var(--t-chip-ink);
+  transform: rotate(-45deg) scale(0); transition: transform 150ms ease-out;
+}
+.check-box:checked { background: var(--t-chip); border-color: var(--t-strong); }
+.check-box:checked::after { transform: rotate(-45deg) scale(1); }
+.check-box:disabled { cursor: default; border-style: dashed; }
+.check-box:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.check-label { cursor: pointer; padding-top: 0.1rem; }
+.check-row.is-ticked .check-label { color: var(--text-muted); }
+/* Hit area: the whole row toggles via the label; keep the box 44px-friendly. */
+.check-row { min-height: 2.75rem; }
+
+/* Progress chip on guide and hub cards */
+.progress-chip {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.1rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700;
+  background: var(--surface); color: var(--t-ink); border: 1px solid var(--t-strong);
+}
+.progress-chip.is-complete { background: var(--t-chip); color: var(--t-chip-ink); }
+
+@media print {
+  .checklist-reset { display: none !important; }
+  .check-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; border: 1.5px solid #000; }
+  .check-box:checked::after { border-color: #000; }
+  .check-box:checked { background: #fff; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .check-box, .check-box::after { transition: none; }
+}
 
 /* Spot illustrations (src/components/illustrations). Colours come from the
    surrounding area tone so one drawing works in every area and in dark mode. */

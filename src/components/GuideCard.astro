@@ -15,5 +15,6 @@ const ill = art ? SLUG_ILLUSTRATION[guide.id] : undefined;
   {showCategory && <p class="card-label">{cat.label}</p>}
   <H class="card-title"><a href={`/guides/${guide.id}/`} class="stretched">{g.title}</a></H>
   <p class="card-text">{g.description}</p>
+  <span class="progress-chip" data-progress-lists={`guide/${guide.id}/`} hidden></span>
   <span class="card-cta" aria-hidden="true">Read the guide <Icon name="arrow-right" size={18} /></span>
 </article>

@@ -269,3 +269,66 @@ export const fmt = (n: number, dp = 0) =>
 
 /** Convert a validated numeric string to a number. */
 export const num = (s: string) => Number(s);
+
+/* ----------------------------------------------------------------------------
+   Household from the homepage: read ?adults=&children=&days= once on load
+   (counts only), fall back to the saved household, and record that the tool
+   produced a result so the area counts as ready. See docs/PROGRESS_STATE.md.
+---------------------------------------------------------------------------- */
+export function useHouseholdSeed<T extends { adults: string; children: string; days: string }>(
+  setState: (fn: (s: T) => T) => void,
+  storageKey: string,
+): boolean {
+  const [seeded, setSeeded] = useState(false);
+  const done = useRef(false);
+  useEffect(() => {
+    if (done.current) return;
+    done.current = true;
+    let hasOwnInputs = false;
+    try {
+      hasOwnInputs = window.localStorage.getItem(storageKey) !== null;
+    } catch {
+      /* storage blocked */
+    }
+    // Imported lazily so the calculators stay usable if storage is blocked.
+    void Promise.all([import('../../lib/household'), import('../../lib/progress')]).then(([hh, pg]) => {
+      const q = hh.readCalculatorQuery(window.location.search);
+      const saved = pg.progress().get().household;
+      if (q.adults !== undefined || q.children !== undefined) {
+        setState((s) => ({
+          ...s,
+          adults: q.adults !== undefined ? String(q.adults) : s.adults,
+          children: q.children !== undefined ? String(q.children) : s.children,
+          days: q.days !== undefined ? String(q.days) : s.days,
+        }));
+        setSeeded(true);
+      } else if (!hasOwnInputs && saved.set) {
+        setState((s) => ({ ...s, adults: String(saved.adults), children: String(saved.children) }));
+        setSeeded(true);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return seeded;
+}
+
+/**
+ * Mark a calculator as used once it shows a valid result for the visitor's own
+ * household: inputs restored, seeded from their household, or changed by them.
+ */
+export function useMarkToolUsed(tool: 'water' | 'food', hasResult: boolean, personal: boolean) {
+  const marked = useRef(false);
+  useEffect(() => {
+    if (!hasResult || !personal || marked.current) return;
+    marked.current = true;
+    void import('../../lib/progress').then((pg) => pg.progress().markTool(tool));
+  }, [tool, hasResult, personal]);
+}
+
+/** Re-scan the page for [data-checklist] lists after the island renders them. */
+export function useChecklistBinding(deps: unknown[]) {
+  useEffect(() => {
+    void import('../../scripts/checklists').then((m) => m.initChecklists());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}

@@ -45,7 +45,7 @@ The module that owns it is `src/lib/progress.ts`. Every feature reads and writes
 | Home & documents | Every item on the essential documents guide's checklist is ticked |
 | Severe weather & flooding | `/why-prepare/` has been visited, and "I've checked my flood risk" is ticked on `/local-risk/` |
 
-A guide with several checklist sections counts as complete when any one of its area-linked lists is fully ticked. The mapping of guides to areas is `GUIDE_AREAS` in `checklist-ids.mjs`.
+Each guide checklist is one `##` section: every task list under that heading, including lists under its `###` sub-headings, counts as one checklist. Where a guide has more than one checklist section, only the named section counts towards the area (for example "What to pack", not "Keep it ready"). The mapping is `GUIDE_AREAS` in `checklist-ids.mjs`.
 
 ## What crosses into a URL
 

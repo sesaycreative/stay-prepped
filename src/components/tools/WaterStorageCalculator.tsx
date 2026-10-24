@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { calculateWater, validateWaterInputs, waterCsv, waterSummaryText, type Climate, type WaterInputs } from '../../lib/calculators/water';
-import { ChoiceGroup, DaysField, EmptyResult, NumberField, ToolActions, fmt, num, usePersistentForm } from './ui';
+import { ChoiceGroup, DaysField, EmptyResult, NumberField, ToolActions, fmt, num, useHouseholdSeed, useMarkToolUsed, usePersistentForm } from './ui';
 
 interface FormState {
   adults: string;
@@ -61,6 +61,9 @@ export default function WaterStorageCalculator() {
       }
     : null;
   const r = useMemo(() => (input ? calculateWater(input) : null), [JSON.stringify(input)]);
+  const seeded = useHouseholdSeed(setState, STORAGE_KEY);
+  const personal = restored || seeded || JSON.stringify(state) !== JSON.stringify(INITIAL);
+  useMarkToolUsed('water', !!r, personal);
 
   const L = (n: number) => `${fmt(n, n < 100 && n % 1 !== 0 ? 1 : 0)} L`;
 

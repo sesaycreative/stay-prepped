@@ -2,8 +2,8 @@
 import Icon from './Icon.astro';
 import Illustration from './illustrations/Illustration.astro';
 import type { IllustrationKey, Tone } from '../lib/site';
-interface Props { href: string; label: string; blurb: string; icon: string; count?: number; tone?: Tone; art?: IllustrationKey; headingLevel?: 'h2' | 'h3' | 'h4'; compact?: boolean }
-const { href, label, blurb, icon, count, tone = 'neutral', art, headingLevel = 'h3', compact = false } = Astro.props;
+interface Props { href: string; label: string; blurb: string; icon: string; count?: number; tone?: Tone; art?: IllustrationKey; headingLevel?: 'h2' | 'h3' | 'h4'; compact?: boolean; progressLists?: string }
+const { href, label, blurb, icon, count, tone = 'neutral', art, headingLevel = 'h3', compact = false, progressLists } = Astro.props;
 const H = headingLevel;
 ---
 <article class={`card is-link cat-card tone-${tone} ${compact ? 'is-compact' : ''}`}>
@@ -12,6 +12,7 @@ const H = headingLevel;
     <H class="card-title"><a href={href} class="stretched">{label}</a></H>
     <p class="card-text">{blurb}</p>
     {typeof count === 'number' && count > 0 && <p class="card-label">{count} {count === 1 ? 'guide' : 'guides'}</p>}
+    {progressLists && <span class="progress-chip" data-progress-lists={progressLists} hidden></span>}
   </div>
   {!compact && <span class="card-cta" aria-hidden="true">Explore <Icon name="arrow-right" size={18} /></span>}
 </article>

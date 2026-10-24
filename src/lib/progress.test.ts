@@ -171,6 +171,8 @@ describe('checklist ids', () => {
     expect(areaForGuideList('prepping-for-beginners', '8-check-your-first-aid-kit-and-medicines')).toBe('first-aid');
     expect(areaForGuideList('prepping-for-beginners', 'your-first-week-checklist')).toBeUndefined();
     expect(areaForGuideList('emergency-water-purification', 'a-small-treatment-kit')).toBeUndefined();
+    expect(areaForGuideList('72-hour-emergency-bag', 'what-to-pack')).toBe('bag');
+    expect(areaForGuideList('72-hour-emergency-bag', 'keep-it-ready')).toBeUndefined();
   });
 });
 

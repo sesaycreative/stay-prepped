@@ -2,11 +2,13 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PrintButton from '../../../components/PrintButton.astro';
 import { CHECKLISTS, type Checklist } from '../../../data/checklists';
+import { checklistId, domId, itemIds } from '../../../lib/checklist-ids.mjs';
 export function getStaticPaths() {
   return CHECKLISTS.map((c) => ({ params: { slug: c.slug }, props: { c } }));
 }
 interface Props { c: Checklist }
 const { c } = Astro.props;
+const sections = c.sections.map((s) => ({ ...s, listId: checklistId('resource', c.slug, s.heading), ids: itemIds(s.items) }));
 ---
 <BaseLayout title={c.title} description={c.description} breadcrumbs={[{ label: 'Resources', href: '/resources/' }, { label: c.title }]}>
   <div class="wrap tone-kits">
@@ -16,21 +18,30 @@ const { c } = Astro.props;
       <div class="mt-4 no-print"><PrintButton label="Print this checklist" /></div>
     </header>
     <div class="grid gap-8 md:grid-cols-2 measure-wide">
-      {c.sections.map((s, si) => (
+      {sections.map((s, si) => (
         <section aria-labelledby={`s-${si}`} class="card">
           <h2 id={`s-${si}`} class="text-xl">{s.heading}</h2>
-          <ul class="mt-2">
+          <div class="checklist-bar no-print mt-2" data-checklist-bar={s.listId}>
+            <span class="checklist-count" data-checklist-count={s.listId} aria-live="polite">{s.items.length} items</span>
+            <button type="button" class="checklist-reset" data-checklist-reset={s.listId} hidden>Reset this list</button>
+          </div>
+          <ul
+            data-checklist={s.listId}
+            data-checklist-total={String(s.items.length)}
+            data-checklist-title={`${c.title}: ${s.heading}`}
+            data-checklist-href={`/resources/checklists/${c.slug}/`}
+          >
             {s.items.map((item, ii) => (
-              <li class="check-item">
-                <input type="checkbox" id={`c-${si}-${ii}`} />
-                <label for={`c-${si}-${ii}`}>{item}</label>
+              <li class="check-row check-item" data-item={s.ids[ii]}>
+                <input class="check-box" type="checkbox" id={domId(s.listId, s.ids[ii])} data-item={s.ids[ii]} disabled />
+                <label class="check-label" for={domId(s.listId, s.ids[ii])}>{item}</label>
               </li>
             ))}
           </ul>
         </section>
       ))}
     </div>
-    <p class="mt-8 no-print">Read the full guide: <a href={c.relatedGuide.href}>{c.relatedGuide.label}</a>. Ticks on this page are not saved.</p>
+    <p class="mt-8 no-print">Read the full guide: <a href={c.relatedGuide.href}>{c.relatedGuide.label}</a>. Your ticks are saved in this browser only; see <a href="/my-progress/">your progress</a>.</p>
     <p class="mt-6 print-only text-sm">From Stay Prepped. General guidance only; follow official advice in an emergency. In an emergency where life is at risk, call 999.</p>
   </div>
 </BaseLayout>

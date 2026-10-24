@@ -1,11 +1,14 @@
 // Build-time HTML tweaks for Markdown content. No client JavaScript.
 //
-// 1. GFM task lists ("- [ ] item") become static tick lists: the disabled
-//    checkbox is replaced by a decorative tick chip, so screen readers hear a
-//    plain list rather than "checkbox, not checked, disabled".
+// 1. GFM task lists ("- [ ] item") become interactive, persistent checklists
+//    (one per "##" section) with stable ids from src/lib/checklist-ids.mjs.
+//    Checkboxes ship disabled and are enabled by src/scripts/checklists.ts,
+//    so without JavaScript they read as a plain list.
 // 2. In tool pages (src/content/tools), each "## " section ("How this is
 //    calculated", "Assumptions and limits") is wrapped in a <details>
 //    disclosure so the explanation sits below the results without crowding.
+
+import { areaForGuideList, checklistId, domId, itemIds } from './checklist-ids.mjs';
 
 const TICK = {
   type: 'element',
@@ -32,24 +35,103 @@ function walk(node, fn) {
 }
 
 function tickLists(tree) {
+  // Mark GFM task lists; the interactive conversion happens per section in
+  // interactiveChecklists() so each "##" section becomes one checklist.
   walk(tree, (node) => {
     if (node.type !== 'element' || node.tagName !== 'ul' || !hasClass(node, 'contains-task-list')) return;
     node.properties.className = ['tick-list', 'prose-ticks'];
-    for (const li of node.children) {
-      if (li.type !== 'element' || li.tagName !== 'li') continue;
-      li.properties.className = [];
-      // Remove the checkbox (directly or inside a <p> for loose lists).
-      const strip = (parent) => {
-        parent.children = parent.children.filter((c) => !(c.type === 'element' && c.tagName === 'input'));
-        for (const c of parent.children) if (c.type === 'element' && c.tagName === 'p') strip(c);
-      };
-      strip(li);
-      // Trim the leading space left behind.
-      const first = li.children.find((c) => c.type === 'text' || c.type === 'element');
-      if (first?.type === 'text') first.value = first.value.replace(/^\s+/, '');
-      li.children = [structuredClone(TICK), { type: 'element', tagName: 'span', properties: {}, children: li.children }];
-    }
+    node.properties.dataTaskList = '';
   });
+}
+
+// GitHub-style heading slug (what Astro's heading ids use), without a dependency.
+function headingSlug(text) {
+  return String(text).toLowerCase().trim().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/\s/g, '-');
+}
+
+function itemText(li) {
+  const clone = structuredClone(li);
+  const strip = (n) => {
+    n.children = (n.children ?? []).filter((c) => !(c.type === 'element' && (c.tagName === 'input' || c.tagName === 'ul' || c.tagName === 'ol')));
+    n.children.forEach(strip);
+  };
+  strip(clone);
+  return textOf(clone).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Turn task lists into real, persistent checklists. Every task list inside one
+ * "##" section (including its "###" sub-headings) shares one checklist id.
+ */
+function interactiveChecklists(tree, { scope, page, href }) {
+  let sectionTitle = 'Checklist';
+  let sectionSlug = 'checklist';
+  const groups = new Map(); // listId -> { lists: [ul], texts: [], title, slug }
+  const visit = (node) => {
+    for (const child of node.children ?? []) {
+      if (el(child, 'h2')) {
+        sectionTitle = textOf(child).trim();
+        sectionSlug = headingSlug(sectionTitle);
+      }
+      if (el(child, 'ul') && child.properties?.dataTaskList !== undefined) {
+        const id = checklistId(scope, page, sectionSlug);
+        if (!groups.has(id)) groups.set(id, { lists: [], title: sectionTitle, slug: sectionSlug });
+        groups.get(id).lists.push(child);
+        continue;
+      }
+      visit(child);
+    }
+  };
+  visit(tree);
+
+  for (const [listId, g] of groups) {
+    const lis = g.lists.flatMap((ul) => ul.children.filter((c) => el(c, 'li')));
+    const ids = itemIds(lis.map(itemText));
+    const area = scope === 'guide' ? areaForGuideList(page, g.slug) : undefined;
+    let k = 0;
+    g.lists.forEach((ul, idx) => {
+      ul.properties.dataChecklist = listId;
+      delete ul.properties.dataTaskList;
+      if (idx === 0) {
+        ul.properties.dataChecklistTotal = String(lis.length);
+        ul.properties.dataChecklistTitle = g.title;
+        ul.properties.dataChecklistHref = `${href}#${g.slug}`;
+        if (area) ul.properties.dataChecklistArea = area;
+      }
+      for (const li of ul.children) {
+        if (!el(li, 'li')) continue;
+        const itemId = ids[k++];
+        // Remove the GFM checkbox (directly or inside a <p> for loose lists).
+        const strip = (parent) => {
+          parent.children = parent.children.filter((c) => !(c.type === 'element' && c.tagName === 'input'));
+          for (const c of parent.children) if (c.type === 'element' && c.tagName === 'p') strip(c);
+        };
+        strip(li);
+        const first = li.children.find((c) => c.type === 'text' || c.type === 'element');
+        if (first?.type === 'text') first.value = first.value.replace(/^\s+/, '');
+        const cbId = domId(listId, itemId);
+        li.properties.className = ['check-row'];
+        li.properties.dataItem = itemId;
+        li.children = [
+          h('input', 'check-box', [], { type: 'checkbox', id: cbId, dataItem: itemId, disabled: true }),
+          h('label', 'check-label', li.children, { htmlFor: cbId }),
+        ];
+      }
+    });
+    // Count chip + reset, placed before the first list of the group.
+    const first = g.lists[0];
+    first.properties.dataChecklistFirst = '';
+    const bar = h('div', 'checklist-bar', [
+      h('span', 'checklist-count', [t(`${lis.length} items`)], { dataChecklistCount: listId, ariaLive: 'polite' }),
+      h('button', 'checklist-reset', [t('Reset this list')], { type: 'button', dataChecklistReset: listId, hidden: true }),
+    ], { dataChecklistBar: listId });
+    const insertBefore = (parent) => {
+      const i = (parent.children ?? []).indexOf(first);
+      if (i >= 0) { parent.children.splice(i, 0, bar); return true; }
+      return (parent.children ?? []).some((c) => insertBefore(c));
+    };
+    insertBefore(tree);
+  }
 }
 
 function toolDisclosures(tree) {
@@ -218,6 +300,12 @@ export default function rehypeStayPrepped() {
   return (tree, file) => {
     tickLists(tree);
     const path = String(file?.path ?? file?.history?.[0] ?? '');
+    const m = path.match(/\/content\/(guides|gear|tools)\/([^/]+)\.mdx?$/);
+    if (m) {
+      const scope = { guides: 'guide', gear: 'gear', tools: 'tool' }[m[1]];
+      const base = { guides: '/guides/', gear: '/gear/', tools: '/tools/' }[m[1]];
+      interactiveChecklists(tree, { scope, page: m[2], href: `${base}${m[2]}/` });
+    }
     if (path.includes('/content/tools/')) toolDisclosures(tree);
     if (path.includes('/content/guides/') || path.includes('/content/gear/')) {
       enhanceArticle(tree, file?.data?.astro?.frontmatter ?? {});

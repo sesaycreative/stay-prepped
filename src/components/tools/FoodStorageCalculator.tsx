@@ -10,7 +10,8 @@ import {
   type Diet,
   type FoodInputs,
 } from '../../lib/calculators/food';
-import { ChoiceGroup, DaysField, EmptyResult, NumberField, ToolActions, fmt, num, usePersistentForm } from './ui';
+import { ChoiceGroup, DaysField, EmptyResult, NumberField, ToolActions, fmt, num, useChecklistBinding, useHouseholdSeed, useMarkToolUsed, usePersistentForm } from './ui';
+import { itemIds } from '../../lib/checklist-ids.mjs';
 
 interface FormState {
   adults: string;
@@ -56,6 +57,11 @@ export default function FoodStorageCalculator() {
     : null;
 
   const result = useMemo(() => (input ? calculateFood(input) : null), [JSON.stringify(input)]);
+  const seeded = useHouseholdSeed(setState, STORAGE_KEY);
+  const personal = restored || seeded || JSON.stringify(state) !== JSON.stringify(INITIAL);
+  useMarkToolUsed('food', !!result, personal);
+  const shopIds = useMemo(() => (result ? itemIds(result.groups.flatMap((g) => g.lines.map((l) => l.item))) : []), [JSON.stringify(result?.groups.map((g) => g.lines.map((l) => l.item)))]);
+  useChecklistBinding([shopIds.join('|')]);
   const comparison = useMemo(
     () => (input ? foodComparison({ adults: input.adults, children: input.children, diet: input.diet, activity: input.activity }) : []),
     [JSON.stringify(input)],
@@ -174,22 +180,44 @@ export default function FoodStorageCalculator() {
                   </span>
                 </p>
               )}
-              <div className="grid gap-5">
-                {result.groups.map((g) => (
+              <div className="checklist-bar no-print" data-checklist-bar="tool/food-storage-calculator/shopping-checklist">
+                <span className="checklist-count" data-checklist-count="tool/food-storage-calculator/shopping-checklist" aria-live="polite">
+                  {shopIds.length} items
+                </span>
+                <button type="button" className="checklist-reset" data-checklist-reset="tool/food-storage-calculator/shopping-checklist" hidden>
+                  Reset this list
+                </button>
+              </div>
+              <div className="grid gap-5 tone-food">
+                {result.groups.map((g, gi) => (
                   <div key={g.id}>
                     <h4>
                       {g.label} <span className="muted font-normal">({Math.round(g.share * 100)}% of calories)</span>
                     </h4>
-                    <ul className="mt-1">
-                      {g.lines.map((l) => (
-                        <li key={l.item} className="check-item">
-                          <input type="checkbox" aria-label={`${l.item}, about ${formatAmount(l.amount, l.unit)}`} />
-                          <span>
-                            <strong>{l.item}</strong>: about {formatAmount(l.amount, l.unit)}{' '}
-                            <span className="muted">({fmt(l.kcal)} kcal)</span>
-                          </span>
-                        </li>
-                      ))}
+                    <ul
+                      className="mt-1"
+                      data-checklist="tool/food-storage-calculator/shopping-checklist"
+                      {...(gi === 0
+                        ? {
+                            'data-checklist-total': String(shopIds.length),
+                            'data-checklist-title': 'Food calculator shopping checklist',
+                            'data-checklist-href': '/tools/food-storage-calculator/',
+                          }
+                        : {})}
+                    >
+                      {g.lines.map((l, li) => {
+                        const id = shopIds[result.groups.slice(0, gi).reduce((n, x) => n + x.lines.length, 0) + li];
+                        const domId = `cl-food-shop-${id}`;
+                        return (
+                          <li key={l.item} className="check-row check-item" data-item={id}>
+                            <input className="check-box" type="checkbox" id={domId} data-item={id} disabled />
+                            <label className="check-label" htmlFor={domId}>
+                              <strong>{l.item}</strong>: about {formatAmount(l.amount, l.unit)}{' '}
+                              <span className="muted">({fmt(l.kcal)} kcal)</span>
+                            </label>
+                          </li>
+                        );
+                      })}
                     </ul>
                     <p className="field-help mt-1">Ideas: {g.examples.join(', ')}.</p>
                     <p className="field-help">Storage: {g.storageTip}</p>

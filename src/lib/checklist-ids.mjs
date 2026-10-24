@@ -48,11 +48,11 @@ export function domId(listId, itemId) {
 export const GUIDE_AREAS = {
   'how-much-water-to-store': 'water',
   'how-much-food-to-store': 'food',
-  '72-hour-emergency-bag': 'bag',
+  '72-hour-emergency-bag': { section: 'what-to-pack', area: 'bag' },
   'preparing-for-a-power-cut': 'power',
   'prepping-for-beginners': { section: '8-check-your-first-aid-kit-and-medicines', area: 'first-aid' },
-  'family-emergency-plan': 'family',
-  'essential-documents': 'home-docs',
+  'family-emergency-plan': { section: 'step-8-write-it-down-and-share-it', area: 'family' },
+  'essential-documents': { section: 'which-documents-matter-most', area: 'home-docs' },
 };
 
 /** Area for a checklist in a given guide section, or undefined. */

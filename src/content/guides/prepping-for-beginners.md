@@ -93,6 +93,12 @@ Write key contacts on a card for each member of your household: family, a neighb
 
 Make sure your first aid kit is stocked and in date. If anyone relies on regular medicines, talk to your GP or pharmacist about how to avoid running low. Do not stockpile prescription medicines without their advice.
 
+- [ ] A first aid kit, stocked and in date
+- [ ] Plasters, bandages, sterile dressings, antiseptic and a thermometer in the kit
+- [ ] A written list of everyone's regular medicines and doses
+- [ ] Repeat prescriptions requested in good time, up to 5 working days before you run out
+- [ ] A word with your GP or pharmacist if anyone relies on regular medicines
+
 ## 9. Make a simple household plan
 
 Agree as a household:
