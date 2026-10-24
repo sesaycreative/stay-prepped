@@ -2,7 +2,8 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import GuideCard from '../../../components/GuideCard.astro';
-import { GUIDE_CATEGORIES, GUIDE_CATEGORY_KEYS, type GuideCategory } from '../../../lib/site';
+import Icon from '../../../components/Icon.astro';
+import { GUIDE_CATEGORIES, GUIDE_CATEGORY_KEYS, GUIDE_CATEGORY_TONE, type GuideCategory } from '../../../lib/site';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -15,20 +16,34 @@ export async function getStaticPaths() {
 interface Props { category: GuideCategory; guides: CollectionEntry<'guides'>[] }
 const { category, guides } = Astro.props;
 const c = GUIDE_CATEGORIES[category];
+const tone = GUIDE_CATEGORY_TONE[category];
 ---
 <BaseLayout
   title={`${c.label} guides`}
   description={`${c.blurb} Practical emergency-preparedness guides from Stay Prepped.`}
   breadcrumbs={[{ label: 'Guides', href: '/guides/' }, { label: c.label }]}
 >
-  <div class="wrap">
-    <header class="py-6 measure">
-      <h1>{c.label}</h1>
-      <p class="mt-3 text-lg">{c.blurb}</p>
-    </header>
-    <div class="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-      {guides.map((g) => <GuideCard guide={g} showCategory={false} />)}
+  <div class={`tone-${tone}`}>
+    <div class="wrap">
+      <header class="page-head cat-head">
+        <span class="chip chip-lg"><Icon name={c.icon} size={28} /></span>
+        <div>
+          <h1>{c.label}</h1>
+          <p>{c.blurb}</p>
+        </div>
+      </header>
     </div>
-    <p class="mt-8"><a href="/guides/">All guides</a></p>
+    <section class="band" aria-label={`${c.label} guides`}>
+      <div class="wrap">
+        <div class="card-grid">
+          {guides.map((g) => <GuideCard guide={g} showCategory={false} />)}
+        </div>
+        <p class="mt-8"><a href="/guides/" class="font-bold">All guides</a></p>
+      </div>
+    </section>
   </div>
 </BaseLayout>
+<style>
+  .cat-head { display: flex; gap: 1.1rem; align-items: center; }
+  .cat-head p { margin-top: 0.3rem; }
+</style>

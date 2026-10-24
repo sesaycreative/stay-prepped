@@ -1,21 +1,40 @@
 ---
 import HubLayout from '../layouts/HubLayout.astro';
+import Icon from '../components/Icon.astro';
+const printables = [
+  { href: '/resources/checklists/home-emergency-supplies/', label: '3-day home emergency supplies checklist' },
+  { href: '/resources/checklists/grab-bag/', label: '72-hour grab bag checklist' },
+  { href: '/resources/checklists/essential-documents/', label: 'Essential documents checklist' },
+];
 ---
 <HubLayout
   title="Emergency Kits"
   seoTitle="Emergency kits and grab bags"
   description="How to put together a home emergency kit and a 72-hour grab bag, with printable checklists and practical advice for families, older relatives and pets."
-  intro="Two kits cover most situations: a home kit for staying put through a power cut or water outage, and a grab bag for leaving quickly. Here is how to build both."
+  intro="Two kits cover most situations: a home kit for staying put, and a grab bag for leaving quickly."
+  tone="kits"
+  art="grab-bag"
   guideCategories={['emergency-kits']}
   extraGuides={['essential-documents']}
   toolSlugs={['72-hour-bag-checklist', 'emergency-supplies-checklist', 'first-aid-kit-checklist', 'vehicle-kit-checklist']}
 >
-  <section slot="after" class="mt-12" aria-labelledby="kits-print">
+  <Fragment slot="why">
+    <p>A home kit gets you through a power cut or water outage without a trip to the shops. A grab bag holds the essentials if you are told to leave, so you can go in minutes without having to think.</p>
+  </Fragment>
+  <section slot="after" class="band-plain pt-0" aria-labelledby="kits-print">
     <h2 id="kits-print">Printable checklists</h2>
-    <ul class="mt-3 grid gap-2" style="list-style: disc; padding-left: 1.3rem">
-      <li><a href="/resources/checklists/home-emergency-supplies/">3-day home emergency supplies checklist</a></li>
-      <li><a href="/resources/checklists/grab-bag/">72-hour grab bag checklist</a></li>
-      <li><a href="/resources/checklists/essential-documents/">Essential documents checklist</a></li>
+    <ul class="card-grid mt-4">
+      {printables.map((p) => (
+        <li class="card is-link tone-kits print-card">
+          <span class="chip"><Icon name="printer" size={22} /></span>
+          <a href={p.href} class="stretched print-link">{p.label}</a>
+        </li>
+      ))}
     </ul>
   </section>
 </HubLayout>
+<style>
+  .print-card { flex-direction: row; align-items: center; gap: 0.85rem; padding: 1rem 1.1rem; }
+  .print-link { font-weight: 700; color: var(--heading); text-decoration: none; }
+  .print-card:hover .print-link { text-decoration: underline; }
+</style>

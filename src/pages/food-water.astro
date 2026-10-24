@@ -5,9 +5,15 @@ import HubLayout from '../layouts/HubLayout.astro';
   title="Food & Water"
   seoTitle="Emergency food supply and water storage: how much to keep"
   description="How much food and water to store for an emergency, how to keep it fresh and how to make doubtful water safer. Free calculators and UK-focused guides."
-  intro="Water and food are the foundations of any emergency plan. Start with 3 days of each for everyone in your home, pets included, then build up from there."
+  intro="Start with 3 days of food and water for everyone at home, pets included."
+  tone="water"
+  art="water-storage"
   guideCategories={['water', 'food']}
   toolSlugs={['water-storage-calculator', 'food-storage-calculator', 'food-rotation-tracker', 'emergency-cooking-calculator', 'long-term-food-planner', 'rainwater-collection-calculator']}
 >
-  <p slot="after" class="mt-10 measure">Choosing a filter? Read our <a href="/gear/how-to-choose-a-water-filter/">guide to emergency water filters</a>.</p>
+  <Fragment slot="why">
+    <p>Water and food are the foundations of any emergency plan. Mains water and supermarkets are very reliable, but a burst main, a flood or heavy snow can interrupt them for a few days, and shops can sell out quickly.</p>
+    <p>Once you have 3 days of each, build up from there at your own pace.</p>
+  </Fragment>
+  <p slot="after" class="mt-2 measure">Choosing a filter? Read our <a href="/gear/how-to-choose-a-water-filter/">guide to emergency water filters</a>.</p>
 </HubLayout>

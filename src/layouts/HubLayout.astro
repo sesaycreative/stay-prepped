@@ -1,21 +1,27 @@
 ---
-// Section hub pages (Start Prepping, Food & Water, Emergency Kits, Survival Skills).
+// Section hub pages (Start here, Food & Water, Emergency Kits, Family & Home,
+// Survival Skills). One-line intro, then cards. Longer explanation goes in
+// the optional `why` slot, shown as a "Why this matters" disclosure.
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import GuideCard from '../components/GuideCard.astro';
 import ToolCard from '../components/ToolCard.astro';
-import type { GuideCategory } from '../lib/site';
+import Icon from '../components/Icon.astro';
+import Illustration from '../components/illustrations/Illustration.astro';
+import type { GuideCategory, IllustrationKey, Tone } from '../lib/site';
 
 interface Props {
   title: string;
   seoTitle?: string;
   description: string;
   intro: string;
+  tone?: Tone;
+  art?: IllustrationKey;
   guideCategories?: GuideCategory[];
   extraGuides?: string[];
   toolSlugs?: string[];
 }
-const { title, seoTitle, description, intro, guideCategories = [], extraGuides = [], toolSlugs = [] } = Astro.props;
+const { title, seoTitle, description, intro, tone = 'neutral', art, guideCategories = [], extraGuides = [], toolSlugs = [] } = Astro.props;
 const allGuides = await getCollection('guides');
 const guides: CollectionEntry<'guides'>[] = [
   ...allGuides.filter((g) => guideCategories.includes(g.data.category)),
@@ -31,30 +37,59 @@ const tools = toolSlugs.map((s) => {
   if (!t) throw new Error(`Hub ${title}: unknown tool ${s}`);
   return t;
 }).sort((a, b) => (a.data.status === b.data.status ? a.data.order - b.data.order : a.data.status === 'live' ? -1 : 1));
+const liveTools = tools.filter((t) => t.data.status === 'live');
+const soonTools = tools.filter((t) => t.data.status !== 'live');
+const hasWhy = Astro.slots.has('why');
 ---
 <BaseLayout title={seoTitle ?? title} description={description} breadcrumbs={[{ label: title }]}>
-  <div class="wrap">
-    <header class="py-6 measure">
-      <h1>{title}</h1>
-      <p class="mt-3 text-lg">{intro}</p>
-    </header>
-    <slot />
+  <div class={`tone-${tone}`}>
+    <div class="wrap">
+      <header class="page-head page-head-tone">
+        <div>
+          <h1>{title}</h1>
+          <p>{intro}</p>
+        </div>
+        {art && <div class="page-head-art"><Illustration name={art} width={180} /></div>}
+      </header>
+      {hasWhy && (
+        <details class="disclosure mb-8">
+          <summary><Icon name="info" size={20} /> Why this matters</summary>
+          <div class="disclosure-body"><slot name="why" /></div>
+        </details>
+      )}
+      <slot />
+    </div>
+
     {guides.length > 0 && (
-      <section class="mt-12" aria-labelledby="hub-guides">
-        <h2 id="hub-guides">Guides</h2>
-        <div class="mt-3 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-          {guides.map((g) => <GuideCard guide={g} />)}
+      <section class="band mt-10" aria-labelledby="hub-guides">
+        <div class="wrap">
+          <div class="band-head"><h2 id="hub-guides">Guides</h2></div>
+          <div class="card-grid">
+            {guides.map((g) => <GuideCard guide={g} />)}
+          </div>
         </div>
       </section>
     )}
     {tools.length > 0 && (
-      <section class="mt-12" aria-labelledby="hub-tools">
-        <h2 id="hub-tools">Tools</h2>
-        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {tools.map((t) => <ToolCard tool={t} />)}
+      <section class={`band-plain ${guides.length ? '' : 'mt-10'}`} aria-labelledby="hub-tools">
+        <div class="wrap">
+          <div class="band-head"><h2 id="hub-tools">Tools</h2></div>
+          {liveTools.length > 0 && (
+            <div class="card-grid">
+              {liveTools.map((t) => <ToolCard tool={t} art />)}
+            </div>
+          )}
+          {soonTools.length > 0 && (
+            <details class="disclosure tone-neutral mt-6">
+              <summary><Icon name="hourglass" size={20} /> Coming soon ({soonTools.length})</summary>
+              <div class="disclosure-body card-grid">
+                {soonTools.map((t) => <ToolCard tool={t} />)}
+              </div>
+            </details>
+          )}
         </div>
       </section>
     )}
-    <slot name="after" />
+    <div class="wrap"><slot name="after" /></div>
   </div>
 </BaseLayout>

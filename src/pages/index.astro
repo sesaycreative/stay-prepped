@@ -7,32 +7,32 @@ import GuideCard from '../components/GuideCard.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
 import Icon from '../components/Icon.astro';
-import { GUIDE_CATEGORIES, SITE, formatDate, isoDate } from '../lib/site';
+import Illustration from '../components/illustrations/Illustration.astro';
+import { RISKS } from '../data/risks';
+import { GUIDE_HUBS, SITE, type IllustrationKey } from '../lib/site';
 
 const tools = (await getCollection('tools')).sort((a, b) => a.data.order - b.data.order);
 const live = tools.filter((t) => t.data.status === 'live');
-const soon = tools.filter((t) => t.data.status === 'coming-soon').slice(0, 3);
 const guides = await getCollection('guides');
-const byDate = [...guides].sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime() || a.data.title.localeCompare(b.data.title));
 const popularOrder = ['how-much-water-to-store', 'how-much-food-to-store', '72-hour-emergency-bag', 'preparing-for-a-power-cut'];
 const popular = popularOrder.map((s) => guides.find((g) => g.id === s)).filter((g) => g !== undefined);
-const latest = byDate.filter((g) => !popularOrder.includes(g.id)).slice(0, 4);
 const gear = await getCollection('gear');
 
-const categoryLinks = [
-  { href: '/food-water/', label: 'Food & water', icon: 'droplets', blurb: 'How much to store, how to keep it fresh and how to treat water.' },
-  { href: '/emergency-kits/', label: 'Emergency kits', icon: 'backpack', blurb: 'Grab bags and home supplies, packed and ready.' },
-  { href: '/guides/category/power-outages/', label: GUIDE_CATEGORIES['power-outages'].label, icon: 'plug-zap', blurb: GUIDE_CATEGORIES['power-outages'].blurb },
-  { href: '/guides/category/family/', label: GUIDE_CATEGORIES.family.label, icon: 'users', blurb: GUIDE_CATEGORIES.family.blurb },
-  { href: '/guides/category/home/', label: GUIDE_CATEGORIES.home.label, icon: 'house', blurb: GUIDE_CATEGORIES.home.blurb },
-  { href: '/survival-skills/', label: 'Survival skills', icon: 'flame', blurb: GUIDE_CATEGORIES['survival-skills'].blurb },
-];
+const hubBlurbs: Record<string, { blurb: string; art?: IllustrationKey }> = {
+  '/food-water/': { blurb: 'How much to store and how to keep it fresh.', art: 'food-cupboard' },
+  '/emergency-kits/': { blurb: 'Grab bags and home supplies.', art: 'grab-bag' },
+  '/guides/category/power-outages/': { blurb: 'Light, warmth and news when the power goes.', art: 'power-cut' },
+  '/family-home/': { blurb: 'Household plans and important papers.', art: 'family-plan' },
+  '/survival-skills/': { blurb: 'Coping calmly when services stop.' },
+};
+const hubs = GUIDE_HUBS.filter((h) => h.href in hubBlurbs);
 
 const steps = [
-  { title: 'Store water', text: '3 days of water for everyone, pets included.', href: '/tools/water-storage-calculator/', cta: 'Work out how much' },
-  { title: 'Stock a food cupboard', text: '3 days of food that needs no fridge or power.', href: '/tools/food-storage-calculator/', cta: 'Make a shopping list' },
-  { title: 'Make a plan', text: 'Meeting places, contacts and who does what.', href: '/guides/family-emergency-plan/', cta: 'Read the guide' },
+  { icon: 'droplet', label: 'Store water', href: '/tools/water-storage-calculator/', tone: 'water' },
+  { icon: 'wheat', label: 'Stock food', href: '/tools/food-storage-calculator/', tone: 'water' },
+  { icon: 'users', label: 'Make a plan', href: '/guides/family-emergency-plan/', tone: 'home' },
 ];
+const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
 ---
 <BaseLayout title={SITE.name} description="Emergency preparedness made practical for UK households: free prepper tools, calculators for your emergency food supply and water storage, grab-bag checklists and plain-English guides to get ready.">
   <section class="hero" aria-labelledby="hero-title">
@@ -44,180 +44,180 @@ const steps = [
           <span>Stay Ready.</span>
           <span>Protect What Matters.</span>
         </h1>
-        <p class="hero-sub">Practical guides, free tools and printable checklists to help you prepare for emergencies, build resilience and become more self-reliant.</p>
+        <p class="hero-sub">Free tools, checklists and plain-English guides to get your home ready for 3 days.</p>
         <div class="hero-ctas">
           <a href="/start/" class="btn btn-primary">Start Prepping</a>
           <a href="/tools/" class="btn btn-ghost">Explore Free Tools</a>
         </div>
+        <a href="/why-prepare/" class="hero-why"><Icon name="landmark" size={18} /> Why prepare? What the government says</a>
       </div>
-      <aside class="field-card" aria-labelledby="first-steps">
-        <h2 id="first-steps" class="field-card-title">Your first three days</h2>
-        <p class="field-card-note">The UK government suggests being ready to cope for 3 days. Start here.</p>
-        <ol class="field-steps">
-          {steps.map((s) => (
-            <li>
-              <strong>{s.title}</strong>
-              <span>{s.text}</span>
-              <a href={s.href}>{s.cta}</a>
+      <nav class="steps" aria-labelledby="first-steps">
+        <h2 id="first-steps" class="steps-title">Your first three days</h2>
+        <ol class="steps-list">
+          {steps.map((s, i) => (
+            <li class={`tone-${s.tone}`}>
+              <a href={s.href} class="step">
+                <span class="chip chip-lg"><Icon name={s.icon} size={28} /></span>
+                <span class="step-label"><span class="step-num">{i + 1}</span>{s.label}</span>
+                <Icon name="arrow-right" size={20} class="step-arrow" />
+              </a>
             </li>
           ))}
         </ol>
-      </aside>
+      </nav>
     </div>
   </section>
 
-  <div class="wrap">
-    <section class="section" aria-labelledby="getting-started">
-      <div class="section-head">
-        <h2 id="getting-started">Getting started</h2>
-        <p>New to this? You do not need a bunker or a big budget. Most of being prepared is a few sensible things, done once and checked now and then.</p>
+  <section class="band tone-gov" aria-labelledby="why-title">
+    <div class="wrap">
+      <div class="band-head">
+        <div>
+          <h2 id="why-title">What the government says to prepare for</h2>
+          <p>Be ready to cope on your own for 3 days.</p>
+        </div>
+        <a href="/why-prepare/" class="band-more">All situations and the checklist</a>
       </div>
-      <div class="start-grid">
-        <a class="start-link" href="/guides/prepping-for-beginners/">
-          <Icon name="compass" size={26} />
-          <span><strong>The first 10 things to do</strong><span>A calm checklist for complete beginners.</span></span>
-        </a>
-        <a class="start-link" href="/tools/preparedness-score/">
-          <Icon name="clipboard-check" size={26} />
-          <span><strong>Check how ready you are</strong><span>30 questions, about 5 minutes, instant results.</span></span>
-        </a>
-        <a class="start-link" href="/resources/">
-          <Icon name="printer" size={26} />
-          <span><strong>Print a checklist</strong><span>Home supplies, grab bag, power cuts, documents.</span></span>
-        </a>
-      </div>
-    </section>
+      <ul class="card-grid">
+        {teaseRisks.map((r) => (
+          <li class={`card is-link tone-${r.tone}`}>
+            <span class="card-art"><Illustration name={r.art!} width={128} /></span>
+            <h3 class="card-title"><a href={r.href} class="stretched">{r.title}</a></h3>
+            <p class="card-text">{r.looks}</p>
+            <span class="card-cta" aria-hidden="true">{r.linkLabel} <Icon name="arrow-right" size={18} /></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
 
-    <section class="section" aria-labelledby="free-tools">
-      <div class="section-head">
-        <h2 id="free-tools">Free prepper tools</h2>
-        <p>Calculators that do the sums for you. Free, no sign-up, and they run in your browser, so your answers stay on your device.</p>
+  <section class="band-plain" aria-labelledby="free-tools">
+    <div class="wrap">
+      <div class="band-head">
+        <div>
+          <h2 id="free-tools">Free prepper tools</h2>
+          <p>They do the sums. Nothing leaves your device.</p>
+        </div>
+        <a href="/tools/" class="band-more">All {tools.length} tools</a>
       </div>
-      <div class="grid gap-4 md:grid-cols-3">
-        {live.map((t) => <ToolCard tool={t} />)}
+      <div class="card-grid card-grid-fit">
+        {live.map((t) => <ToolCard tool={t} art />)}
       </div>
-      <h3 class="mt-8 text-lg" style="font-family: var(--font-body)">Coming soon</h3>
-      <div class="mt-3 grid gap-4 md:grid-cols-3">
-        {soon.map((t) => <ToolCard tool={t} headingLevel="h4" />)}
-      </div>
-      <p class="mt-5"><a href="/tools/">See all {tools.length} tools</a></p>
-    </section>
+    </div>
+  </section>
 
-    <section class="section" aria-labelledby="popular-guides">
-      <div class="section-head">
-        <h2 id="popular-guides">Popular guides</h2>
+  <section class="band tone-water" aria-labelledby="categories">
+    <div class="wrap">
+      <div class="band-head">
+        <div>
+          <h2 id="categories">Find your topic</h2>
+          <p>Each area has its own colour, here and across the site.</p>
+        </div>
+        <a href="/guides/" class="band-more">All guides</a>
       </div>
-      <div class="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
-        {popular.map((g) => <GuideCard guide={g} />)}
+      <div class="card-grid hub-grid">
+        {hubs.map((h) => (
+          <CategoryCard href={h.href} label={h.label} icon={h.icon} tone={h.tone} blurb={hubBlurbs[h.href].blurb} art={hubBlurbs[h.href].art} />
+        ))}
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section" aria-labelledby="categories">
-      <div class="section-head">
-        <h2 id="categories">Preparedness topics</h2>
+  <section class="band-plain" aria-labelledby="popular-guides">
+    <div class="wrap">
+      <div class="band-head">
+        <div>
+          <h2 id="popular-guides">Popular guides</h2>
+          <p>Start with the questions most people ask.</p>
+        </div>
       </div>
-      <div class="grid gap-x-10 md:grid-cols-2 lg:grid-cols-3">
-        {categoryLinks.map((c) => <CategoryCard {...c} />)}
+      <div class="card-grid">
+        {popular.map((g) => <GuideCard guide={g} art={false} />)}
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="section score-cta" aria-labelledby="score-cta">
+  <section class="band tone-tools" aria-labelledby="score-cta">
+    <div class="wrap score-cta">
+      <Illustration name="preparedness-score" width={170} class="score-art" />
       <div>
         <h2 id="score-cta">How prepared is your home?</h2>
-        <p class="mt-2">Answer 30 quick questions across 10 areas, from water and first aid to documents and money. You will get a score out of 100, your three biggest gaps and one practical next step for each.</p>
+        <p class="mt-2">30 quick questions. A score out of 100 and your three biggest gaps.</p>
       </div>
       <a href="/tools/preparedness-score/" class="btn btn-primary">Take the preparedness score</a>
-    </section>
+    </div>
+  </section>
 
-    {latest.length > 0 && (
-      <section class="section" aria-labelledby="latest">
-        <div class="section-head">
-          <h2 id="latest">Latest articles</h2>
-        </div>
-        <ul class="latest-list">
-          {latest.map((g) => (
-            <li>
-              <a href={`/guides/${g.id}/`}>{g.data.title}</a>
-              <span class="muted text-sm">{GUIDE_CATEGORIES[g.data.category].label} · <time datetime={isoDate(g.data.publishedAt)}>{formatDate(g.data.publishedAt)}</time></span>
-            </li>
-          ))}
-        </ul>
-        <p class="mt-4"><a href="/guides/">All guides</a></p>
-      </section>
-    )}
-
-    <div class="section"><NewsletterForm /></div>
-
-    {gear.length > 0 && (
-      <section class="section" aria-labelledby="gear-guides">
-        <div class="section-head">
-          <h2 id="gear-guides">Gear buying guides</h2>
-          <p>What to look for when you buy, with no sponsored picks.</p>
-        </div>
-        <ul class="latest-list">
-          {gear.map((g) => (
-            <li><a href={`/gear/${g.id}/`}>{g.data.title}</a><span class="muted text-sm">{g.data.description}</span></li>
-          ))}
-        </ul>
-      </section>
-    )}
+  <div class="band-plain">
+    <div class="wrap home-split">
+      <NewsletterForm />
+      {gear.length > 0 && (
+        <section class="tone-kits" aria-labelledby="gear-guides">
+          <h2 id="gear-guides" class="text-xl">Gear buying guides</h2>
+          <p class="muted mt-1">What to look for, with no sponsored picks.</p>
+          <ul class="mt-4 grid gap-3">
+            {gear.map((g) => (
+              <li class="card is-link gear-card">
+                <span class="chip"><Icon name="shopping-bag" size={22} /></span>
+                <a href={`/gear/${g.id}/`} class="stretched gear-link">{g.data.title}</a>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-3"><a href="/gear/" class="font-bold">All buying guides</a></p>
+        </section>
+      )}
+    </div>
   </div>
 </BaseLayout>
 
 <style>
-  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--rule); }
+  .hero { position: relative; overflow: hidden; }
   .hero-contours { position: absolute; inset: 0 0 0 30%; opacity: 0.9; pointer-events: none; }
-  .hero-grid { position: relative; display: grid; gap: 2.5rem; padding-block: 3rem 3.5rem; }
-  @media (min-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: center; padding-block: 5rem; } }
+  .hero-grid { position: relative; display: grid; gap: 2.5rem; padding-block: 2.75rem 3.5rem; }
+  @media (min-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: center; padding-block: 4.5rem 5rem; } }
   .hero-title { font-size: clamp(2.4rem, 1.4rem + 4.4vw, 4.4rem); line-height: 1.02; letter-spacing: -0.02em; }
   .hero-title span { display: block; }
   .hero-title span:last-child { color: var(--primary); }
-  .hero-sub { margin-top: 1.25rem; font-size: 1.2rem; max-width: 34rem; }
+  .hero-sub { margin-top: 1.25rem; font-size: 1.2rem; max-width: 30rem; }
   .hero-ctas { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
   .hero-ctas .btn { min-height: 3.1rem; padding-inline: 1.4rem; font-size: 1.05rem; }
-
-  .field-card {
-    background: var(--surface); border: 2px solid var(--heading); border-radius: var(--radius-m);
-    padding: 1.4rem 1.4rem 1.2rem; box-shadow: 6px 6px 0 var(--c-sand);
+  .hero-why {
+    display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.25rem;
+    font-weight: 700; color: var(--gov-ink);
   }
-  .field-card-title { font-size: 1.35rem; }
-  .field-card-note { margin-top: 0.3rem; font-size: 0.95rem; color: var(--text-muted); }
-  .field-steps { counter-reset: step; margin-top: 1rem; display: grid; }
-  .field-steps li {
-    counter-increment: step; display: grid; grid-template-columns: 2.2rem 1fr; column-gap: 0.75rem;
-    padding-block: 0.8rem; border-top: 1px dashed var(--rule-strong);
-  }
-  .field-steps li::before {
-    content: counter(step); grid-row: span 3; font-family: var(--font-head); font-weight: 700; font-size: 1.5rem;
-    color: var(--primary); line-height: 1.1;
-  }
-  .field-steps strong { font-family: var(--font-head); font-size: 1.08rem; }
-  .field-steps span { color: var(--text-muted); font-size: 0.95rem; }
-  .field-steps a { font-weight: 700; margin-top: 0.15rem; }
 
-  .section { margin-top: 4.5rem; }
-  .section-head { margin-bottom: 1.25rem; max-width: 44rem; }
-  .section-head p { margin-top: 0.4rem; color: var(--text-muted); font-size: 1.05rem; }
-
-  .start-grid { display: grid; gap: 1rem; }
-  @media (min-width: 760px) { .start-grid { grid-template-columns: repeat(3, 1fr); } }
-  .start-link {
-    display: flex; gap: 0.85rem; padding: 1.1rem 0; border-top: 3px solid var(--primary);
-    text-decoration: none; color: var(--text);
+  .steps {
+    background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius-xl);
+    padding: 1.25rem; box-shadow: var(--shadow-card);
   }
-  .start-link :global(.icon) { color: var(--primary); margin-top: 0.1rem; }
-  .start-link strong { display: block; font-family: var(--font-head); font-size: 1.15rem; color: var(--heading); }
-  .start-link span span { display: block; color: var(--text-muted); }
-  .start-link:hover strong { text-decoration: underline; }
-
-  .score-cta {
-    display: grid; gap: 1.25rem; align-items: center;
-    background: var(--primary); color: var(--primary-ink); padding: 2rem 1.5rem; border-radius: var(--radius-m);
+  @supports (corner-shape: squircle) { .steps { corner-shape: squircle; border-radius: 3rem; } }
+  .steps-title { font-size: 1.25rem; padding: 0.15rem 0.35rem 0.75rem; }
+  .steps-list { display: grid; gap: 0.6rem; }
+  .step {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.9rem;
+    padding: 0.6rem 0.9rem 0.6rem 0.6rem; border-radius: 1.3rem;
+    background: var(--t-surface); border: 1px solid var(--t-border);
+    color: var(--heading); text-decoration: none;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   }
-  .score-cta h2 { color: inherit; }
-  @media (min-width: 860px) { .score-cta { grid-template-columns: 1fr auto; padding: 2.5rem; } }
+  .step:hover, .step:focus-visible { border-color: var(--t-strong); transform: translateX(3px); box-shadow: var(--shadow-card); }
+  .step-label { font-family: var(--font-head); font-weight: 700; font-size: 1.15rem; display: inline-flex; gap: 0.6rem; align-items: baseline; }
+  .step-num { color: var(--t-ink); }
+  .step :global(.step-arrow) { color: var(--t-ink); transition: transform 180ms ease; }
+  .step:hover :global(.step-arrow) { transform: translateX(3px); }
+  @media (prefers-reduced-motion: reduce) { .step:hover, .step:focus-visible, .step:hover :global(.step-arrow) { transform: none; } }
 
-  .latest-list { display: grid; }
-  .latest-list li { display: grid; gap: 0.1rem; padding-block: 0.8rem; border-bottom: 1px solid var(--rule); }
-  .latest-list a { font-family: var(--font-head); font-weight: 700; font-size: 1.12rem; }
+  .hub-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); }
+
+  .score-cta { display: grid; gap: 1.25rem; align-items: center; }
+  .score-cta :global(.score-art) { display: none; }
+  @media (min-width: 860px) {
+    .score-cta { grid-template-columns: auto 1fr auto; gap: 2.5rem; }
+    .score-cta :global(.score-art) { display: block; }
+  }
+
+  .home-split { display: grid; gap: 3rem; }
+  @media (min-width: 960px) { .home-split { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; } }
+  .gear-card { flex-direction: row; align-items: center; gap: 0.85rem; padding: 0.9rem 1.1rem; }
+  .gear-link { font-weight: 700; color: var(--heading); text-decoration: none; }
+  .gear-card:hover .gear-link { text-decoration: underline; }
 </style>
