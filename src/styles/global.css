@@ -20,8 +20,8 @@
   --c-forest-ink: #ffffff;
   --c-charcoal: #23272a;
   --c-earth: #8b6b4a; /* decorative only: 4.45:1 on bg, not for body text */
-  --c-earth-text: #6e5236; /* earth tone for text: 6.5:1 */
-  --c-sand: #d6d8de;
+  --c-earth-text: var(--kits-ink); /* derived from the kits hue, 5.5:1+ */
+  --c-sand: #dadae3;
   --c-orange: #d9742b; /* illustrations only; never an action colour */
   /* Light-mode neutrals for small UI bits; dark mode keeps the sand values. */
   --badge-ink: #3d434b;
@@ -46,13 +46,13 @@
   --rule-strong: #858a94;
   --focus: #2f5d3a;
 
-  --info-bg: #e8f0e9;
+  --info-bg: #e4f3e6;
   --info-text: #23272a;
   --info-rule: #2f5d3a;
-  --warn-bg: #fdf1e8;
+  --warn-bg: #fdeae1;
   --warn-text: #23272a;
   --warn-rule: #9a3b12;
-  --safety-bg: #fdf1e8;
+  --safety-bg: #fdeae1;
   --safety-rule: #9a3b12;
   --error: #9a3b12;
 
@@ -69,16 +69,18 @@
   /* Area tones (design pass 2). Each area gets a band, a card surface, a
      border, a stronger border for hover, an icon-chip fill and its ink, and
      a text ink. All text pairs checked at >= 4.5:1. See docs/DESIGN_SYSTEM.md. */
-  --water-band: #e6f0e6; --water-surface: #f0f6f0; --water-border: #c7dbc7; --water-strong: #8fb38a; --water-chip: #d2e4cd; --water-chip-ink: #2f5d3a; --water-ink: #2f5d3a;
-  --kits-band: #f4eee2; --kits-surface: #f9f5ee; --kits-border: #e2d6c0; --kits-strong: #c2a774; --kits-chip: #ead8b5; --kits-chip-ink: #5e4529; --kits-ink: #6e5236;
-  --power-band: #e9ebef; --power-surface: #f0f2f5; --power-border: #cdd3da; --power-strong: #98a3ad; --power-chip: #343b40; --power-chip-ink: #f2b56b; --power-ink: #3d464d;
-  --home-band: #f6e8e0; --home-surface: #faf1eb; --home-border: #e6cdbd; --home-strong: #c99a7e; --home-chip: #f0d4c2; --home-chip-ink: #7e3f22; --home-ink: #8a4526;
-  --health-band: #f5e6e7; --health-surface: #f9efef; --health-border: #e4c8ca; --health-strong: #c5959a; --health-chip: #efd2d4; --health-chip-ink: #8a2f3a; --health-ink: #8a2f3a;
-  --skills-band: #e4eade; --skills-surface: #edf1e8; --skills-border: #c5cfb7; --skills-strong: #8fa27a; --skills-chip: #4a6339; --skills-chip-ink: #ffffff; --skills-ink: #3f5a32;
-  --tools-band: #e0eee2; --tools-surface: #eaf3ec; --tools-border: #adc9b2; --tools-strong: #5f8f69; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
-  --gov-band: #e6ebf0; --gov-surface: #eef2f6; --gov-border: #c6d3dd; --gov-strong: #8aa2b3; --gov-chip: #d3dfe7; --gov-chip-ink: #2e4a5a; --gov-ink: #34505f;
-  --neutral-band: #f5f5f7; --neutral-surface: #ffffff; --neutral-border: #e2e3e8; --neutral-strong: #b4b8c0; --neutral-chip: #ecedf1; --neutral-chip-ink: #3d434b; --neutral-ink: #3d434b;
-  --ill-water: #b5cad7;
+  --water-band: #e2f4f9; --water-surface: #eff9fc; --water-border: #acdae6; --water-strong: #1b8fa5; --water-chip: #c3e9f3; --water-chip-ink: #015463; --water-ink: #015463;
+  --food-band: #e8f4e9; --food-surface: #f2f9f3; --food-border: #bcdbbf; --food-strong: #54915d; --food-chip: #cfead2; --food-chip-ink: #22572d; --food-ink: #22572d;
+  --kits-band: #f6efe1; --kits-surface: #fbf7ee; --kits-border: #e0cfac; --kits-strong: #9c7b31; --kits-chip: #eee0c2; --kits-chip-ink: #5f4600; --kits-ink: #5f4600;
+  --power-band: #f2edfc; --power-surface: #f8f5fe; --power-border: #d6caee; --power-strong: #8972b3; --power-chip: #e5dcfa; --power-chip-ink: #523e74; --power-ink: #523e74;
+  --home-band: #fcede5; --home-surface: #fef5f0; --home-border: #edc8b4; --home-strong: #b06d47; --home-chip: #fadac9; --home-chip-ink: #703a17; --home-ink: #703a17;
+  --docs-band: #f7ecf8; --docs-surface: #fbf5fc; --docs-border: #e1c7e5; --docs-strong: #9c6ba4; --docs-chip: #efd9f2; --docs-chip-ink: #613867; --docs-ink: #613867;
+  --health-band: #fcebf1; --health-surface: #fef4f8; --health-border: #ecc4d4; --health-strong: #ae6686; --health-chip: #f9d6e4; --health-chip-ink: #6e344f; --health-ink: #6e344f;
+  --skills-band: #eff2e3; --skills-surface: #f6f8ef; --skills-border: #ced6b1; --skills-strong: #7b883e; --skills-chip: #dee6c7; --skills-chip-ink: #46500a; --skills-ink: #46500a;
+  --tools-band: #e0f3e2; --tools-surface: #edf9ee; --tools-border: #a6d1ab; --tools-strong: #42864e; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #255a2f;
+  --gov-band: #e5f2fd; --gov-surface: #f0f8ff; --gov-border: #b4d6ef; --gov-strong: #4188b6; --gov-chip: #c9e6fb; --gov-chip-ink: #085076; --gov-ink: #085076;
+  --neutral-band: #f5f5f7; --neutral-surface: #ffffff; --neutral-border: #e2e3e8; --neutral-strong: #858a94; --neutral-chip: #e7e7ed; --neutral-chip-ink: #464652; --neutral-ink: #464652;
+  --ill-water: #a8cfdc;
   --shadow-rgb: 35 39 42;
   --shadow-card: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 10px 24px -14px rgb(var(--shadow-rgb) / 0.22);
   --shadow-card-hover: 0 2px 4px rgb(var(--shadow-rgb) / 0.08), 0 18px 34px -16px rgb(var(--shadow-rgb) / 0.32);
@@ -121,6 +123,8 @@
     --shadow-panel: 0 1px 0 var(--rule);
 
     --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
+    --food-band: #1b241e; --food-surface: #1f2a22; --food-border: #34483a; --food-strong: #5d8466; --food-chip: #2b3d30; --food-chip-ink: #8fc29b; --food-ink: #8fc29b;
+    --docs-band: #271e1a; --docs-surface: #2d221d; --docs-border: #4d382c; --docs-strong: #82604d; --docs-chip: #3f2c23; --docs-chip-ink: #eab093; --docs-ink: #e7a98a;
     --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
     --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
     --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
@@ -170,6 +174,8 @@
   --shadow-panel: 0 1px 0 var(--rule);
 
   --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
+  --food-band: #1b241e; --food-surface: #1f2a22; --food-border: #34483a; --food-strong: #5d8466; --food-chip: #2b3d30; --food-chip-ink: #8fc29b; --food-ink: #8fc29b;
+  --docs-band: #271e1a; --docs-surface: #2d221d; --docs-border: #4d382c; --docs-strong: #82604d; --docs-chip: #3f2c23; --docs-chip-ink: #eab093; --docs-ink: #e7a98a;
   --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
   --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
   --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
@@ -633,6 +639,8 @@ legend {
   --t-chip: var(--neutral-chip); --t-chip-ink: var(--neutral-chip-ink); --t-ink: var(--neutral-ink);
 }
 .tone-water { --t-band: var(--water-band); --t-surface: var(--water-surface); --t-border: var(--water-border); --t-strong: var(--water-strong); --t-chip: var(--water-chip); --t-chip-ink: var(--water-chip-ink); --t-ink: var(--water-ink); }
+.tone-food { --t-band: var(--food-band); --t-surface: var(--food-surface); --t-border: var(--food-border); --t-strong: var(--food-strong); --t-chip: var(--food-chip); --t-chip-ink: var(--food-chip-ink); --t-ink: var(--food-ink); }
+.tone-docs { --t-band: var(--docs-band); --t-surface: var(--docs-surface); --t-border: var(--docs-border); --t-strong: var(--docs-strong); --t-chip: var(--docs-chip); --t-chip-ink: var(--docs-chip-ink); --t-ink: var(--docs-ink); }
 .tone-kits { --t-band: var(--kits-band); --t-surface: var(--kits-surface); --t-border: var(--kits-border); --t-strong: var(--kits-strong); --t-chip: var(--kits-chip); --t-chip-ink: var(--kits-chip-ink); --t-ink: var(--kits-ink); }
 .tone-power { --t-band: var(--power-band); --t-surface: var(--power-surface); --t-border: var(--power-border); --t-strong: var(--power-strong); --t-chip: var(--power-chip); --t-chip-ink: var(--power-chip-ink); --t-ink: var(--power-ink); }
 .tone-home { --t-band: var(--home-band); --t-surface: var(--home-surface); --t-border: var(--home-border); --t-strong: var(--home-strong); --t-chip: var(--home-chip); --t-chip-ink: var(--home-chip-ink); --t-ink: var(--home-ink); }

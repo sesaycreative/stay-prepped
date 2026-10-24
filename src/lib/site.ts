@@ -14,7 +14,7 @@ export const SITE = {
 } as const;
 
 /** Area tone families (design pass 2). Each maps to a .tone-* class in global.css. */
-export type Tone = 'water' | 'kits' | 'power' | 'home' | 'health' | 'skills' | 'tools' | 'gov' | 'neutral';
+export type Tone = 'water' | 'food' | 'kits' | 'power' | 'home' | 'docs' | 'health' | 'skills' | 'tools' | 'gov' | 'neutral';
 
 export interface NavItem {
   label: string;
@@ -113,12 +113,12 @@ export function isoDate(d: Date): string {
 /** Area tone for each guide category. */
 export const GUIDE_CATEGORY_TONE: Record<GuideCategory, Tone> = {
   'getting-started': 'tools',
-  food: 'water',
+  food: 'food',
   water: 'water',
   'emergency-kits': 'kits',
   'power-outages': 'power',
   'first-aid-health': 'health',
-  home: 'home',
+  home: 'docs',
   'survival-skills': 'skills',
   financial: 'kits',
   family: 'home',

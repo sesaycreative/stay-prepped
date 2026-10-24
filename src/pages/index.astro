@@ -30,14 +30,14 @@ const hubs = GUIDE_HUBS.filter((h) => h.href in hubBlurbs);
 // The 8 areas of preparedness, shown as the hero grid.
 const areas: { title: string; text: string; href: string; tone: Tone; art: IllustrationKey }[] = [
   { title: 'Water', text: '3 days of drinking water, stored and rotated', href: '/guides/how-much-water-to-store/', tone: 'water', art: 'water-storage' },
-  { title: 'Food', text: 'A cupboard that feeds everyone without power', href: '/food-water/', tone: 'water', art: 'food-cupboard' },
+  { title: 'Food', text: 'A cupboard that feeds everyone without power', href: '/food-water/', tone: 'food', art: 'food-cupboard' },
   { title: 'Emergency bag', text: 'A grab bag ready by the door', href: '/emergency-kits/', tone: 'kits', art: 'grab-bag' },
   { title: 'Power cuts', text: 'Light, warmth and a charged phone', href: '/guides/category/power-outages/', tone: 'power', art: 'power-cut' },
   // No first aid guides yet, so the category page is not built; link to the
   // first aid section of the beginners guide until one exists.
   { title: 'First aid & medicine', text: 'A kit, your prescriptions, basic skills', href: '/guides/prepping-for-beginners/#8-check-your-first-aid-kit-and-medicines', tone: 'health', art: 'first-aid' },
   { title: 'Family plan', text: 'Who calls whom, where you meet', href: '/family-home/', tone: 'home', art: 'family-plan' },
-  { title: 'Home & documents', text: 'Alarms, shut-offs, copies of what matters', href: '/guides/category/home/', tone: 'home', art: 'home-safety' },
+  { title: 'Home & documents', text: 'Alarms, shut-offs, copies of what matters', href: '/guides/category/home/', tone: 'docs', art: 'home-safety' },
   { title: 'Severe weather & flooding', text: 'Know your local risk and what to do', href: '/why-prepare/', tone: 'gov', art: 'flood' },
 ];
 const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
@@ -112,7 +112,7 @@ const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
     </div>
   </section>
 
-  <section class="band tone-water" aria-labelledby="categories">
+  <section class="band tone-neutral" aria-labelledby="categories">
     <div class="wrap">
       <div class="band-head">
         <div>

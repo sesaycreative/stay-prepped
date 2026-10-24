@@ -148,3 +148,52 @@ Guides and gear guides are restructured at build time by `src/lib/rehype-staypre
 - **Navigator:** `TableOfContents.astro` shows numbered h2s, unfolds the active section's h3s, tracks scroll with an IntersectionObserver, and draws a reading-progress bar under the header. Below 1000px it is a closed "Jump to a section" disclosure.
 - **Sources:** a quiet footnote block after the related cards.
 - The plugin's source hash is passed as an option in `astro.config.mjs` so Astro's Markdown cache is cleared whenever the plugin changes.
+
+## Light-mode area colours (round 6: derived in OKLCH)
+
+The light-mode area tints were rebuilt from scratch rather than nudged. Run `python3 scripts/derive-tints.py` to reproduce them; it prints every value and the contrast and separation checks. The method:
+
+1. **Anchors.** The cool neutrals (page `#FBFBFC` L 0.988, band `#F5F5F7` L 0.971, both at hue ≈ 286° with chroma under 0.003) and the brand forest `#2F5D3A` (L 0.435, C 0.077, h 150°).
+2. **One lightness and chroma per role, for every area**, so the areas read as one family that differs only in hue. Colours outside sRGB keep their L and hue and lose a little chroma until they fit. Bands sit just below the neutral band's lightness (0.955 vs 0.971) with low chroma, so they read as a clean tint of the grey rather than a pastel.
+
+| Role | OKLCH L | OKLCH C | Used for |
+| --- | --- | --- | --- |
+| Band | 0.955 | 0.020 | Section bands, illustration circles, table headers |
+| Surface | 0.976 | 0.012 | Card surfaces |
+| Border | 0.860 | 0.050 | Card borders, illustration fills |
+| Strong | 0.600 | 0.100 | Hover ring, rules, active states (≥ 3:1 on its surface) |
+| Chip | 0.910 | 0.042 | Icon chip fill |
+| Ink | 0.410 | 0.090 | Area labels, chip icons, key-number values (≥ 4.5:1) |
+
+   Tools uses the green family one step stronger: band L 0.945 C 0.030, surface 0.970/0.018, border 0.820/0.070, strong 0.560/0.110, and a solid forest chip with white icon.
+
+3. **Hues by harmony around the brand green (150°) and the neutral's cool cast (≈ 286°).** The ones near the neutral (power 300°, gov 240°, water 215°) keep the page cool; the warm ones (kits 85°, family 50°) stay at the same low chroma so they don't fight. Neighbours in the homepage grid (Water, Food, Kits, Power / Health, Family, Home, Weather) are at least 37° apart. Specific choices:
+   - Water moves to a cool teal-blue, no longer mint.
+   - Food takes the brand green itself.
+   - Family (clay, 50°) and Home & documents (plum, 322°) are separate hues, so their two hero cards differ.
+   - The homepage "Find your topic" band is neutral grey, so five differently coloured cards don't sit on a sixth colour.
+4. **Checked programmatically.** Body text, muted text, links and area ink all reach at least 4.5:1 on their band and surface, and chip icons at least 4.5:1 on their chip. The strong colour reaches at least 3:1 on surface, band and page. Every band also differs visibly from the neutral `#F5F5F7` band (ΔE OKLab ≥ 0.024).
+
+| Area | Hue | Band | Surface | Border | Strong | Chip | Ink | Min text contrast | Min UI contrast |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Water | 215° | `#e2f4f9` | `#eff9fc` | `#acdae6` | `#1b8fa5` | `#c3e9f3` | `#015463` | 5.58:1 | 3.36:1 |
+| Food | 148° | `#e8f4e9` | `#f2f9f3` | `#bcdbbf` | `#54915d` | `#cfead2` | `#22572d` | 5.58:1 | 3.32:1 |
+| Emergency kits / grab bag | 85° | `#f6efe1` | `#fbf7ee` | `#e0cfac` | `#9c7b31` | `#eee0c2` | `#5f4600` | 5.52:1 | 3.47:1 |
+| Power cuts | 300° | `#f2edfc` | `#f8f5fe` | `#d6caee` | `#8972b3` | `#e5dcfa` | `#523e74` | 5.51:1 | 3.57:1 |
+| First aid & health | 352° | `#fcebf1` | `#fef4f8` | `#ecc4d4` | `#ae6686` | `#f9d6e4` | `#6e344f` | 5.51:1 | 3.63:1 |
+| Family & home (plan) | 50° | `#fcede5` | `#fef5f0` | `#edc8b4` | `#b06d47` | `#fadac9` | `#703a17` | 5.53:1 | 3.59:1 |
+| Home & documents | 322° | `#f7ecf8` | `#fbf5fc` | `#e1c7e5` | `#9c6ba4` | `#efd9f2` | `#613867` | 5.51:1 | 3.62:1 |
+| Why prepare / government | 240° | `#e5f2fd` | `#f0f8ff` | `#b4d6ef` | `#4188b6` | `#c9e6fb` | `#085076` | 5.55:1 | 3.40:1 |
+| Survival skills | 118° | `#eff2e3` | `#f6f8ef` | `#ced6b1` | `#7b883e` | `#dee6c7` | `#46500a` | 5.56:1 | 3.40:1 |
+| Tools (green, one step stronger) | 148° | `#e0f3e2` | `#edf9ee` | `#a6d1ab` | `#42864e` | `#2f5d3a` | `#255a2f` | 5.44:1 | 3.81:1 |
+| Neutral (cool grey) | 286° | `#f5f5f7` | `#ffffff` | `#e2e3e8` | `#858a94` | `#e7e7ed` | `#464652` | 5.81:1 | 3.18:1 |
+
+Utility colours on the same system:
+- `--c-sand` `#dadae3` (L 0.89, C 0.012, h 286)
+- `--info-bg` `#e4f3e6` (L 0.95, C 0.024, h 150)
+- `--warn-bg` and `--safety-bg` `#fdeae1` (L 0.95, C 0.024, h 50)
+- illustration water `#a8cfdc` (L 0.83, C 0.045, h 220)
+
+`--c-earth-text` now points at the kits ink.
+
+Dark mode is unchanged. The new `food` and `docs` tones reuse the dark water and home values.
