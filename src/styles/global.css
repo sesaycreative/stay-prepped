@@ -67,6 +67,7 @@
   --kits-band: #f1e8d6; --kits-surface: #f7f0e3; --kits-border: #e0cfae; --kits-strong: #c2a774; --kits-chip: #ead8b5; --kits-chip-ink: #5e4529; --kits-ink: #6e5236;
   --power-band: #e6e9ec; --power-surface: #eef0f2; --power-border: #cbd2d8; --power-strong: #98a3ad; --power-chip: #343b40; --power-chip-ink: #f2b56b; --power-ink: #3d464d;
   --home-band: #f4e4da; --home-surface: #f9ede5; --home-border: #e5c8b6; --home-strong: #c99a7e; --home-chip: #f0d4c2; --home-chip-ink: #7e3f22; --home-ink: #8a4526;
+  --health-band: #f3e3e4; --health-surface: #f8eded; --health-border: #e3c4c6; --health-strong: #c5959a; --health-chip: #efd2d4; --health-chip-ink: #8a2f3a; --health-ink: #8a2f3a;
   --skills-band: #e1e7d8; --skills-surface: #ebefe4; --skills-border: #c2cdb2; --skills-strong: #8fa27a; --skills-chip: #4a6339; --skills-chip-ink: #ffffff; --skills-ink: #3f5a32;
   --tools-band: #dcebdd; --tools-surface: #e8f2e9; --tools-border: #a9c7ae; --tools-strong: #5f8f69; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
   --gov-band: #e2e9ee; --gov-surface: #ecf1f4; --gov-border: #c4d2dc; --gov-strong: #8aa2b3; --gov-chip: #d3dfe7; --gov-chip-ink: #2e4a5a; --gov-ink: #34505f;
@@ -112,7 +113,8 @@
     --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
     --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
     --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
-    --skills-band: #1d221b; --skills-surface: #222920; --skills-border: #3a4733; --skills-strong: #627a52; --skills-chip: #4a6339; --skills-chip-ink: #eef4e8; --skills-ink: #a9c495;
+    --health-band: #261c1d; --health-surface: #2c2122; --health-border: #4b3437; --health-strong: #82585d; --health-chip: #3e2a2d; --health-chip-ink: #eba9b0; --health-ink: #e7a2a9;
+  --skills-band: #1d221b; --skills-surface: #222920; --skills-border: #3a4733; --skills-strong: #627a52; --skills-chip: #4a6339; --skills-chip-ink: #eef4e8; --skills-ink: #a9c495;
     --tools-band: #1a271e; --tools-surface: #1e2d23; --tools-border: #3e6248; --tools-strong: #6fa67c; --tools-chip: #6fa67c; --tools-chip-ink: #1a1d1f; --tools-ink: #8fc29b;
     --gov-band: #1c2226; --gov-surface: #20282d; --gov-border: #364650; --gov-strong: #5d7686; --gov-chip: #2c3a43; --gov-chip-ink: #a9c9db; --gov-ink: #a9c3d3;
     --neutral-band: #202427; --neutral-surface: #262b2e; --neutral-border: #3a3f42; --neutral-strong: #6b6f71; --neutral-chip: #2f3437; --neutral-chip-ink: #c9b99b; --neutral-ink: #c9b99b;
@@ -154,6 +156,7 @@
   --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
   --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
   --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
+  --health-band: #261c1d; --health-surface: #2c2122; --health-border: #4b3437; --health-strong: #82585d; --health-chip: #3e2a2d; --health-chip-ink: #eba9b0; --health-ink: #e7a2a9;
   --skills-band: #1d221b; --skills-surface: #222920; --skills-border: #3a4733; --skills-strong: #627a52; --skills-chip: #4a6339; --skills-chip-ink: #eef4e8; --skills-ink: #a9c495;
   --tools-band: #1a271e; --tools-surface: #1e2d23; --tools-border: #3e6248; --tools-strong: #6fa67c; --tools-chip: #6fa67c; --tools-chip-ink: #1a1d1f; --tools-ink: #8fc29b;
   --gov-band: #1c2226; --gov-surface: #20282d; --gov-border: #364650; --gov-strong: #5d7686; --gov-chip: #2c3a43; --gov-chip-ink: #a9c9db; --gov-ink: #a9c3d3;
@@ -615,6 +618,7 @@ legend {
 .tone-kits { --t-band: var(--kits-band); --t-surface: var(--kits-surface); --t-border: var(--kits-border); --t-strong: var(--kits-strong); --t-chip: var(--kits-chip); --t-chip-ink: var(--kits-chip-ink); --t-ink: var(--kits-ink); }
 .tone-power { --t-band: var(--power-band); --t-surface: var(--power-surface); --t-border: var(--power-border); --t-strong: var(--power-strong); --t-chip: var(--power-chip); --t-chip-ink: var(--power-chip-ink); --t-ink: var(--power-ink); }
 .tone-home { --t-band: var(--home-band); --t-surface: var(--home-surface); --t-border: var(--home-border); --t-strong: var(--home-strong); --t-chip: var(--home-chip); --t-chip-ink: var(--home-chip-ink); --t-ink: var(--home-ink); }
+.tone-health { --t-band: var(--health-band); --t-surface: var(--health-surface); --t-border: var(--health-border); --t-strong: var(--health-strong); --t-chip: var(--health-chip); --t-chip-ink: var(--health-chip-ink); --t-ink: var(--health-ink); }
 .tone-skills { --t-band: var(--skills-band); --t-surface: var(--skills-surface); --t-border: var(--skills-border); --t-strong: var(--skills-strong); --t-chip: var(--skills-chip); --t-chip-ink: var(--skills-chip-ink); --t-ink: var(--skills-ink); }
 .tone-tools { --t-band: var(--tools-band); --t-surface: var(--tools-surface); --t-border: var(--tools-border); --t-strong: var(--tools-strong); --t-chip: var(--tools-chip); --t-chip-ink: var(--tools-chip-ink); --t-ink: var(--tools-ink); }
 .tone-gov { --t-band: var(--gov-band); --t-surface: var(--gov-surface); --t-border: var(--gov-border); --t-strong: var(--gov-strong); --t-chip: var(--gov-chip); --t-chip-ink: var(--gov-chip-ink); --t-ink: var(--gov-ink); }

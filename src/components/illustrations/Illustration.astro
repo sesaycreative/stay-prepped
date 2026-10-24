@@ -13,6 +13,7 @@ import FamilyPlan from './FamilyPlan.astro';
 import Documents from './Documents.astro';
 import HomeSafety from './HomeSafety.astro';
 import PreparednessScore from './PreparednessScore.astro';
+import FirstAid from './FirstAid.astro';
 import type { IllustrationKey } from '../../lib/site';
 
 const ILLUSTRATIONS: Record<IllustrationKey, typeof WaterStorage> = {
@@ -26,6 +27,7 @@ const ILLUSTRATIONS: Record<IllustrationKey, typeof WaterStorage> = {
   documents: Documents,
   'home-safety': HomeSafety,
   'preparedness-score': PreparednessScore,
+  'first-aid': FirstAid,
 };
 
 interface Props { name: IllustrationKey; title?: string; class?: string; width?: number }

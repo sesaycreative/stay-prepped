@@ -16,7 +16,7 @@ const tone = live ? 'tools' : TOOL_CATEGORY_TONE[t.category];
   <article class={`card is-link tool-card tone-${tone}`}>
     {ill ? <span class="card-art"><Illustration name={ill} width={144} /></span> : <span class="chip chip-lg"><Icon name={t.icon} size={28} /></span>}
     <H class="card-title"><a href={`/tools/${t.slug}/`} class="stretched">{t.title}</a></H>
-    <p class="card-text">{t.summary}</p>
+    <p class="card-text">{t.cardSummary ?? t.summary}</p>
     <span class="card-cta" aria-hidden="true">Open the tool <Icon name="arrow-right" size={18} /></span>
   </article>
 ) : (

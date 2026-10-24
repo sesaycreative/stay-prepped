@@ -14,7 +14,7 @@ export const SITE = {
 } as const;
 
 /** Area tone families (design pass 2). Each maps to a .tone-* class in global.css. */
-export type Tone = 'water' | 'kits' | 'power' | 'home' | 'skills' | 'tools' | 'gov' | 'neutral';
+export type Tone = 'water' | 'kits' | 'power' | 'home' | 'health' | 'skills' | 'tools' | 'gov' | 'neutral';
 
 export interface NavItem {
   label: string;
@@ -117,7 +117,7 @@ export const GUIDE_CATEGORY_TONE: Record<GuideCategory, Tone> = {
   water: 'water',
   'emergency-kits': 'kits',
   'power-outages': 'power',
-  'first-aid-health': 'home',
+  'first-aid-health': 'health',
   home: 'home',
   'survival-skills': 'skills',
   financial: 'kits',
@@ -150,7 +150,7 @@ export const SLUG_ILLUSTRATION: Record<string, IllustrationKey> = {
 };
 export type IllustrationKey =
   | 'water-storage' | 'food-cupboard' | 'grab-bag' | 'power-cut' | 'flood'
-  | 'severe-weather' | 'family-plan' | 'documents' | 'home-safety' | 'preparedness-score';
+  | 'severe-weather' | 'family-plan' | 'documents' | 'home-safety' | 'preparedness-score' | 'first-aid';
 
 /** Is `path` inside `href` (or one of its extra match prefixes)? */
 export function inSection(path: string, href: string, match: string[] = []): boolean {

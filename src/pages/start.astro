@@ -4,7 +4,6 @@ import Icon from '../components/Icon.astro';
 import Illustration from '../components/illustrations/Illustration.astro';
 import type { IllustrationKey, Tone } from '../lib/site';
 const steps: { title: string; text: string; href: string; link: string; tone: Tone; art?: IllustrationKey; icon: string }[] = [
-  { title: 'Check where you are', text: 'Find your three biggest gaps.', href: '/tools/preparedness-score/', link: 'Take the score', tone: 'tools', art: 'preparedness-score', icon: 'clipboard-check' },
   { title: 'Store 3 days of water', text: 'Your household total, pets included.', href: '/tools/water-storage-calculator/', link: 'Water calculator', tone: 'water', art: 'water-storage', icon: 'droplet' },
   { title: 'Stock 3 days of food', text: 'Food that needs no fridge or mains power.', href: '/tools/food-storage-calculator/', link: 'Food calculator', tone: 'water', art: 'food-cupboard', icon: 'wheat' },
   { title: 'Get ready for a power cut', text: 'Torches, a radio, a power bank, warm layers.', href: '/guides/preparing-for-a-power-cut/', link: 'Power cut guide', tone: 'power', art: 'power-cut', icon: 'flashlight' },
@@ -17,10 +16,10 @@ const steps: { title: string; text: string; href: string; link: string; tone: To
   title="Start here"
   seoTitle="Start prepping: a beginner's guide for UK households"
   description="New to emergency preparedness? A simple, step-by-step path for UK households, from storing water to making a family plan. Free tools and checklists included."
-  intro="Seven steps, in order, at your own pace. Aim for 3 days first."
+  intro="Six steps, in order, at your own pace. Aim for 3 days first."
   tone="tools"
   extraGuides={['prepping-for-beginners']}
-  toolSlugs={['preparedness-score', 'water-storage-calculator', 'food-storage-calculator']}
+  toolSlugs={['water-storage-calculator', 'food-storage-calculator', 'preparedness-score']}
 >
   <Fragment slot="why">
     <p>You do not need to buy a lot or think about the worst. Being prepared mostly means a few sensible things, done once and checked now and then.</p>
@@ -39,6 +38,10 @@ const steps: { title: string; text: string; href: string; link: string; tone: To
         </li>
       ))}
     </ol>
+    <aside class="done-basics card tone-neutral mt-8" aria-labelledby="done-basics-title">
+      <h2 id="done-basics-title" class="text-lg">When you've done the basics</h2>
+      <p class="card-text">If you want to, take the optional <a href="/tools/preparedness-score/">Home Preparedness Score</a>, a 5-minute self-check that points out what is left to do.</p>
+    </aside>
     <p class="mt-6"><a href="/why-prepare/" class="font-bold">Why prepare? What the UK government says you should be ready for</a></p>
   </section>
 </HubLayout>
@@ -49,4 +52,5 @@ const steps: { title: string; text: string; href: string; link: string; tone: To
     display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 0.75rem;
     background: var(--t-chip); color: var(--t-chip-ink); font-family: var(--font-head); font-weight: 700;
   }
+  .done-basics { max-width: 44rem; height: auto; }
 </style>

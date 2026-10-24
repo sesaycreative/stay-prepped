@@ -50,6 +50,8 @@ const tools = defineCollection({
     reviewedAt: z.coerce.date().optional(),
     seoTitle: z.string().optional(),
     seoDescription: z.string().max(170).optional(),
+    /** Shorter line shown on tool cards instead of the summary. */
+    cardSummary: z.string().optional(),
   }),
 });
 
