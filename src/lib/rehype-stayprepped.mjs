@@ -176,6 +176,10 @@ export function enhanceArticle(tree, frontmatter = {}) {
       if (Array.isArray(frontmatter.keyFacts) && frontmatter.keyFacts.length) out.push(keyFactsNode(frontmatter.keyFacts));
     }
   }
+  // No intro paragraph (e.g. a guide that opens straight into a section):
+  // use the first paragraph of the first section as the lead instead.
+  const leadInSection = !lead && firstH2 >= 0 ? kids.slice(firstH2).find((n) => el(n, 'p')) : null;
+  if (leadInSection) addClass(leadInSection, 'lead');
   if (firstH2 < 0) { tree.children = out; return; }
 
   const rest = kids.slice(firstH2);

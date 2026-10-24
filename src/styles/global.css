@@ -790,7 +790,7 @@ legend {
    src/lib/rehype-stayprepped.mjs: .lead, .key-facts, .g-section, .g-h2,
    .term-list, .step-list, .table-wrap, .prose-ticks.
    ------------------------------------------------------------------------- */
-.article-body { max-width: 46rem; }
+.article-body { max-width: 46rem; container: article / inline-size; }
 .article-body p,
 .article-body li { max-width: 62ch; }
 .prose.article-body > * + * { margin-top: 1.25em; }
@@ -798,7 +798,7 @@ legend {
 .article-body p > strong:first-child { color: var(--heading); }
 
 /* Lead paragraph */
-.article-body > .lead {
+.article-body .lead {
   font-size: 1.2rem;
   line-height: 1.55;
   color: var(--heading);
@@ -806,7 +806,7 @@ legend {
   padding-left: 1.1rem;
   border-left: 4px solid var(--t-strong);
 }
-@media (min-width: 640px) { .article-body > .lead { font-size: 1.28rem; } }
+@media (min-width: 640px) { .article-body .lead { font-size: 1.28rem; } }
 
 /* Key numbers */
 .key-facts {
@@ -815,8 +815,11 @@ legend {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 1.6rem !important;
 }
-@media (min-width: 760px) {
+/* Tile columns follow the article column's width, not the viewport. */
+@container article (min-width: 30rem) {
   .key-facts:has(> li:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container article (min-width: 40rem) {
   .key-facts:has(> li:nth-child(4)) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 .key-fact {
@@ -824,7 +827,7 @@ legend {
   padding: 0.95rem 1rem 1rem; margin: 0 !important; max-width: none !important;
   background: var(--t-surface); border: 1px solid var(--t-border); border-radius: 1.1rem;
 }
-.kf-value { font-family: var(--font-head); font-weight: 800; font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--t-ink); }
+.kf-value { font-family: var(--font-head); font-weight: 800; font-size: 1.45rem; text-wrap: balance; line-height: 1.1; letter-spacing: -0.02em; color: var(--t-ink); }
 .kf-label { font-weight: 700; font-size: 0.92rem; line-height: 1.3; color: var(--heading); }
 .kf-note { font-size: 0.82rem; line-height: 1.35; color: var(--text-muted); }
 
