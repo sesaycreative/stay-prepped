@@ -2,8 +2,9 @@
 
 /* Fonts: Google Fonts families, self-hosted via Fontsource so no request
    goes to a third party (keeps us cookieless and PECR-clean). */
-@import '@fontsource/bitter/500.css';
-@import '@fontsource/bitter/700.css';
+@import '@fontsource/montserrat/600.css';
+@import '@fontsource/montserrat/700.css';
+@import '@fontsource/montserrat/800.css';
 @import '@fontsource/atkinson-hyperlegible/400.css';
 @import '@fontsource/atkinson-hyperlegible/400-italic.css';
 @import '@fontsource/atkinson-hyperlegible/700.css';
@@ -21,8 +22,7 @@
   --c-earth: #8b6b4a; /* decorative only: 4.45:1 on bg, not for body text */
   --c-earth-text: #6e5236; /* earth tone for text: 6.5:1 */
   --c-sand: #c9b99b;
-  --c-orange: #d9742b; /* primary CTA background, charcoal text: 4.65:1 */
-  --c-orange-ink: #23272a;
+  --c-orange: #d9742b; /* illustrations only; never an action colour */
 
   /* Semantic */
   --bg: #f7f4ee;
@@ -34,11 +34,13 @@
   --primary: var(--c-forest);
   --primary-ink: var(--c-forest-ink);
   --link: #2f5d3a;
-  --accent: var(--c-orange);
-  --accent-ink: var(--c-orange-ink);
+  /* Action colour: filled buttons. Forest green with off-white text (6.96:1). */
+  --accent: #2f5d3a;
+  --accent-hover: #244a2e;
+  --accent-ink: #f7f4ee;
   --rule: #d9cfbd;
   --rule-strong: #8b6b4a;
-  --focus: #d9742b;
+  --focus: #2f5d3a;
 
   --info-bg: #e6eee6;
   --info-text: #23272a;
@@ -54,7 +56,7 @@
   --radius-m: 8px;
   --shadow-panel: 0 1px 0 var(--rule), 0 6px 20px -12px rgb(35 39 42 / 0.25);
 
-  --font-head: 'Bitter', 'Rockwell', 'Georgia', serif;
+  --font-head: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --measure: 40rem;
@@ -76,6 +78,7 @@
   --shadow-rgb: 35 39 42;
   --shadow-card: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 10px 24px -14px rgb(var(--shadow-rgb) / 0.22);
   --shadow-card-hover: 0 2px 4px rgb(var(--shadow-rgb) / 0.08), 0 18px 34px -16px rgb(var(--shadow-rgb) / 0.32);
+  --shadow-card-lift: 0 4px 8px rgb(var(--shadow-rgb) / 0.1), 0 24px 40px -14px rgb(var(--shadow-rgb) / 0.42);
   --radius-l: 1.5rem;
   --radius-xl: 2rem;
 }
@@ -92,11 +95,12 @@
     --primary: #6fa67c;
     --primary-ink: #1a1d1f;
     --link: #8fc29b;
-    --accent: #e89456;
+    --accent: #8fc29b;
+    --accent-hover: #a7d2b1;
     --accent-ink: #1a1d1f;
     --rule: #3a3f42;
     --rule-strong: #c9b99b;
-    --focus: #e89456;
+    --focus: #8fc29b;
     --info-bg: #1f2a22;
     --info-text: #ece7dd;
     --info-rule: #6fa67c;
@@ -122,6 +126,8 @@
     --shadow-rgb: 0 0 0;
     --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 24px -14px rgb(0 0 0 / 0.6);
     --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 34px -16px rgb(0 0 0 / 0.75);
+    --shadow-card-lift: 0 6px 12px rgb(0 0 0 / 0.45), 0 26px 44px -14px rgb(0 0 0 / 0.9);
+    --surface-hover-mix: #ffffff; --surface-hover-amt: 7%;
   }
 }
 :root[data-theme='dark'] {
@@ -135,11 +141,12 @@
   --primary: #6fa67c;
   --primary-ink: #1a1d1f;
   --link: #8fc29b;
-  --accent: #e89456;
+  --accent: #8fc29b;
+  --accent-hover: #a7d2b1;
   --accent-ink: #1a1d1f;
   --rule: #3a3f42;
   --rule-strong: #c9b99b;
-  --focus: #e89456;
+  --focus: #8fc29b;
   --info-bg: #1f2a22;
   --info-text: #ece7dd;
   --info-rule: #6fa67c;
@@ -165,6 +172,8 @@
   --shadow-rgb: 0 0 0;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 24px -14px rgb(0 0 0 / 0.6);
   --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 34px -16px rgb(0 0 0 / 0.75);
+  --shadow-card-lift: 0 6px 12px rgb(0 0 0 / 0.45), 0 26px 44px -14px rgb(0 0 0 / 0.9);
+  --surface-hover-mix: #ffffff; --surface-hover-amt: 7%;
 }
 
 @theme inline {
@@ -215,14 +224,16 @@ h4 {
   text-wrap: balance;
 }
 h1 {
-  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.1rem);
-  letter-spacing: -0.01em;
+  font-size: clamp(1.85rem, 1.3rem + 2.3vw, 2.8rem);
+  letter-spacing: -0.02em;
+  line-height: 1.12;
 }
 h2 {
-  font-size: clamp(1.5rem, 1.25rem + 1vw, 1.95rem);
+  font-size: clamp(1.4rem, 1.2rem + 0.9vw, 1.8rem);
+  letter-spacing: -0.01em;
 }
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.18rem;
 }
 h4 {
   font-size: 1.05rem;
@@ -332,22 +343,17 @@ a:hover {
   color: var(--accent-ink);
 }
 .btn-primary:hover {
-  background: color-mix(in srgb, var(--accent) 88%, #000);
+  background: var(--accent-hover);
 }
-.btn-secondary {
-  background: var(--primary);
-  color: var(--primary-ink);
-}
-.btn-secondary:hover {
-  background: color-mix(in srgb, var(--primary) 85%, #000);
-}
+.btn-secondary,
 .btn-ghost {
   background: transparent;
-  color: var(--text);
-  border-color: var(--rule-strong);
+  color: var(--link);
+  border-color: var(--accent);
 }
+.btn-secondary:hover,
 .btn-ghost:hover {
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 .btn-sm {
   min-height: 2.25rem;
@@ -610,6 +616,8 @@ legend {
    Area tones. A .tone-* class sets the --t-* variables that cards, bands,
    chips and labels read, so one class colours a whole area consistently.
    ------------------------------------------------------------------------- */
+:root { --surface-hover-mix: #ffffff; --surface-hover-amt: 55%; }
+.tone-neutral, :root, [class*='tone-'] { --t-surface-hover: color-mix(in srgb, var(--t-surface), var(--surface-hover-mix) var(--surface-hover-amt)); }
 .tone-neutral, :root {
   --t-band: var(--neutral-band); --t-surface: var(--neutral-surface); --t-border: var(--neutral-border); --t-strong: var(--neutral-strong);
   --t-chip: var(--neutral-chip); --t-chip-ink: var(--neutral-chip-ink); --t-ink: var(--neutral-ink);
@@ -653,20 +661,27 @@ legend {
   border-radius: var(--radius-l);
   box-shadow: var(--shadow-card);
   color: var(--text);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out, background-color 180ms ease-out;
 }
 @supports (corner-shape: squircle) {
   .card, .chip-lg, .in-short, .results { corner-shape: squircle; border-radius: 2.75rem; }
   .chip-lg { border-radius: 1.6rem; }
 }
+/* Hover/focus: obvious on purpose. Lift 6px, deeper shadow, brighter
+   surface, a 2px border in the area's strong colour (box-shadow ring so the
+   layout does not shift), art scales up and the CTA arrow slides right. */
 .card.is-link:hover,
 .card.is-link:focus-within {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-6px);
+  background: var(--t-surface-hover);
   border-color: var(--t-strong);
+  box-shadow: 0 0 0 1px var(--t-strong), var(--shadow-card-lift);
 }
-.card.is-link:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
-.card-title { font-size: 1.15rem; line-height: 1.25; }
+.card.is-link:focus-within { outline: 3px solid var(--focus); outline-offset: 4px; }
+.card .ill { transition: transform 180ms ease-out; transform-origin: 50% 70%; }
+.card.is-link:hover .ill,
+.card.is-link:focus-within .ill { transform: scale(1.04); }
+.card-title { font-size: 1.08rem; line-height: 1.3; overflow-wrap: anywhere; hyphens: auto; }
 .card-title a { color: var(--heading); text-decoration: none; }
 .card.is-link:hover .card-title a { text-decoration: underline; text-decoration-thickness: 2px; }
 .card-text { color: var(--text-muted); font-size: 0.97rem; }
@@ -677,9 +692,11 @@ legend {
   display: inline-flex; align-items: center; gap: 0.35rem;
   font-weight: 700; color: var(--t-ink);
 }
-.card-cta .icon { transition: transform 180ms ease; }
+.card-cta .icon { transition: transform 180ms ease-out; }
 .card.is-link:hover .card-cta .icon,
-.card.is-link:focus-within .card-cta .icon { transform: translateX(4px); }
+.card.is-link:focus-within .card-cta .icon { transform: translateX(6px); }
+.card.is-link:hover .card-cta,
+.card.is-link:focus-within .card-cta { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 .card-art { display: block; margin: -0.25rem 0 0.35rem; }
 .card-art .ill { width: 100%; max-width: 7.5rem; height: auto; }
 @media (min-width: 640px) { .card-art .ill { max-width: 9.5rem; } }
@@ -769,7 +786,7 @@ legend {
 
 /* Spot illustrations (src/components/illustrations). Colours come from the
    surrounding area tone so one drawing works in every area and in dark mode. */
-.ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--accent); stroke: var(--ill-line); display: block; height: auto; }
+.ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--c-orange); stroke: var(--ill-line); display: block; height: auto; }
 .ill .ns { stroke: none; }
 .ill .f-a { fill: var(--ill-a); }
 .ill .f-b { fill: var(--ill-b); }
@@ -881,6 +898,8 @@ legend {
   }
   .card.is-link:hover,
   .card.is-link:focus-within,
+  .card.is-link:hover .ill,
+  .card.is-link:focus-within .ill,
   .card.is-link:hover .card-cta .icon,
   .card.is-link:focus-within .card-cta .icon {
     transform: none !important;

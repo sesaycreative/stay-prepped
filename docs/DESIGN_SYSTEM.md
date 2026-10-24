@@ -18,7 +18,7 @@ Brand palette from the brief (§2):
 | `--c-earth-text` | `#6E5236` | `#C9B99B` | Earth-tone text, such as category labels (6.5:1) |
 | `--c-sand` | `#C9B99B` | n/a | Card top rules, TOC rule, shadows, selection |
 | `--bg` | `#F7F4EE` | `#1A1D1F` | Page background |
-| `--accent` | `#D9742B` | `#E89456` | **Primary CTAs only**, with charcoal text |
+| `--accent` | `#2F5D3A` | `#8FC29B` | Filled primary buttons (off-white text in light, charcoal in dark). Orange `--c-orange` is now used **only inside illustrations**. |
 
 ### Contrast (WCAG 2.2 AA, checked)
 
@@ -27,21 +27,23 @@ Brand palette from the brief (§2):
 | Charcoal text on background | 13.7:1 |
 | Forest on background | 7.0:1 |
 | White on forest | 7.6:1 |
-| Charcoal on orange (CTA) | 4.65:1 |
+| Off-white `#F7F4EE` on forest (primary button) | 6.96:1 |
+| Off-white on hover `#244A2E` | 9.14:1 |
 | Muted `#5C6166` on background | 5.7:1 |
 | Earth text `#6E5236` on background | 6.5:1 |
 | Dark: text `#ECE7DD` on `#1A1D1F` | 13.8:1 |
 | Dark: primary `#6FA67C` on `#1A1D1F` | 6.0:1 |
 | Dark: muted `#A9A49A` on surface `#23272A` | 6.1:1 |
-| Dark: CTA text `#1A1D1F` on `#E89456` | 7.1:1 |
+| Dark: button text `#1A1D1F` on `#8FC29B` | 8.36:1 |
+| Dark: button text on hover `#A7D2B1` | 10.08:1 |
 
-White text on the brand orange is only 3.2:1, so **CTA text is always charcoal**, never white.
+Buttons: the filled primary is forest green; the secondary/ghost button is outlined in the same green. Focus rings are green too (3px, 2px offset; 6.96:1 light, 8.36:1 dark). Orange is never an action colour.
 
 ## Typography
 
 | Role | Family | Notes |
 | --- | --- | --- |
-| Headings | **Bitter** (500, 700) | A slab serif with a sturdy, practical feel. Falls back to Rockwell, then Georgia. |
+| Headings | **Montserrat** (600, 700, 800 for the homepage headline) | A clean geometric sans. Falls back to the system UI font. |
 | Body | **Atkinson Hyperlegible** (400, 400 italic, 700) | Designed by the Braille Institute for legibility. Falls back to the system UI font. |
 
 Both are Google Fonts, **self-hosted** through Fontsource so no request goes to a third party.
@@ -68,7 +70,7 @@ Atkinson Hyperlegible draws zero with a slash (`0`) to tell it apart from the le
 | Tool card | `src/components/ToolCard.astro` | Live tools have a solid green border and the whole card is a link. Coming-soon tools have a dashed border and badge, and are **not** links. |
 | Guide card | `src/components/GuideCard.astro` | Sand top rule, whole card clickable. |
 | Category card | `src/components/CategoryCard.astro` | Icon + label + blurb row. |
-| Buttons | `.btn` + `.btn-primary` (orange CTA) / `.btn-secondary` (forest) / `.btn-ghost` (outline) / `.btn-sm` | Minimum 44px target. |
+| Buttons | `.btn` + `.btn-primary` (filled green) / `.btn-secondary` and `.btn-ghost` (green outline) / `.btn-sm` | Minimum 44px target. |
 | Callout | `src/components/Callout.astro` | `info` / `warning` / `safety`. |
 | Checklist item | `.check-item` | Checkbox + label, dashed separator. |
 | Form field | `.field`, `.field-label`, `.field-help`, `.field-error`, `.input` | In React: `NumberField`, `ChoiceGroup`, `DaysField` in `src/components/tools/ui.tsx`. |
@@ -123,7 +125,7 @@ Each content area has a tint family in `global.css` (`--water-*`, `--kits-*`, `-
 All text pairs (body, muted, links, area ink, chip ink) were checked at 4.5:1 or better on each band and surface, in both themes.
 
 ### Card primitive
-`.card` (+ `.is-link` when the whole card is a link via `.stretched`): 1.5rem radius (`corner-shape: squircle` where supported), tinted surface, same-hue border, two-layer shadow. Hover/focus-within lifts 3px, deepens the shadow, strengthens the border and nudges the `.card-cta` arrow. Motion is removed under `prefers-reduced-motion`. Parts: `.chip` / `.chip-lg` (icon squircle), `.card-art`, `.card-label`, `.card-title`, `.card-text`, `.card-cta`, `.card-meta`. Grids: `.card-grid`, `.card-grid-wide`, `.card-grid-fit`.
+`.card` (+ `.is-link` when the whole card is a link via `.stretched`): 1.5rem radius (`corner-shape: squircle` where supported), tinted surface, same-hue border, two-layer shadow. Hover/focus-within is deliberately obvious: the card lifts 6px, the shadow deepens, the surface brightens a step (`--t-surface-hover`), a 2px ring in the area's strong colour appears, the illustration scales to 1.04 and the `.card-cta` arrow slides right and underlines (180ms ease-out). Under `prefers-reduced-motion` the movement is removed and only the colour and border changes remain. Parts: `.chip` / `.chip-lg` (icon squircle), `.card-art`, `.card-label`, `.card-title`, `.card-text`, `.card-cta`, `.card-meta`. Grids: `.card-grid`, `.card-grid-wide`, `.card-grid-fit`.
 
 ### Other components
 - `.band` / `.band-plain`: full-width section bands; alternate them so sections separate without reading.

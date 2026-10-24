@@ -109,4 +109,4 @@ npm test
 
 - Code: add a licence of your choice before publishing.
 - Icons: [Lucide](https://lucide.dev), ISC licence.
-- Fonts: Bitter and Atkinson Hyperlegible, SIL Open Font License, via Fontsource.
+- Fonts: Montserrat and Atkinson Hyperlegible, SIL Open Font License, via Fontsource.
