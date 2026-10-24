@@ -52,7 +52,7 @@ describe('progress state parsing', () => {
       checklists: { a: ['x', 'x', 7, 'y'], b: 'nope' },
       lists: { a: { total: 2, title: 'A', href: '/a/', area: 'water' }, bad: { total: 0 }, c: { total: 3, href: 'https://evil.example' } },
       tools: { water: 'not a date', food: '2026-10-24T10:00:00.000Z' },
-      localRisk: { outward: 'SM6 9ES' },
+      localRisk: { outward: 'SW1A 1AA' },
     });
     expect(s.household).toEqual({ adults: 3, children: 0, pets: { dogs: 1, cats: 0 }, set: true });
     expect(s.checklists).toEqual({ a: ['x', 'y'] });
@@ -63,7 +63,7 @@ describe('progress state parsing', () => {
   });
 
   it('accepts a stored outward code only', () => {
-    expect(parseState({ localRisk: { outward: 'SM6' } }).localRisk.outward).toBe('SM6');
+    expect(parseState({ localRisk: { outward: 'SW1A' } }).localRisk.outward).toBe('SW1A');
   });
 });
 
@@ -178,7 +178,7 @@ describe('checklist ids', () => {
 
 describe('postcodes', () => {
   it('accepts full and outward-only UK postcodes and keeps only the outward code', () => {
-    expect(parsePostcode('sm6 9es')).toEqual({ ok: true, normalised: 'SM6 9ES', outward: 'SM6', full: true });
+    expect(parsePostcode('sw1a 1aa')).toEqual({ ok: true, normalised: 'SW1A 1AA', outward: 'SW1A', full: true });
     expect(parsePostcode('EC1A1BB')).toMatchObject({ ok: true, outward: 'EC1A' });
     expect(parsePostcode(' w1a 0ax ')).toMatchObject({ ok: true, outward: 'W1A' });
     expect(parsePostcode('M1 1AE')).toMatchObject({ ok: true, outward: 'M1' });

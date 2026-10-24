@@ -1,6 +1,6 @@
 ---
 // Local risk by postcode. The postcode never leaves the browser: the form is
-// handled by a script, has no action, and only the outward code ("SM6") is
+// handled by a script, has no action, and only the outward code ("SW1A") is
 // kept in the progress store. Every link was checked; none is pre-filled.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -27,13 +27,13 @@ const ids = itemIds(LOCAL_RISK_ITEMS);
 
       <form class="lr-form card" data-lr-form novalidate autocomplete="off">
         <label for="lr-postcode" class="field-label">Your postcode</label>
-        <p id="lr-help" class="field-help">For example SM6 9ES, or just the first part (SM6).</p>
+        <p id="lr-help" class="field-help">For example SW1A 1AA, or just the first part (SW1A).</p>
         <div class="lr-row">
           <input id="lr-postcode" class="input lr-input" name="postcode" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="10" aria-describedby="lr-help lr-private lr-error" />
           <button type="submit" class="btn btn-primary">Show my checks</button>
         </div>
         <p id="lr-error" class="field-error" role="alert" data-lr-error></p>
-        <p id="lr-private" class="lr-private"><Icon name="shield-check" size={18} /> Your postcode stays in this browser. It is not sent to us or to any of the sites below. We only remember the first part (like SM6).</p>
+        <p id="lr-private" class="lr-private"><Icon name="shield-check" size={18} /> Your postcode stays in this browser. It is not sent to us or to any of the sites below. We only remember the first part (like SW1A).</p>
         <noscript><p class="mt-2">This page needs JavaScript to show your checks. All the links are also listed below.</p></noscript>
       </form>
     </div>
@@ -129,7 +129,7 @@ const ids = itemIds(LOCAL_RISK_ITEMS);
     e.preventDefault();
     const r = parsePostcode(input.value);
     if (!r.ok) {
-      error.textContent = 'Enter a UK postcode, like SM6 9ES, or just the first part, like SM6.';
+      error.textContent = 'Enter a UK postcode, like SW1A 1AA, or just the first part, like SW1A.';
       input.setAttribute('aria-invalid', 'true');
       input.focus();
       return;

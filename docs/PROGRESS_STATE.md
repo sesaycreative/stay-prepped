@@ -15,7 +15,7 @@ The module that owns it is `src/lib/progress.ts`. Every feature reads and writes
   lists: { [checklistId]: { total, title, href, area? } }, // what each checklist looks like, for "3 of 7"
   tools: { water?: ISO date, food?: ISO date },       // last time each calculator was used
   seen: { [page]: ISO date },                         // pages that count towards an area ("why-prepare")
-  localRisk: { outward?: "SM6" }                      // outward postcode only, never the full postcode
+  localRisk: { outward?: "SW1A" }                      // outward postcode only, never the full postcode
 }
 ```
 

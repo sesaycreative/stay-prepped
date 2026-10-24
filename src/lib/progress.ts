@@ -79,7 +79,7 @@ export interface ProgressState {
   tools: Partial<Record<'water' | 'food', string>>;
   /** Pages that count towards an area when visited. */
   seen: Record<string, string>;
-  /** Outward postcode only (e.g. "SM6"), never the full postcode. */
+  /** Outward postcode only (e.g. "SW1A"), never the full postcode. */
   localRisk: { outward?: string };
 }
 
@@ -222,7 +222,7 @@ export function listsProgress(s: ProgressState, prefixes: string[]): { done: num
 -------------------------------------------------------------------------- */
 export interface PostcodeResult {
   ok: boolean;
-  /** Normalised, e.g. "SM6 9ES" or "SM6". */
+  /** Normalised, e.g. "SW1A 1AA" or "SW1A". */
   normalised?: string;
   outward?: string;
   full?: boolean;
