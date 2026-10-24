@@ -2,6 +2,7 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { NAV, GUIDE_HUBS, inSection } from '../lib/site';
+import ProgressStrip from './ProgressStrip.astro';
 const path = Astro.url.pathname;
 const inGuides = path.startsWith('/guides/') || GUIDE_HUBS.some((h) => inSection(path, h.href, h.match));
 // Exact-match the hub link first so only one item in the dropdown is current.
@@ -39,6 +40,7 @@ const hubCurrent = GUIDE_HUBS.find((h) => path === h.href) ?? GUIDE_HUBS.find((h
           )
         )}
       </ul>
+      <div class="drawer-progress"><ProgressStrip variant="drawer" /></div>
     </nav>
 
     <div class="header-actions">
@@ -217,6 +219,7 @@ const hubCurrent = GUIDE_HUBS.find((h) => path === h.href) ?? GUIDE_HUBS.find((h
     :global(:root:not([data-theme='light'])) .theme-light { display: none; }
     :global(:root:not([data-theme='light'])) .theme-dark { display: inline-flex; }
   }
+  .drawer-progress { max-width: 40rem; margin-inline: auto; }
   .menu-close { display: none; }
   .menu-btn[aria-expanded='true'] .menu-open { display: none; }
   .menu-btn[aria-expanded='true'] .menu-close { display: inline-flex; }
@@ -261,6 +264,7 @@ const hubCurrent = GUIDE_HUBS.find((h) => path === h.href) ?? GUIDE_HUBS.find((h
   /* ---------- Desktop: inline bar with dropdown ---------- */
   @media (min-width: 1080px) {
     .menu-btn { display: none; }
+    .drawer-progress { display: none; }
     .primary-nav { display: block; position: static; padding: 0; background: none; overflow: visible; margin-left: 1rem; }
     .nav-list { display: flex; align-items: center; gap: 0.15rem; max-width: none; margin: 0; }
     .nav-link {

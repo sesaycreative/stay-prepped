@@ -1,0 +1,119 @@
+---
+// "4 of 8 areas ready" strip. Server-renders the eight dots (all empty), and a
+// small script fills them from the browser-only progress store. Hidden until
+// the visitor has done something, dismissible for the session.
+import { AREAS } from '../lib/progress';
+interface Props { variant?: 'page' | 'drawer' }
+const { variant = 'page' } = Astro.props;
+---
+<aside class={`progress-strip ${variant === 'drawer' ? 'is-drawer' : ''}`} data-progress-strip aria-label="Your preparedness progress" hidden>
+  <div class={variant === 'page' ? 'wrap ps-inner' : 'ps-inner'}>
+    <ol class="ps-dots">
+      {AREAS.map((a) => (
+        <li class={`tone-${a.tone}`}>
+          <a href={a.href} class="ps-dot" data-area-dot={a.id}>
+            <span class="sr-only" data-area-dot-label>{a.label}: not yet</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <p class="ps-text">
+      <a href="/my-progress/" class="ps-count" data-progress-count>0 of 8 areas ready</a>
+      <span class="ps-next" data-progress-next></span>
+    </p>
+    <p class="sr-only" aria-live="polite" data-progress-live></p>
+    {variant === 'page' && (
+      <button type="button" class="ps-close" data-progress-dismiss aria-label="Hide progress for this visit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    )}
+  </div>
+</aside>
+
+<script>
+  import { AREAS, doneCount, nextArea, progress } from '../lib/progress';
+  const store = progress();
+  const DISMISS = 'stayprepped:strip-hidden';
+  let lastDone: number | null = null;
+
+  function render() {
+    const s = store.get();
+    const done = doneCount(s);
+    const started = done > 0 || Object.keys(s.checklists).length > 0 || s.household.set || !!s.tools.water || !!s.tools.food;
+    let dismissed = false;
+    try { dismissed = sessionStorage.getItem(DISMISS) === '1'; } catch {}
+    const next = nextArea(s);
+    for (const strip of document.querySelectorAll<HTMLElement>('[data-progress-strip]')) {
+      const isDrawer = strip.classList.contains('is-drawer');
+      strip.hidden = !started || (!isDrawer && dismissed);
+      for (const a of AREAS) {
+        const dot = strip.querySelector<HTMLElement>(`[data-area-dot="${a.id}"]`);
+        const on = !!s.areas[a.id]?.done;
+        dot?.classList.toggle('is-done', on);
+        const label = dot?.querySelector('[data-area-dot-label]');
+        if (label) label.textContent = `${a.label}: ${on ? 'ready' : 'not yet'}`;
+      }
+      const count = strip.querySelector('[data-progress-count]');
+      if (count) count.textContent = `${done} of ${AREAS.length} areas ready`;
+      const nextEl = strip.querySelector<HTMLElement>('[data-progress-next]');
+      if (nextEl) {
+        nextEl.innerHTML = '';
+        if (next) {
+          const a = document.createElement('a');
+          a.href = next.href;
+          a.textContent = `Next: ${next.label}`;
+          const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          arrow.setAttribute('width', '16'); arrow.setAttribute('height', '16'); arrow.setAttribute('viewBox', '0 0 24 24');
+          arrow.setAttribute('aria-hidden', 'true');
+          arrow.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+          a.append(' ', arrow);
+          nextEl.append(a);
+        } else {
+          nextEl.textContent = 'All eight areas ready. Check them again in six months.';
+        }
+      }
+      const live = strip.querySelector('[data-progress-live]');
+      if (live && lastDone !== null && done !== lastDone) live.textContent = `${done} of ${AREAS.length} areas ready.`;
+    }
+    lastDone = done;
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest('[data-progress-dismiss]');
+    if (!btn) return;
+    try { sessionStorage.setItem(DISMISS, '1'); } catch {}
+    render();
+  });
+  store.subscribe(render);
+  render();
+</script>
+
+<style>
+  .progress-strip { margin-top: 3rem; background: var(--surface); border-top: 1px solid var(--rule); }
+  .progress-strip.is-drawer { margin: 1rem 0 0; border: 1px solid var(--rule); border-radius: 1rem; padding: 0.75rem; }
+  .ps-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.25rem; padding-block: 0.8rem; position: relative; }
+  .is-drawer .ps-inner { padding: 0; }
+  .ps-dots { display: flex; gap: 0.4rem; }
+  .ps-dot {
+    display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 999px;
+    border: 2px solid var(--t-strong); background: var(--surface); position: relative;
+  }
+  .ps-dot::after { content: ''; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: transparent; }
+  .ps-dot.is-done { background: var(--t-strong); }
+  .ps-dot.is-done::after {
+    width: 0.75rem; height: 0.45rem; border-radius: 0; background: none;
+    border-left: 2.5px solid var(--surface); border-bottom: 2.5px solid var(--surface);
+    transform: translateY(-1px) rotate(-45deg);
+  }
+  .ps-dot:focus-visible { outline-offset: 2px; }
+  .ps-text { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: center; margin: 0; }
+  .ps-count { font-weight: 700; color: var(--heading); text-decoration: none; }
+  .ps-count:hover { text-decoration: underline; }
+  .ps-next a { font-weight: 700; display: inline-flex; align-items: center; gap: 0.2rem; white-space: nowrap; }
+  .ps-close {
+    margin-left: auto; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 0.8rem;
+    border: 0; background: transparent; color: var(--text-muted); cursor: pointer;
+  }
+  .ps-close:hover { background: var(--surface-2); color: var(--heading); }
+  @media print { .progress-strip { display: none !important; } }
+</style>
