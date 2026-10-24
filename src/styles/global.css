@@ -59,6 +59,24 @@
 
   --measure: 40rem;
   --wrap: 74rem;
+
+  /* Area tones (design pass 2). Each area gets a band, a card surface, a
+     border, a stronger border for hover, an icon-chip fill and its ink, and
+     a text ink. All text pairs checked at >= 4.5:1. See docs/DESIGN_SYSTEM.md. */
+  --water-band: #e4eee1; --water-surface: #eef4ec; --water-border: #c5d9c1; --water-strong: #8fb38a; --water-chip: #d2e4cd; --water-chip-ink: #2f5d3a; --water-ink: #2f5d3a;
+  --kits-band: #f1e8d6; --kits-surface: #f7f0e3; --kits-border: #e0cfae; --kits-strong: #c2a774; --kits-chip: #ead8b5; --kits-chip-ink: #5e4529; --kits-ink: #6e5236;
+  --power-band: #e6e9ec; --power-surface: #eef0f2; --power-border: #cbd2d8; --power-strong: #98a3ad; --power-chip: #343b40; --power-chip-ink: #f2b56b; --power-ink: #3d464d;
+  --home-band: #f4e4da; --home-surface: #f9ede5; --home-border: #e5c8b6; --home-strong: #c99a7e; --home-chip: #f0d4c2; --home-chip-ink: #7e3f22; --home-ink: #8a4526;
+  --skills-band: #e1e7d8; --skills-surface: #ebefe4; --skills-border: #c2cdb2; --skills-strong: #8fa27a; --skills-chip: #4a6339; --skills-chip-ink: #ffffff; --skills-ink: #3f5a32;
+  --tools-band: #dcebdd; --tools-surface: #e8f2e9; --tools-border: #a9c7ae; --tools-strong: #5f8f69; --tools-chip: #2f5d3a; --tools-chip-ink: #ffffff; --tools-ink: #2f5d3a;
+  --gov-band: #e2e9ee; --gov-surface: #ecf1f4; --gov-border: #c4d2dc; --gov-strong: #8aa2b3; --gov-chip: #d3dfe7; --gov-chip-ink: #2e4a5a; --gov-ink: #34505f;
+  --neutral-band: #efe9de; --neutral-surface: #fffdf9; --neutral-border: #e3dacb; --neutral-strong: #b9a587; --neutral-chip: #efe9de; --neutral-chip-ink: #6e5236; --neutral-ink: #6e5236;
+  --ill-water: #b5cad7;
+  --shadow-rgb: 35 39 42;
+  --shadow-card: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 10px 24px -14px rgb(var(--shadow-rgb) / 0.22);
+  --shadow-card-hover: 0 2px 4px rgb(var(--shadow-rgb) / 0.08), 0 18px 34px -16px rgb(var(--shadow-rgb) / 0.32);
+  --radius-l: 1.5rem;
+  --radius-xl: 2rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,6 +107,19 @@
     --error: #f2b48a;
     --c-earth-text: #c9b99b;
     --shadow-panel: 0 1px 0 var(--rule);
+
+    --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
+    --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
+    --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
+    --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
+    --skills-band: #1d221b; --skills-surface: #222920; --skills-border: #3a4733; --skills-strong: #627a52; --skills-chip: #4a6339; --skills-chip-ink: #eef4e8; --skills-ink: #a9c495;
+    --tools-band: #1a271e; --tools-surface: #1e2d23; --tools-border: #3e6248; --tools-strong: #6fa67c; --tools-chip: #6fa67c; --tools-chip-ink: #1a1d1f; --tools-ink: #8fc29b;
+    --gov-band: #1c2226; --gov-surface: #20282d; --gov-border: #364650; --gov-strong: #5d7686; --gov-chip: #2c3a43; --gov-chip-ink: #a9c9db; --gov-ink: #a9c3d3;
+    --neutral-band: #202427; --neutral-surface: #262b2e; --neutral-border: #3a3f42; --neutral-strong: #6b6f71; --neutral-chip: #2f3437; --neutral-chip-ink: #c9b99b; --neutral-ink: #c9b99b;
+    --ill-water: #4a6474;
+    --shadow-rgb: 0 0 0;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 24px -14px rgb(0 0 0 / 0.6);
+    --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 34px -16px rgb(0 0 0 / 0.75);
   }
 }
 :root[data-theme='dark'] {
@@ -118,6 +149,19 @@
   --error: #f2b48a;
   --c-earth-text: #c9b99b;
   --shadow-panel: 0 1px 0 var(--rule);
+
+  --water-band: #1b241e; --water-surface: #1f2a22; --water-border: #34483a; --water-strong: #5d8466; --water-chip: #2b3d30; --water-chip-ink: #8fc29b; --water-ink: #8fc29b;
+  --kits-band: #24201a; --kits-surface: #2a251e; --kits-border: #4a4030; --kits-strong: #7d6b4c; --kits-chip: #3a3226; --kits-chip-ink: #e0cba4; --kits-ink: #d9c49e;
+  --power-band: #1d2123; --power-surface: #24292c; --power-border: #3d454a; --power-strong: #66737c; --power-chip: #3a4247; --power-chip-ink: #f2b56b; --power-ink: #bcc6cd;
+  --home-band: #271e1a; --home-surface: #2d221d; --home-border: #4d382c; --home-strong: #82604d; --home-chip: #3f2c23; --home-chip-ink: #eab093; --home-ink: #e7a98a;
+  --skills-band: #1d221b; --skills-surface: #222920; --skills-border: #3a4733; --skills-strong: #627a52; --skills-chip: #4a6339; --skills-chip-ink: #eef4e8; --skills-ink: #a9c495;
+  --tools-band: #1a271e; --tools-surface: #1e2d23; --tools-border: #3e6248; --tools-strong: #6fa67c; --tools-chip: #6fa67c; --tools-chip-ink: #1a1d1f; --tools-ink: #8fc29b;
+  --gov-band: #1c2226; --gov-surface: #20282d; --gov-border: #364650; --gov-strong: #5d7686; --gov-chip: #2c3a43; --gov-chip-ink: #a9c9db; --gov-ink: #a9c3d3;
+  --neutral-band: #202427; --neutral-surface: #262b2e; --neutral-border: #3a3f42; --neutral-strong: #6b6f71; --neutral-chip: #2f3437; --neutral-chip-ink: #c9b99b; --neutral-ink: #c9b99b;
+  --ill-water: #4a6474;
+  --shadow-rgb: 0 0 0;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 24px -14px rgb(0 0 0 / 0.6);
+  --shadow-card-hover: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 34px -16px rgb(0 0 0 / 0.75);
 }
 
 @theme inline {
@@ -270,7 +314,7 @@ a:hover {
   gap: 0.5rem;
   min-height: 2.75rem; /* 44px target */
   padding: 0.55rem 1.15rem;
-  border-radius: var(--radius-s);
+  border-radius: 0.85rem;
   border: 2px solid transparent;
   font-family: var(--font-body);
   font-weight: 700;
@@ -465,7 +509,7 @@ legend {
 .panel {
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: var(--radius-m);
+  border-radius: 1.25rem;
   box-shadow: var(--shadow-panel);
   padding: 1.25rem;
 }
@@ -476,7 +520,12 @@ legend {
 }
 
 .results {
-  border-top: 6px solid var(--primary);
+  --t-surface: var(--tools-surface);
+  background: var(--tools-surface);
+  border: 2px solid var(--tools-strong);
+  border-top-width: 8px;
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .stat {
@@ -553,6 +602,165 @@ legend {
   border-radius: 999px;
 }
 
+
+/* ---------------------------------------------------------------------------
+   Area tones. A .tone-* class sets the --t-* variables that cards, bands,
+   chips and labels read, so one class colours a whole area consistently.
+   ------------------------------------------------------------------------- */
+.tone-neutral, :root {
+  --t-band: var(--neutral-band); --t-surface: var(--neutral-surface); --t-border: var(--neutral-border); --t-strong: var(--neutral-strong);
+  --t-chip: var(--neutral-chip); --t-chip-ink: var(--neutral-chip-ink); --t-ink: var(--neutral-ink);
+}
+.tone-water { --t-band: var(--water-band); --t-surface: var(--water-surface); --t-border: var(--water-border); --t-strong: var(--water-strong); --t-chip: var(--water-chip); --t-chip-ink: var(--water-chip-ink); --t-ink: var(--water-ink); }
+.tone-kits { --t-band: var(--kits-band); --t-surface: var(--kits-surface); --t-border: var(--kits-border); --t-strong: var(--kits-strong); --t-chip: var(--kits-chip); --t-chip-ink: var(--kits-chip-ink); --t-ink: var(--kits-ink); }
+.tone-power { --t-band: var(--power-band); --t-surface: var(--power-surface); --t-border: var(--power-border); --t-strong: var(--power-strong); --t-chip: var(--power-chip); --t-chip-ink: var(--power-chip-ink); --t-ink: var(--power-ink); }
+.tone-home { --t-band: var(--home-band); --t-surface: var(--home-surface); --t-border: var(--home-border); --t-strong: var(--home-strong); --t-chip: var(--home-chip); --t-chip-ink: var(--home-chip-ink); --t-ink: var(--home-ink); }
+.tone-skills { --t-band: var(--skills-band); --t-surface: var(--skills-surface); --t-border: var(--skills-border); --t-strong: var(--skills-strong); --t-chip: var(--skills-chip); --t-chip-ink: var(--skills-chip-ink); --t-ink: var(--skills-ink); }
+.tone-tools { --t-band: var(--tools-band); --t-surface: var(--tools-surface); --t-border: var(--tools-border); --t-strong: var(--tools-strong); --t-chip: var(--tools-chip); --t-chip-ink: var(--tools-chip-ink); --t-ink: var(--tools-ink); }
+.tone-gov { --t-band: var(--gov-band); --t-surface: var(--gov-surface); --t-border: var(--gov-border); --t-strong: var(--gov-strong); --t-chip: var(--gov-chip); --t-chip-ink: var(--gov-chip-ink); --t-ink: var(--gov-ink); }
+
+/* Full-width section bands */
+.band {
+  background: var(--t-band);
+  padding-block: 3.5rem;
+  border-block: 1px solid color-mix(in srgb, var(--t-border) 70%, transparent);
+}
+.band-plain { background: var(--bg); padding-block: 3.5rem; }
+@media (min-width: 900px) {
+  .band, .band-plain { padding-block: 4.5rem; }
+}
+.band-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 0.5rem 2rem; margin-bottom: 1.5rem; }
+.band-head p { color: var(--text-muted); margin-top: 0.3rem; font-size: 1.05rem; max-width: 40rem; }
+.band-head .band-more { font-weight: 700; white-space: nowrap; }
+
+/* ---------------------------------------------------------------------------
+   Card: the one shared card primitive. Squircle radius, tinted surface,
+   same-hue border, two-layer shadow. Whole card clickable via .stretched.
+   ------------------------------------------------------------------------- */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+  padding: 1.35rem 1.35rem 1.25rem;
+  background: var(--t-surface);
+  border: 1px solid var(--t-border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  color: var(--text);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+@supports (corner-shape: squircle) {
+  .card, .chip-lg, .in-short, .results { corner-shape: squircle; border-radius: 2.75rem; }
+  .chip-lg { border-radius: 1.6rem; }
+}
+.card.is-link:hover,
+.card.is-link:focus-within {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--t-strong);
+}
+.card.is-link:focus-within { outline: 3px solid var(--focus); outline-offset: 3px; }
+.card-title { font-size: 1.15rem; line-height: 1.25; }
+.card-title a { color: var(--heading); text-decoration: none; }
+.card.is-link:hover .card-title a { text-decoration: underline; text-decoration-thickness: 2px; }
+.card-text { color: var(--text-muted); font-size: 0.97rem; }
+.card-meta { margin-top: auto; padding-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+.card-label { font-size: 0.86rem; font-weight: 700; color: var(--t-ink); display: inline-flex; align-items: center; gap: 0.35rem; }
+.card-cta {
+  margin-top: auto; padding-top: 0.6rem;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-weight: 700; color: var(--t-ink);
+}
+.card-cta .icon { transition: transform 180ms ease; }
+.card.is-link:hover .card-cta .icon,
+.card.is-link:focus-within .card-cta .icon { transform: translateX(4px); }
+.card-art { display: block; margin: -0.25rem 0 0.35rem; }
+.card-art svg { width: 100%; max-width: 9rem; height: auto; display: block; }
+.card-soon { background: transparent; border-style: dashed; border-color: var(--rule-strong); box-shadow: none; }
+.stretched::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.stretched:focus-visible { outline: none; }
+
+/* Icon chips: tinted squircle holding a Lucide icon */
+.chip {
+  display: inline-grid; place-items: center; flex-shrink: 0;
+  width: 2.75rem; height: 2.75rem; border-radius: 0.9rem;
+  background: var(--t-chip); color: var(--t-chip-ink);
+}
+.chip-lg { width: 3.5rem; height: 3.5rem; border-radius: 1.15rem; }
+
+/* Grids */
+.card-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+@media (min-width: 640px) { .card-grid { gap: 1.25rem; } }
+.card-grid-wide { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
+/* Stretch a short row (e.g. 3 live tools) to fill the width. */
+.card-grid-fit { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+
+/* Page head for hubs and indexes */
+.page-head { padding-block: 1.5rem 2rem; max-width: 46rem; }
+.page-head p { margin-top: 0.6rem; font-size: 1.15rem; }
+.page-head-tone { display: flex; gap: 1.25rem; align-items: center; justify-content: space-between; max-width: none; }
+.page-head-art { display: none; flex-shrink: 0; }
+.page-head-art svg { width: 10rem; height: auto; display: block; }
+@media (min-width: 760px) { .page-head-art { display: block; } }
+
+/* Disclosure: "Why this matters", "How this is calculated" */
+.disclosure {
+  border: 1px solid var(--t-border);
+  background: var(--t-surface);
+  border-radius: 1.1rem;
+  max-width: 48rem;
+}
+.disclosure + .disclosure { margin-top: 0.75rem; }
+.disclosure > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: 0.6rem;
+  min-height: 3rem; padding: 0.7rem 1.1rem;
+  font-weight: 700; color: var(--heading);
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary::after {
+  content: ''; margin-left: auto; width: 0.6rem; height: 0.6rem;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px); transition: transform 180ms ease;
+}
+.disclosure[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.disclosure > summary:focus-visible { outline-offset: -3px; border-radius: 1.1rem; }
+.disclosure-body { padding: 0 1.1rem 1.1rem; }
+.disclosure-body > * + * { margin-top: 0.75em; }
+
+/* "In short" box at the top of guides */
+.in-short {
+  background: var(--t-surface);
+  border: 1px solid var(--t-border);
+  border-radius: var(--radius-l);
+  padding: 1.2rem 1.35rem;
+  box-shadow: var(--shadow-card);
+}
+.in-short-title { font-family: var(--font-body); font-size: 1rem; font-weight: 700; color: var(--t-ink); display: flex; align-items: center; gap: 0.45rem; }
+.in-short ul { margin-top: 0.6rem; display: grid; gap: 0.45rem; }
+.in-short li { display: grid; grid-template-columns: 0.55rem 1fr; gap: 0.7rem; align-items: start; }
+.in-short li::before { content: ''; width: 0.55rem; height: 0.55rem; margin-top: 0.55em; border-radius: 50%; background: var(--t-strong); }
+
+/* Tick list: static checklists with a tick icon (not form controls) */
+.tick-list { display: grid; gap: 0.15rem; }
+.tick-list > li {
+  display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.65rem; align-items: start;
+  padding: 0.55rem 0; border-bottom: 1px dashed var(--t-border);
+}
+.tick-ico {
+  display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 0.55rem;
+  background: var(--t-chip); color: var(--t-chip-ink);
+}
+.tick-list a { font-weight: 700; }
+.tick-list .tick-note { display: block; color: var(--text-muted); font-size: 0.93rem; }
+
+/* Sources box */
+.sources-box { border-radius: 1.1rem; padding: 1.1rem 1.25rem; background: var(--t-surface); border: 1px solid var(--t-border); }
+.sources-box h2 { font-size: 1.15rem; }
+.sources-box ul { margin-top: 0.5rem; display: grid; gap: 0.4rem; }
+
 /* ---------------------------------------------------------------------------
    Prose (articles). Hand-rolled rather than a plugin so it uses our tokens.
    ------------------------------------------------------------------------- */
@@ -616,18 +824,26 @@ legend {
   list-style: none;
   padding-left: 0;
 }
+.prose ul.contains-task-list {
+  background: var(--t-surface);
+  border: 1px solid var(--t-border);
+  border-radius: 1.1rem;
+  padding: 0.5rem 1.1rem;
+}
 .prose .task-list-item {
   display: flex;
-  gap: 0.55rem;
+  gap: 0.65rem;
   align-items: flex-start;
-  padding: 0.3rem 0;
-  border-bottom: 1px dashed var(--rule);
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--t-border);
   margin: 0;
 }
+.prose .task-list-item:last-child { border-bottom: 0; }
 .prose .task-list-item input {
-  margin-top: 0.4rem;
-  width: 1.05rem;
-  height: 1.05rem;
+  margin-top: 0.3rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
   accent-color: var(--primary);
 }
 
@@ -644,6 +860,12 @@ legend {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .card.is-link:hover,
+  .card.is-link:focus-within,
+  .card.is-link:hover .card-cta .icon,
+  .card.is-link:focus-within .card-cta .icon {
+    transform: none !important;
   }
 }
 
@@ -668,10 +890,18 @@ legend {
   .toc {
     display: none !important;
   }
-  .panel {
+  .panel,
+  .card,
+  .in-short,
+  .results {
     box-shadow: none;
     border: 1px solid #999;
+    background: #fff;
     break-inside: avoid;
+  }
+  .band {
+    background: #fff;
+    padding-block: 1rem;
   }
   a {
     color: #000;
@@ -688,3 +918,15 @@ legend {
 .print-only {
   display: none;
 }
+
+/* Spot illustrations (src/components/illustrations). Colours come from the
+   surrounding area tone so one drawing works in every area and in dark mode. */
+.ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--accent); stroke: var(--ill-line); display: block; max-width: 100%; height: auto; }
+.ill .ns { stroke: none; }
+.ill .f-a { fill: var(--ill-a); }
+.ill .f-b { fill: var(--ill-b); }
+.ill .f-bg { fill: var(--ill-bg); }
+.ill .f-acc { fill: var(--ill-accent); }
+.ill .f-w { fill: var(--ill-water); }
+.ill .o-60 { opacity: 0.6; }
+.card .ill { --ill-bg: var(--t-band); }

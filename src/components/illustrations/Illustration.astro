@@ -1,0 +1,51 @@
+---
+// Original flat spot illustrations. 2-3 palette colours plus the area tint,
+// drawn with round caps and joins to match the Lucide icon stroke. Colours
+// come from CSS (see .ill in global.css) so they follow the area tone and
+// dark mode. Decorative by default; pass `title` when the image carries meaning.
+import WaterStorage from './WaterStorage.astro';
+import FoodCupboard from './FoodCupboard.astro';
+import GrabBag from './GrabBag.astro';
+import PowerCut from './PowerCut.astro';
+import Flood from './Flood.astro';
+import SevereWeather from './SevereWeather.astro';
+import FamilyPlan from './FamilyPlan.astro';
+import Documents from './Documents.astro';
+import HomeSafety from './HomeSafety.astro';
+import PreparednessScore from './PreparednessScore.astro';
+import type { IllustrationKey } from '../../lib/site';
+
+const ILLUSTRATIONS: Record<IllustrationKey, typeof WaterStorage> = {
+  'water-storage': WaterStorage,
+  'food-cupboard': FoodCupboard,
+  'grab-bag': GrabBag,
+  'power-cut': PowerCut,
+  flood: Flood,
+  'severe-weather': SevereWeather,
+  'family-plan': FamilyPlan,
+  documents: Documents,
+  'home-safety': HomeSafety,
+  'preparedness-score': PreparednessScore,
+};
+
+interface Props { name: IllustrationKey; title?: string; class?: string; width?: number }
+const { name, title, class: className = '', width = 160 } = Astro.props;
+const Inner = ILLUSTRATIONS[name];
+const height = Math.round((width * 120) / 160);
+---
+<svg
+  class={`ill ${className}`}
+  viewBox="0 0 160 120"
+  width={width}
+  height={height}
+  fill="none"
+  stroke-width="3"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  focusable="false"
+>
+  {title && <title>{title}</title>}
+  <Inner />
+</svg>

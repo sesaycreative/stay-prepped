@@ -1,32 +1,19 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { GUIDE_CATEGORIES, formatDate, isoDate } from '../lib/site';
-interface Props { guide: CollectionEntry<'guides'>; headingLevel?: 'h2' | 'h3' | 'h4'; showCategory?: boolean }
-const { guide, headingLevel = 'h3', showCategory = true } = Astro.props;
+import Icon from './Icon.astro';
+import Illustration from './illustrations/Illustration.astro';
+import { GUIDE_CATEGORIES, GUIDE_CATEGORY_TONE, SLUG_ILLUSTRATION } from '../lib/site';
+interface Props { guide: CollectionEntry<'guides'>; headingLevel?: 'h2' | 'h3' | 'h4'; showCategory?: boolean; art?: boolean }
+const { guide, headingLevel = 'h3', showCategory = true, art = true } = Astro.props;
 const g = guide.data;
 const H = headingLevel;
+const cat = GUIDE_CATEGORIES[g.category];
+const ill = art ? SLUG_ILLUSTRATION[guide.id] : undefined;
 ---
-<article class="guide-card">
-  {showCategory && <p class="guide-cat">{GUIDE_CATEGORIES[g.category].label}</p>}
-  <H class="guide-title"><a href={`/guides/${guide.id}/`} class="stretched">{g.title}</a></H>
-  <p class="guide-desc">{g.description}</p>
-  <p class="guide-date">Reviewed <time datetime={isoDate(g.reviewedAt)}>{formatDate(g.reviewedAt)}</time></p>
+<article class={`card is-link guide-card tone-${GUIDE_CATEGORY_TONE[g.category]}`}>
+  {ill ? <span class="card-art"><Illustration name={ill} width={132} /></span> : <span class="chip"><Icon name={cat.icon} size={22} /></span>}
+  {showCategory && <p class="card-label">{cat.label}</p>}
+  <H class="card-title"><a href={`/guides/${guide.id}/`} class="stretched">{g.title}</a></H>
+  <p class="card-text">{g.description}</p>
+  <span class="card-cta" aria-hidden="true">Read the guide <Icon name="arrow-right" size={18} /></span>
 </article>
-<style>
-  .guide-card {
-    position: relative;
-    padding: 1rem 0 1.1rem;
-    border-top: 3px solid var(--c-sand);
-    height: 100%;
-    display: flex; flex-direction: column; gap: 0.3rem;
-  }
-  .guide-card:hover .guide-title a { text-decoration: underline; }
-  .guide-card:focus-within { outline: 3px solid var(--focus); outline-offset: 4px; }
-  .guide-cat { font-size: 0.88rem; color: var(--c-earth-text); font-weight: 700; }
-  .guide-title { font-size: 1.2rem; }
-  .guide-title a { color: var(--heading); text-decoration: none; }
-  .stretched::after { content: ''; position: absolute; inset: 0; }
-  .stretched:focus-visible { outline: none; }
-  .guide-desc { color: var(--text-muted); font-size: 0.97rem; }
-  .guide-date { margin-top: auto; padding-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted); }
-</style>

@@ -104,3 +104,35 @@ Follows the system setting by default. The header toggle stores an override in `
 - The score stepper moves focus to the new step heading, and uses `aria-current="step"`.
 - Touch targets are at least 44px for buttons.
 - CSS is in cascade layers (`@layer base`, `@layer components`) so Tailwind utilities override base element styles predictably.
+
+## Design pass 2 (October 2026): cards, area colours, illustrations
+
+### Area tones
+Each content area has a tint family in `global.css` (`--water-*`, `--kits-*`, `--power-*`, `--home-*`, `--skills-*`, `--tools-*`, `--gov-*`, `--neutral-*`), each with a light and dark value. Add `.tone-<name>` to any wrapper and everything inside (bands, cards, chips, labels, tick lists, illustrations) picks it up through the `--t-*` variables. Mappings live in `src/lib/site.ts` (`GUIDE_CATEGORY_TONE`, `TOOL_CATEGORY_TONE`, `GUIDE_HUBS`).
+
+| Area | Tone |
+| --- | --- |
+| Food & Water | `water` (green) |
+| Emergency kits, gear, budget | `kits` (sand/earth) |
+| Power cuts | `power` (slate, warm highlight) |
+| Family & Home | `home` (warm clay) |
+| Survival skills | `skills` (deep moss) |
+| Tools | `tools` (primary green) |
+| Why prepare / official advice | `gov` (calm blue-grey) |
+
+All text pairs (body, muted, links, area ink, chip ink) were checked at 4.5:1 or better on each band and surface, in both themes.
+
+### Card primitive
+`.card` (+ `.is-link` when the whole card is a link via `.stretched`): 1.5rem radius (`corner-shape: squircle` where supported), tinted surface, same-hue border, two-layer shadow. Hover/focus-within lifts 3px, deepens the shadow, strengthens the border and nudges the `.card-cta` arrow. Motion is removed under `prefers-reduced-motion`. Parts: `.chip` / `.chip-lg` (icon squircle), `.card-art`, `.card-label`, `.card-title`, `.card-text`, `.card-cta`, `.card-meta`. Grids: `.card-grid`, `.card-grid-wide`, `.card-grid-fit`.
+
+### Other components
+- `.band` / `.band-plain`: full-width section bands; alternate them so sections separate without reading.
+- `.disclosure`: a styled `<details>` for "Why this matters", tool methods and FAQs.
+- `.in-short`: the three-bullet box at the top of guides (`inShort` in guide frontmatter, exactly 3).
+- `.tick-list` + `.tick-ico`: static checklists. Markdown task lists (`- [ ]`) are converted to this at build time by `src/lib/rehype-stayprepped.mjs`, which also wraps each `##` section of tool pages in a disclosure.
+
+### Illustrations
+`src/components/illustrations/`: ten original flat spot illustrations (each under 1 KB), used through `<Illustration name="..." />`. They are drawn with round caps and joins to sit beside Lucide icons, and they take their colours from the area tone, so they work in dark mode with no extra assets. Decorative (`aria-hidden`) unless a `title` is passed.
+
+### Navigation
+Six top items: Start here, Guides (dropdown of `GUIDE_HUBS`), Free tools, Gear, Resources, About, plus a "Why prepare?" pill. Below 1080px the nav becomes a full-screen drawer. The dropdown is a disclosure button (`aria-expanded`), with Arrow keys inside, Escape to close and close on focus-out. Exact page matches get `aria-current="page"`; parent sections get `aria-current="true"`. The header shrinks after scrolling.

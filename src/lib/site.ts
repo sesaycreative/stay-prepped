@@ -13,20 +13,51 @@ export const SITE = {
   lang: 'en-GB',
 } as const;
 
+/** Area tone families (design pass 2). Each maps to a .tone-* class in global.css. */
+export type Tone = 'water' | 'kits' | 'power' | 'home' | 'skills' | 'tools' | 'gov' | 'neutral';
+
 export interface NavItem {
   label: string;
   href: string;
 }
+export interface NavGroupItem extends NavItem {
+  icon: string;
+  tone: Tone;
+  /** Extra path prefixes that count as "in" this item for aria-current. */
+  match?: string[];
+}
 
-export const NAV: NavItem[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Start Prepping', href: '/start/' },
-  { label: 'Guides', href: '/guides/' },
+/** The hubs listed under the Guides dropdown and in the mobile drawer. */
+export const GUIDE_HUBS: NavGroupItem[] = [
+  { label: 'Food & Water', href: '/food-water/', icon: 'droplets', tone: 'water', match: ['/guides/category/food/', '/guides/category/water/'] },
+  { label: 'Emergency Kits', href: '/emergency-kits/', icon: 'backpack', tone: 'kits', match: ['/guides/category/emergency-kits/'] },
+  { label: 'Power cuts', href: '/guides/category/power-outages/', icon: 'plug-zap', tone: 'power' },
+  { label: 'Family & Home', href: '/family-home/', icon: 'house-heart', tone: 'home', match: ['/guides/category/family/', '/guides/category/home/'] },
+  { label: 'Survival Skills', href: '/survival-skills/', icon: 'flame', tone: 'skills', match: ['/guides/category/survival-skills/'] },
+  { label: 'Why prepare?', href: '/why-prepare/', icon: 'landmark', tone: 'gov' },
+  { label: 'All guides', href: '/guides/', icon: 'library-big', tone: 'neutral' },
+];
+
+/** Top bar: 6 items. "Guides" is a dropdown of GUIDE_HUBS. */
+export const NAV: (NavItem | { label: 'Guides'; group: NavGroupItem[] })[] = [
+  { label: 'Start here', href: '/start/' },
+  { label: 'Guides', group: GUIDE_HUBS },
+  { label: 'Free tools', href: '/tools/' },
+  { label: 'Gear', href: '/gear/' },
+  { label: 'Resources', href: '/resources/' },
+  { label: 'About', href: '/about/' },
+];
+
+export const FOOTER_EXPLORE: NavItem[] = [
+  { label: 'Start here', href: '/start/' },
+  { label: 'Why prepare?', href: '/why-prepare/' },
+  { label: 'All guides', href: '/guides/' },
   { label: 'Food & Water', href: '/food-water/' },
   { label: 'Emergency Kits', href: '/emergency-kits/' },
+  { label: 'Family & Home', href: '/family-home/' },
   { label: 'Survival Skills', href: '/survival-skills/' },
+  { label: 'Free tools', href: '/tools/' },
   { label: 'Gear', href: '/gear/' },
-  { label: 'Free Tools', href: '/tools/' },
   { label: 'Resources', href: '/resources/' },
   { label: 'About', href: '/about/' },
 ];
@@ -76,4 +107,53 @@ export function formatDate(d: Date): string {
 
 export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
+}
+
+
+/** Area tone for each guide category. */
+export const GUIDE_CATEGORY_TONE: Record<GuideCategory, Tone> = {
+  'getting-started': 'tools',
+  food: 'water',
+  water: 'water',
+  'emergency-kits': 'kits',
+  'power-outages': 'power',
+  'first-aid-health': 'home',
+  home: 'home',
+  'survival-skills': 'skills',
+  financial: 'kits',
+  family: 'home',
+};
+
+/** Area tone for each tool category. */
+export const TOOL_CATEGORY_TONE: Record<ToolCategory, Tone> = {
+  'food-water': 'water',
+  'kits-supplies': 'kits',
+  'planning-assessments': 'tools',
+  'power-energy': 'power',
+  budget: 'kits',
+  household: 'home',
+};
+
+/** Spot illustration for a guide or tool slug, where one fits. */
+export const SLUG_ILLUSTRATION: Record<string, IllustrationKey> = {
+  'how-much-water-to-store': 'water-storage',
+  'emergency-water-purification': 'water-storage',
+  'how-much-food-to-store': 'food-cupboard',
+  '72-hour-emergency-bag': 'grab-bag',
+  'preparing-for-a-power-cut': 'power-cut',
+  'family-emergency-plan': 'family-plan',
+  'essential-documents': 'documents',
+  'prepping-for-beginners': 'home-safety',
+  'water-storage-calculator': 'water-storage',
+  'food-storage-calculator': 'food-cupboard',
+  'preparedness-score': 'preparedness-score',
+};
+export type IllustrationKey =
+  | 'water-storage' | 'food-cupboard' | 'grab-bag' | 'power-cut' | 'flood'
+  | 'severe-weather' | 'family-plan' | 'documents' | 'home-safety' | 'preparedness-score';
+
+/** Is `path` inside `href` (or one of its extra match prefixes)? */
+export function inSection(path: string, href: string, match: string[] = []): boolean {
+  if (href === '/') return path === '/';
+  return [href, ...match].some((h) => path.startsWith(h));
 }
