@@ -677,7 +677,9 @@ legend {
 .card.is-link:hover .card-cta .icon,
 .card.is-link:focus-within .card-cta .icon { transform: translateX(4px); }
 .card-art { display: block; margin: -0.25rem 0 0.35rem; }
-.card-art svg { width: 100%; max-width: 9rem; height: auto; display: block; }
+.card-art .ill { width: 100%; max-width: 7.5rem; height: auto; }
+@media (min-width: 640px) { .card-art .ill { max-width: 9.5rem; } }
+.page-head-art .ill, .ill { max-width: 100%; }
 .card-soon { background: transparent; border-style: dashed; border-color: var(--rule-strong); box-shadow: none; }
 .stretched::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
 .stretched:focus-visible { outline: none; }
@@ -760,6 +762,18 @@ legend {
 .sources-box { border-radius: 1.1rem; padding: 1.1rem 1.25rem; background: var(--t-surface); border: 1px solid var(--t-border); }
 .sources-box h2 { font-size: 1.15rem; }
 .sources-box ul { margin-top: 0.5rem; display: grid; gap: 0.4rem; }
+
+/* Spot illustrations (src/components/illustrations). Colours come from the
+   surrounding area tone so one drawing works in every area and in dark mode. */
+.ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--accent); stroke: var(--ill-line); display: block; height: auto; }
+.ill .ns { stroke: none; }
+.ill .f-a { fill: var(--ill-a); }
+.ill .f-b { fill: var(--ill-b); }
+.ill .f-bg { fill: var(--ill-bg); }
+.ill .f-acc { fill: var(--ill-accent); }
+.ill .f-w { fill: var(--ill-water); }
+.ill .o-60 { opacity: 0.6; }
+.card .ill { --ill-bg: var(--t-band); }
 
 /* ---------------------------------------------------------------------------
    Prose (articles). Hand-rolled rather than a plugin so it uses our tokens.
@@ -918,15 +932,3 @@ legend {
 .print-only {
   display: none;
 }
-
-/* Spot illustrations (src/components/illustrations). Colours come from the
-   surrounding area tone so one drawing works in every area and in dark mode. */
-.ill { --ill-line: var(--heading); --ill-a: var(--t-border); --ill-b: var(--surface); --ill-bg: var(--t-band); --ill-accent: var(--accent); stroke: var(--ill-line); display: block; max-width: 100%; height: auto; }
-.ill .ns { stroke: none; }
-.ill .f-a { fill: var(--ill-a); }
-.ill .f-b { fill: var(--ill-b); }
-.ill .f-bg { fill: var(--ill-bg); }
-.ill .f-acc { fill: var(--ill-accent); }
-.ill .f-w { fill: var(--ill-water); }
-.ill .o-60 { opacity: 0.6; }
-.card .ill { --ill-bg: var(--t-band); }
