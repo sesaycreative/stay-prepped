@@ -13,6 +13,7 @@ export const RELATED_KEYS = [
   'stayprepped:water-calculator:v1',
   'stayprepped:food-calculator:v1',
   'stayprepped:preparedness-score:v1',
+  'stayprepped:water-treatment:v1',
 ];
 
 export type AreaId = 'water' | 'food' | 'bag' | 'power' | 'first-aid' | 'family' | 'home-docs' | 'weather';

@@ -25,11 +25,11 @@ const guideSlugs = new Set(readdirSync(guidesDir).map((f) => f.replace(/\.mdx?$/
 const toolSlugs = new Set(toolFiles.map((f) => f.replace(/\.md$/, '')));
 
 describe('tool registry', () => {
-  it('has the 3 live tools, 7 Phase 4 tools and at least 8 future tools', () => {
+  it('has the 6 live tools, 7 Phase 4 tools and at least 20 future tools', () => {
     const entries = toolFiles.map((f) => fm(join(toolsDir, f)));
-    expect(entries.filter((e) => field(e, 'status') === 'live')).toHaveLength(3);
+    expect(entries.filter((e) => field(e, 'status') === 'live')).toHaveLength(6);
     expect(entries.filter((e) => field(e, 'phase') === '4')).toHaveLength(7);
-    expect(entries.filter((e) => field(e, 'phase') === '5').length).toBeGreaterThanOrEqual(8);
+    expect(entries.filter((e) => field(e, 'phase') === '5').length).toBeGreaterThanOrEqual(20);
   });
 
   for (const f of toolFiles) {
@@ -47,6 +47,8 @@ describe('tool registry', () => {
         expect(src).toMatch(/^faq:/m);
         expect(src).toMatch(/^safetyNotes:/m);
         expect(list(src, 'relatedGuides').length).toBeGreaterThanOrEqual(2);
+        const body = readFileSync(join(toolsDir, f), 'utf8').replace(/^---\n[\s\S]*?\n---/, '');
+        expect(body.split(/\s+/).filter(Boolean).length, 'at least 300 words of copy').toBeGreaterThanOrEqual(300);
       });
     }
   }

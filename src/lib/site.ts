@@ -150,6 +150,9 @@ export const SLUG_ILLUSTRATION: Record<string, IllustrationKey> = {
   'water-storage-calculator': 'water-storage',
   'food-storage-calculator': 'food-cupboard',
   'preparedness-score': 'preparedness-score',
+  'power-cut-food-safety': 'power-cut',
+  'water-treatment-calculator': 'water-storage',
+  'medication-supply-planner': 'family-plan',
 };
 export type IllustrationKey =
   | 'water-storage' | 'food-cupboard' | 'grab-bag' | 'power-cut' | 'flood'
@@ -160,6 +163,9 @@ export const TOOL_ART_TONE: Record<string, Tone> = {
   'food-storage-calculator': 'food',
   'water-storage-calculator': 'water',
   'preparedness-score': 'gov',
+  'power-cut-food-safety': 'power',
+  'water-treatment-calculator': 'water',
+  'medication-supply-planner': 'health',
 };
 
 /** Checklist id prefixes that count towards each hub's "N of M" chip. */

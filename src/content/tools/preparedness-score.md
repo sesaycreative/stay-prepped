@@ -5,7 +5,7 @@ summary: Answer 30 quick questions across 10 areas to get a score out of 100, yo
 category: planning-assessments
 status: live
 icon: clipboard-check
-order: 3
+order: 9
 cardSummary: "Optional: a 5-minute self-check once you've made a start."
 phase: 2
 reviewedAt: 2026-10-24
