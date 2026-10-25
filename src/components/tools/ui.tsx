@@ -82,7 +82,7 @@ export function downloadFile(filename: string, content: string, mime: string) {
 }
 
 export function ToolActions(props: {
-  textFile?: { name: string; content: () => string };
+  textFile?: { name: string; content: () => string; label?: string };
   csvFile?: { name: string; content: () => string };
   onReset?: () => void;
   resetLabel?: string;
@@ -98,7 +98,7 @@ export function ToolActions(props: {
           className="btn btn-ghost btn-sm"
           onClick={() => downloadFile(props.textFile!.name, props.textFile!.content(), 'text/plain')}
         >
-          <Download size={18} aria-hidden="true" /> Download checklist (.txt)
+          <Download size={18} aria-hidden="true" /> {props.textFile.label ?? 'Download checklist (.txt)'}
         </button>
       )}
       {props.csvFile && (

@@ -9,6 +9,9 @@ import LastReviewed from '../../components/LastReviewed.astro';
 import FoodStorageCalculator from '../../components/tools/FoodStorageCalculator';
 import WaterStorageCalculator from '../../components/tools/WaterStorageCalculator';
 import PreparednessScore from '../../components/tools/PreparednessScore';
+import PowerCutFoodSafety from '../../components/tools/PowerCutFoodSafety';
+import WaterTreatmentCalculator from '../../components/tools/WaterTreatmentCalculator';
+import MedicationSupplyPlanner from '../../components/tools/MedicationSupplyPlanner';
 import { faqLd } from '../../lib/seo';
 import Illustration from '../../components/illustrations/Illustration.astro';
 import { SLUG_ILLUSTRATION, TOOL_ART_TONE, TOOL_CATEGORIES } from '../../lib/site';
@@ -66,6 +69,9 @@ const art = SLUG_ILLUSTRATION[t.slug];
       {t.slug === 'food-storage-calculator' && <FoodStorageCalculator client:load />}
       {t.slug === 'water-storage-calculator' && <WaterStorageCalculator client:load />}
       {t.slug === 'preparedness-score' && <PreparednessScore client:load />}
+      {t.slug === 'power-cut-food-safety' && <PowerCutFoodSafety client:load />}
+      {t.slug === 'water-treatment-calculator' && <WaterTreatmentCalculator client:load />}
+      {t.slug === 'medication-supply-planner' && <MedicationSupplyPlanner client:load />}
       <noscript>
         <Callout type="warning" title="This tool needs JavaScript">
           <p>The calculator runs entirely in your browser. Turn on JavaScript to use it. The method is explained below so you can work it out by hand.</p>

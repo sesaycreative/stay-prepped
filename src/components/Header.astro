@@ -78,7 +78,13 @@ const hubCurrent = GUIDE_HUBS.find((h) => path === h.href) ?? GUIDE_HUBS.find((h
   const desktop = matchMedia('(min-width: 1080px)');
 
   // Compact header after scrolling a little.
-  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  // Hysteresis: the header shrinks when it compacts, which moves the page, so
+  // one threshold can flicker. Compact past 40px, expand again below 8px.
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (y > 40) header?.classList.add('is-scrolled');
+    else if (y < 8) header?.classList.remove('is-scrolled');
+  };
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
 
