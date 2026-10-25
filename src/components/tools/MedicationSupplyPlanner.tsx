@@ -170,7 +170,9 @@ export default function MedicationSupplyPlanner() {
             Your medicines
           </h2>
           <p className="field-help" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', alignItems: 'center' }}>
-            <ShieldCheck size={16} aria-hidden="true" /> Stored on this device only. Nothing is sent to us.{' '}
+            <span style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
+              <ShieldCheck size={16} aria-hidden="true" style={{ flexShrink: 0 }} /> Stored on this device only. Nothing is sent to us.
+            </span>
             <button type="button" className="link-btn" onClick={clearAll}>
               Clear my list
             </button>
