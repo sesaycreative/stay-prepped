@@ -38,6 +38,24 @@ const steps: { title: string; text: string; href: string; link: string; tone: To
         </li>
       ))}
     </ol>
+    <section class="when-it-happens mt-10" aria-labelledby="when-title">
+      <h2 id="when-title" class="text-xl">When something happens</h2>
+      <p class="muted mt-1">Two tools for the moment itself. Once a page is open, it keeps working if your connection drops.</p>
+      <ul class="card-grid mt-4">
+        <li class="card is-link tone-power">
+          <span class="chip"><Icon name="refrigerator" size={22} /></span>
+          <h3 class="card-title"><a href="/tools/power-cut-food-safety/" class="stretched">Power cut: is my food still safe?</a></h3>
+          <p class="card-text">A fridge and freezer countdown from the Food Standards Agency’s time limits.</p>
+          <span class="card-cta" aria-hidden="true">Start the countdown <Icon name="arrow-right" size={18} /></span>
+        </li>
+        <li class="card is-link tone-water">
+          <span class="chip"><Icon name="glass-water" size={22} /></span>
+          <h3 class="card-title"><a href="/tools/water-treatment-calculator/" class="stretched">Water treatment calculator</a></h3>
+          <p class="card-text">Boiling, bleach drops per litre, tablets and filters, with a wait timer.</p>
+          <span class="card-cta" aria-hidden="true">Treat water <Icon name="arrow-right" size={18} /></span>
+        </li>
+      </ul>
+    </section>
     <aside class="done-basics card tone-neutral mt-8" aria-labelledby="done-basics-title">
       <h2 id="done-basics-title" class="text-lg">When you've done the basics</h2>
       <p class="card-text">If you want to, take the optional <a href="/tools/preparedness-score/">Home Preparedness Score</a>, a 5-minute self-check that points out what is left to do.</p>

@@ -84,6 +84,7 @@ const carKit = ['A torch', 'An in-car phone charger', 'Warm clothes and blankets
                 {c.item}
                 {c.note && <span class="tick-note">{c.note}</span>}
                 {c.href && <a href={c.href} class="tick-link">{c.link}</a>}
+                {c.extra && <a href={c.extra.href} class="tick-link">{c.extra.link}</a>}
               </span>
             </li>
           ))}

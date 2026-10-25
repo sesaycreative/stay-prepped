@@ -98,6 +98,29 @@ These are in the registry as `phase: 5`. Specs are drafts and every figure must 
 | `flood-preparedness-checklist` | Flood Preparedness Checklist | household | Before/during/after; links to GOV.UK flood pages. |
 | `winter-preparedness-planner` | Winter Preparedness Planner | household | Home, car and household readiness for cold weather. |
 
+### Added in tools round 2 (25 October 2026), drafts
+
+Registered as `coming-soon`, `phase: 5`. All are **draft** specs from the round-2 brief's one-liners. As with the round-2 live tools, every figure must be fetched from an official source and recorded in `docs/TOOL_SOURCES.md` before it is used; if no source exists, leave the feature out.
+
+| Slug | Title | Category | Draft notes |
+| --- | --- | --- | --- |
+| `phone-battery-planner` | Phone Battery Runtime Planner | power-energy | Draft. User-entered battery and power-bank capacities and usage; no invented device figures. Tips to make charge last should cite a source. |
+| `emergency-contact-card` | Emergency Contact Card Maker | planning-assessments | Draft. Printable wallet card built in the browser; stored on this device only, one-tap clear. Could feed the medication planner's "written list". |
+| `baby-supplies-calculator` | Baby Supplies Calculator | kits-supplies | Draft. Nappies, wipes, feeds per day × days. Feeding quantities must come from NHS guidance or be user-entered; ready-to-feed formula per Be Ready. |
+| `pet-supplies-calculator` | Pet Supplies Calculator | kits-supplies | Draft. Reuses the water calculator's pet figures; food is user-entered from the pack. Overlaps `pet-preparedness-planner`; merge or split when built. |
+| `grab-bag-weight-check` | Grab-Bag Weight Check | kits-supplies | Draft. Sum item weights against a carry limit. Any recommended limit needs a source; otherwise the user sets it. |
+| `emergency-cash-calculator` | Emergency Cash Calculator | budget | Draft. User-entered daily spend × days. Overlaps `emergency-cash-planner`; merge when built. |
+| `home-risk-walkthrough` | Home Risk Walk-Through | household | Draft. Room-by-room checklist (smoke and CO alarms, stopcock, fuse box). Each item cites fire service, gov.uk or water-company guidance. |
+| `vulnerable-neighbour-checklist` | Vulnerable Neighbour Checklist | household | Draft. Short checklist for checking on others; links to the PSR and local council. |
+| `prep-in-10-minutes` | Prep in 10 Minutes | planning-assessments | Draft. Picks one small task from areas not yet done in the progress store. No new figures. |
+| `winter-car-kit-builder` | Winter Car Kit Builder | kits-supplies | Draft. Interactive version of a winter car kit list; items cite Met Office or highways guidance. Overlaps `vehicle-kit-checklist`. |
+| `flood-move-upstairs-list` | Flood: What to Move Upstairs | household | Draft. Printable room-by-room list for when a flood warning is issued; cite Environment Agency, SEPA, NRW and NI guidance. |
+| `heatwave-planner` | Heatwave Water and Cooling Planner | food-water | Draft. Extra drinking water and cooling steps; figures from UKHSA heat-health guidance only. |
+
 ### Future tools not yet registered
 
-Emergency Communication Plan Builder · Household Risk Assessment · Preparedness Inventory Manager · Home Blackout Readiness Assessment · Heatwave Preparedness Planner · Emergency Sanitation Calculator.
+Emergency Communication Plan Builder · Household Risk Assessment · Preparedness Inventory Manager · Home Blackout Readiness Assessment · Emergency Sanitation Calculator. (Heatwave Preparedness Planner is now registered as `heatwave-planner`.)
+
+## Built in tools round 2
+
+`power-cut-food-safety`, `water-treatment-calculator` and `medication-supply-planner` are live. Their figures and sources are in `docs/TOOL_SOURCES.md`.

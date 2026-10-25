@@ -46,6 +46,8 @@ https://www.cdc.gov/food-safety/foods/keep-food-safe-after-emergency.html
 | Refreezing thawed food (no UK equivalent found) | "You can safely refreeze or cook thawed frozen food that still contains ice crystals or is at 40 °F or below." (40 °F ≈ 4 °C; the tool quotes the original.) |
 | If in doubt | "When in doubt, throw it out." |
 
+**Carbon monoxide safety note:** NHS: "do not use a barbecue or camping stove indoors or inside a tent". Reuses the NHS page already cited by the power-cut guide (https://www.nhs.uk/conditions/carbon-monoxide-poisoning/).
+
 **Not used (no official source found):** a per-door-opening reduction of the safe window. The FSA says only that frequent opening may raise the temperature. The tool therefore does **not** shorten the countdown for door openings; it warns instead that the window may be shorter and says to check with a thermometer.
 
 ---
@@ -63,6 +65,8 @@ https://www.dwi.gov.uk/receiving-a-boil-water-notice/
 | Uses | "use it to brush your teeth, make ice cubes, prepare food" |
 | Notices | "The water company will issue a notice to the consumers in the affected area" |
 | Scalds | "Please be cautious that boiling water can cause scalds" |
+| Showering | "The water is still safe to shower and bathe in, but make sure it does not get into your mouth." |
+| Stop using | "Very occasionally, you may receive instructions to cease using your water altogether." Then "drink bottled water or an alternative supply provided by your water company or water provider." |
 
 **CDC, "How to Make Water Safe in an Emergency"** (last reviewed 19 September 2024). No UK household bleach dose was found, so this is the dose source.
 https://www.cdc.gov/water-emergency/about/index.html
@@ -76,7 +80,10 @@ https://www.cdc.gov/water-emergency/about/index.html
 | Cloudy water | filter or let settle first; for cloudy, murky, coloured or very cold water, add double the amount |
 | Wait | "at least 30 minutes before you drink it." |
 | Tablets | "Follow the instructions on the label or package." |
-| Filters | portable filters "do not remove viruses" |
+| Filters | portable filters "Will not remove viruses." |
+| Filter pore size | "absolute pore (hole) size of 0.3 micron or smaller to remove bacteria"; "1 micron or smaller to remove parasites" |
+| After filtering | "After filtering, add a chemical disinfectant—such as iodine, chlorine, or chlorine dioxide—to the filtered water." |
+| Cloudy water first | "If the water is cloudy, first filter it through a clean cloth, paper towel, or coffee filter", or "let it settle" and "draw off the clear water" |
 | Contamination | "You **cannot** make water containing fuel, toxic chemicals, or radioactive materials safe by boiling or disinfecting it." |
 | Storage | "clean, sanitized containers with tight covers." |
 
@@ -87,7 +94,9 @@ https://www.epa.gov/ground-water-and-drinking-water/emergency-disinfection-drink
 | --- | --- |
 | Bleach to avoid | "Do not use scented, color safe, or bleaches with added cleaners." |
 | 8.25% dose | 1 quart/litre: "2 drops"; 1 gallon: "6 drops" |
-| No chlorine smell | "If it doesn't, repeat the dosage and let stand for another 15 minutes before use." |
+| Smell check | "The water should have a slight chlorine odor." |
+| No chlorine smell | "If it doesn't, repeat the dosage and let stand for another 15 minutes before use." (EPA gives no step after a second failure, so the tool says to use another method.) |
+| Bleach age | "liquid chlorine bleach that is stored at room temperatures for less than one year" |
 
 **CDC, "Cleaning and Sanitizing with Bleach After an Emergency"**
 https://stacks.cdc.gov/view/cdc/44192
@@ -103,7 +112,8 @@ https://stacks.cdc.gov/view/cdc/44192
 - **Bleach of other strengths is not offered.** A strength between 1% and 5% has no published dose, so the tool tells the user not to use it.
 
 **Not used:**
-- A typical number of purification tablets per litre: no official figure was found, so the tool says to follow the packet and offers only a timer.
+- A typical number of purification tablets per litre, or a tablet waiting time: no official figure was found (CDC says only "Follow the instructions on the label or package"), so the tool says to follow the packet and lets the user type the packet's waiting time into the timer.
+- A cooling time for boiled water: DWI says only to let it "cool naturally", so the boil timer covers the 1-minute rolling boil, not cooling.
 - "Pool chemicals" as a named don't-use item: not in the fetched sources, so the tool uses EPA's wording about bleach with added cleaners instead.
 
 ---

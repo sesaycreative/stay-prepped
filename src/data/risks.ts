@@ -90,9 +90,9 @@ export const RISKS: Risk[] = [
 ];
 
 /** The Be Ready home checklist, paraphrased, with links to our matching tools. */
-export const BE_READY_CHECKLIST: { item: string; note?: string; href?: string; link?: string }[] = [
-  { item: 'Bottled water for 3 days', note: 'The government suggests 3 litres per person per day for drinking, plus more for cooking and washing.', href: '/tools/water-storage-calculator/', link: 'Work out how much' },
-  { item: 'Non-perishable food for 3 days', note: 'Food that needs no fridge or cooking, and that you normally eat.', href: '/tools/food-storage-calculator/', link: 'Make a shopping list' },
+export const BE_READY_CHECKLIST: { item: string; note?: string; href?: string; link?: string; extra?: { href: string; link: string } }[] = [
+  { item: 'Bottled water for 3 days', note: 'The government suggests 3 litres per person per day for drinking, plus more for cooking and washing.', href: '/tools/water-storage-calculator/', link: 'Work out how much', extra: { href: '/tools/water-treatment-calculator/', link: 'How to treat doubtful water' } },
+  { item: 'Non-perishable food for 3 days', note: 'Food that needs no fridge or cooking, and that you normally eat.', href: '/tools/food-storage-calculator/', link: 'Make a shopping list', extra: { href: '/tools/power-cut-food-safety/', link: 'Is fridge food safe in a power cut?' } },
   { item: 'Hand sanitiser, wet wipes and bathroom products' },
   { item: 'A torch and spare batteries', note: 'Torches are safer than candles.' },
   { item: 'Blankets, sleeping bags and warm clothing' },
@@ -102,7 +102,7 @@ export const BE_READY_CHECKLIST: { item: string; note?: string; href?: string; l
   { item: 'Printed copies of IDs and important documents', href: '/guides/essential-documents/', link: 'Which documents' },
   { item: 'A written list of key contacts and regular medicines', href: '/guides/family-emergency-plan/', link: 'Build your plan' },
   { item: 'A first aid kit' },
-  { item: 'Essential medication', note: 'Request repeat prescriptions up to 5 working days before you run out.' },
+  { item: 'Essential medication', note: 'Request repeat prescriptions up to 5 working days before you run out.', href: '/tools/medication-supply-planner/', link: 'See when to order' },
   { item: 'Ready-to-feed baby formula, nappies and wipes, if needed' },
   { item: 'Pet food and bottled water, if needed' },
 ];

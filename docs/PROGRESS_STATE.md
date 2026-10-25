@@ -15,15 +15,26 @@ The module that owns it is `src/lib/progress.ts`. Every feature reads and writes
   lists: { [checklistId]: { total, title, href, area? } }, // what each checklist looks like, for "3 of 7"
   tools: { water?: ISO date, food?: ISO date },       // last time each calculator was used
   seen: { [page]: ISO date },                         // pages that count towards an area ("why-prepare")
-  localRisk: { outward?: "SW1A" }                      // outward postcode only, never the full postcode
+  localRisk: { outward?: "SW1A" },                     // outward postcode only, never the full postcode
+  outage?: { offAt: ISO, restoredAt?: ISO, hasFridge, fridgeDoor: 'shut'|'few'|'lots',
+             freezerFill: 'full'|'half'|'none', freezerDoor },   // power-cut food countdown
+  waterTimer?: { endsAt: ISO, litres: number, method: string },   // water treatment wait timer
+  medicines?: { rows: MedicineRow[] (max 10), leadDays: 0-60 }    // medication supply planner
 }
+```
+
+`MedicineRow` is `{ id, name (≤60 chars), perDay, perPack, packs, loose, countedOn: yyyy-mm-dd, nextRepeat?: yyyy-mm-dd }`. Medicine names are free text and never leave the device. Invalid rows are dropped on read; a bad `leadDays` falls back to 7.
+
+Setters: `setOutage(o | undefined)`, `setWaterTimer(t | undefined)`, `setMedicines(m | undefined)`; passing `undefined` (or a medicine list with no rows) deletes the field. The tools save only after the visitor starts using them, so visiting a tool page stores nothing.
+
+```ts
 ```
 
 - **Safe reads.** Every access is wrapped in try/catch. Anything missing, out of range or of the wrong type falls back to its default. Full postcodes and off-site `href` values are rejected.
 - **Versioning.** A stored `version` newer than the code understands is ignored rather than misread.
 - **`areas` is derived, not trusted.** It is recomputed from the rules below on every read and write; only the first-done time is carried forward.
 - **Pub/sub.** `progress().subscribe(fn)` notifies islands in the same tab. A `storage` event listener keeps other open tabs in step.
-- **Clear everything.** `progress().clearAll()` removes `stayprepped:v1` and the older per-calculator keys (`stayprepped:water-calculator:v1`, `stayprepped:food-calculator:v1`, `stayprepped:preparedness-score:v1`). It keeps only the light/dark theme choice.
+- **Clear everything.** `progress().clearAll()` removes `stayprepped:v1` (including the outage, water timer and medicine list) and the per-tool keys (`stayprepped:water-calculator:v1`, `stayprepped:food-calculator:v1`, `stayprepped:preparedness-score:v1`, `stayprepped:water-treatment:v1`). It keeps only the light/dark theme choice.
 
 ## Ids
 
@@ -40,7 +51,7 @@ The module that owns it is `src/lib/progress.ts`. Every feature reads and writes
 | Food | The food calculator has been used, or every item on the food guide's checklist is ticked |
 | Emergency bag | Every item in the 72-hour bag guide's "What to pack" checklist is ticked |
 | Power cuts | Every item on the power cut guide's checklist is ticked |
-| First aid & medicine | Every item on the first aid checklist in section 8 of the beginners guide is ticked |
+| First aid & medicine | Every item on the first aid checklist in section 8 of the beginners guide is ticked, or the medication supply planner lists at least one medicine and none has under 7 days left |
 | Family plan | Every item on the family plan guide's checklist is ticked |
 | Home & documents | Every item on the essential documents guide's checklist is ticked |
 | Severe weather & flooding | `/why-prepare/` has been visited, and "I've checked my flood risk" is ticked on `/local-risk/` |

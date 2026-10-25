@@ -86,7 +86,11 @@ In `src/pages/tools/[slug].astro`:
 
 Then set `status: live` in the registry entry, add `instructions`, `faq`, `safetyNotes` and `reviewedAt`, and write the "How this is calculated" body.
 
-The content test checks that every live tool is wired up in `[slug].astro`.
+The content test checks that every live tool is wired up in `[slug].astro` and has at least 300 words of explanatory copy in its body.
+
+**Safety-relevant figures (food safety, water treatment, medicines, health).** Fetch every figure from an official source (UK first: FSA, NHS, GOV.UK, DWI; then WHO, CDC or EPA where the UK is silent), record the verbatim figure and URL in `docs/TOOL_SOURCES.md`, and link it in a "Where the figures come from" section on the tool page. If a figure cannot be verified, leave that feature out and record it under "Not used". Never fill a gap from memory.
+
+**Tool state that should survive a reload** (a countdown, a timer, a list the visitor builds) goes in the shared progress store (`src/lib/progress.ts`): add an optional field, tolerant parsing in `parseState`, a setter, and tests. See `docs/PROGRESS_STATE.md`. Only save once the visitor starts using the tool.
 
 ## 5. Verify
 
