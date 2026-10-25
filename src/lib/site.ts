@@ -152,7 +152,7 @@ export const SLUG_ILLUSTRATION: Record<string, IllustrationKey> = {
   'preparedness-score': 'preparedness-score',
   'power-cut-food-safety': 'power-cut',
   'water-treatment-calculator': 'water-storage',
-  'medication-supply-planner': 'family-plan',
+  'medication-supply-planner': 'first-aid',
 };
 export type IllustrationKey =
   | 'water-storage' | 'food-cupboard' | 'grab-bag' | 'power-cut' | 'flood'
