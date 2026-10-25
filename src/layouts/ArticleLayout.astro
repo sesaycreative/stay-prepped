@@ -1,6 +1,7 @@
 ---
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import LastReviewed from '../components/LastReviewed.astro';
 import type { Crumb } from '../components/Breadcrumbs.astro';
@@ -29,7 +30,7 @@ const ld = [articleLd({ title, description, url, published: publishedAt, modifie
 const tocHeadings = headings;
 const { numbered } = sectionNumbering(headings.filter((h) => h.depth === 2).map((h) => h.text));
 ---
-<BaseLayout title={title} description={description} breadcrumbs={breadcrumbs} jsonLd={ld} ogType="article">
+<BaseLayout title={title} description={description} breadcrumbs={breadcrumbs} jsonLd={ld} ogType="article" footerNewsletter={false}>
   <article class={`tone-${tone}`}>
     <div class="article-band">
       <header class="wrap article-head">
@@ -59,6 +60,14 @@ const { numbered } = sectionNumbering(headings.filter((h) => h.depth === 2).map(
           <slot />
         </div>
         <slot name="after" />
+        <div class="article-signup no-print">
+          <NewsletterForm
+            idPrefix="article-newsletter"
+            variant="card"
+            heading="Found this useful?"
+            lede="Get the next guide by email — one short message when we publish something new."
+          />
+        </div>
         {sources.length > 0 && (
           <footer class="sources-note" aria-labelledby="sources">
             <h2 id="sources">Sources and further reading</h2>
@@ -90,6 +99,7 @@ const { numbered } = sectionNumbering(headings.filter((h) => h.depth === 2).map(
     .article-aside { order: 0; }
     .article-aside :global(.toc) { position: sticky; top: 6rem; }
   }
+  .article-signup { margin-top: 3.5rem; }
   .sources-note { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule); max-width: 62ch; font-size: 0.88rem; color: var(--text-muted); }
   .sources-note h2 { font-family: var(--font-body); font-size: 0.92rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0; }
   .sources-note ol { margin-top: 0.5rem; padding-left: 1.2rem; list-style: decimal; display: grid; gap: 0.3rem; }

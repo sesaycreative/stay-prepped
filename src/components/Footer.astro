@@ -1,6 +1,12 @@
 ---
 import Logo from './Logo.astro';
+import NewsletterForm from './NewsletterForm.astro';
 import { FOOTER_LEGAL, FOOTER_EXPLORE, SITE } from '../lib/site';
+interface Props {
+  /** Show the newsletter row. Off on pages that already have a sign-up form. */
+  newsletter?: boolean;
+}
+const { newsletter = true } = Astro.props;
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
@@ -19,6 +25,11 @@ const year = new Date().getFullYear();
       <ul>{FOOTER_LEGAL.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
     </nav>
   </div>
+  {newsletter && (
+    <div class="wrap footer-signup no-print">
+      <NewsletterForm idPrefix="footer-newsletter" variant="footer" heading="New guides and tools by email" />
+    </div>
+  )}
   <div class="wrap footer-base">
     <p>© {year} Precious Memories Ltd, trading as Stay Prepped. Our tools run in your browser; your answers stay on your device.</p>
     <p>Icons by <a href="https://lucide.dev" rel="noopener">Lucide</a> (ISC licence).</p>
@@ -37,5 +48,7 @@ const year = new Date().getFullYear();
   .footer-h { font-family: var(--font-body); font-size: 1rem; color: #c9b99b; margin-bottom: 0.6rem; }
   .site-footer ul { display: grid; gap: 0.35rem; }
   .footer-explore { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.25rem; }
+  .footer-signup { margin-top: 2.5rem; padding-top: 1.75rem; border-top: 1px solid #3a3f42; }
+  .footer-signup + .footer-base { margin-top: 1.5rem; }
   .footer-base { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid #3a3f42; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; font-size: 0.88rem; color: #c9c3b7; }
 </style>

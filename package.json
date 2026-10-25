@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "astro check",
-    "linkcheck": "node scripts/check-links.mjs"
+    "linkcheck": "node scripts/check-links.mjs && node scripts/check-ids.mjs"
   },
   "engines": {
     "node": "22.x"

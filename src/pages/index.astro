@@ -43,7 +43,7 @@ const areas: { id: string; title: string; text: string; href: string; tone: Tone
 ];
 const teaseRisks = RISKS.filter((r) => r.art).slice(0, 4);
 ---
-<BaseLayout title={SITE.name} description="Emergency preparedness made practical for UK households: free prepper tools, calculators for your emergency food supply and water storage, grab-bag checklists and plain-English guides to get ready.">
+<BaseLayout footerNewsletter={false} title={SITE.name} description="Emergency preparedness made practical for UK households: free prepper tools, calculators for your emergency food supply and water storage, grab-bag checklists and plain-English guides to get ready.">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-contours" aria-hidden="true"><Contours rings={14} /></div>
     <div class="wrap hero-inner">

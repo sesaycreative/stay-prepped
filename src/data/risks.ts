@@ -82,7 +82,7 @@ export const RISKS: Risk[] = [
     title: 'Transport disruption',
     looks: 'Delays, closed roads or getting stuck in wintry weather.',
     first: 'Keep a torch, blankets, warm clothes, food and drink in the car.',
-    href: '/why-prepare/#transport',
+    href: '/why-prepare/#car-kit',
     linkLabel: 'What to keep in the car',
     tone: 'gov',
     icon: 'car-front',
