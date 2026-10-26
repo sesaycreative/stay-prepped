@@ -17,15 +17,16 @@
     "node": "22.x"
   },
   "dependencies": {
-    "@astrojs/check": "0.9.4",
-    "@astrojs/mdx": "4.3.14",
-    "@astrojs/react": "4.4.2",
-    "@astrojs/sitemap": "3.6.0",
-    "@astrojs/vercel": "8.2.11",
+    "@astrojs/check": "0.9.12",
+    "@astrojs/markdown-remark": "7.3.4",
+    "@astrojs/mdx": "8.1.1",
+    "@astrojs/react": "7.1.1",
+    "@astrojs/sitemap": "3.7.4",
+    "@astrojs/vercel": "11.0.16",
     "@fontsource/atkinson-hyperlegible": "5.3.0",
     "@fontsource/montserrat": "5.3.0",
     "@tailwindcss/vite": "4.3.3",
-    "astro": "5.18.2",
+    "astro": "7.4.2",
     "lucide-react": "1.61.0",
     "lucide-static": "1.61.0",
     "react": "19.3.1",
@@ -38,5 +39,11 @@
     "pagefind": "1.5.2",
     "typescript": "5.9.3",
     "vitest": "3.2.7"
+  },
+  "overrides": {
+    "path-to-regexp@6.1.0": "6.3.0",
+    "@vercel/cli-config": {
+      "zod": "4.6.7"
+    }
   }
 }

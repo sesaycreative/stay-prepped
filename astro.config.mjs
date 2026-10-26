@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+import { unified } from '@astrojs/markdown-remark';
 import rehypeStayPrepped from './src/lib/rehype-stayprepped.mjs';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -30,7 +31,14 @@ export default defineConfig({
     webAnalytics: { enabled: process.env.PUBLIC_ANALYTICS === 'vercel' },
   }),
   trailingSlash: 'ignore',
+  // Astro 7 changed the default to 'jsx', which drops whitespace between
+  // inline elements. Keep the Astro 5 behaviour so rendered text is unchanged.
+  compressHTML: true,
   markdown: {
+    // Astro 7 defaults to the Sätteri Markdown processor, which does not run
+    // rehype plugins. Stay on the unified pipeline so rehype-stayprepped
+    // (callouts, tables, heading ids) keeps working.
+    processor: unified(),
     rehypePlugins: [[rehypeStayPrepped, { version: rehypeVersion }]],
   },
   integrations: [

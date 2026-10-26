@@ -35,8 +35,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const email = String(form.get('email') ?? '').trim();
   if (!isValidEmail(email)) return respond(request, false, 'Enter a valid email address, like name@example.com.', 400);
 
-  const apiKey = import.meta.env.RESEND_API_KEY;
-  const segmentId = import.meta.env.RESEND_SEGMENT_ID;
+  // Read at request time. Since Astro 6, import.meta.env is inlined at build
+  // time, which would bake the secret into the bundle (or leave it undefined).
+  const apiKey = process.env.RESEND_API_KEY;
+  const segmentId = process.env.RESEND_SEGMENT_ID;
   if (!apiKey || !segmentId) {
     return respond(request, false, 'Our newsletter is not live yet, so we have not stored your email address. Please check back soon.', 503);
   }
