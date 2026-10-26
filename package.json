@@ -38,5 +38,11 @@
     "pagefind": "1.5.2",
     "typescript": "5.9.3",
     "vitest": "3.2.7"
+  },
+  "overrides": {
+    "path-to-regexp@6.1.0": "6.3.0",
+    "astro": {
+      "sharp": "0.35.5"
+    }
   }
 }
