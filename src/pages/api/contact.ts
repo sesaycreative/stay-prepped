@@ -25,9 +25,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const v = validateContact({ name: form.get('name'), email: form.get('email'), message: form.get('message') });
   if (!v.ok || !v.value) return json({ ok: false, message: 'Please fix the highlighted fields.', errors: v.errors }, 400);
 
-  const apiKey = import.meta.env.RESEND_API_KEY;
-  const to = import.meta.env.CONTACT_TO_EMAIL;
-  const from = import.meta.env.CONTACT_FROM_EMAIL;
+  // Read at request time. Since Astro 6, import.meta.env is inlined at build
+  // time, which would bake the secret into the bundle (or leave it undefined).
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.CONTACT_TO_EMAIL;
+  const from = process.env.CONTACT_FROM_EMAIL;
   if (!apiKey || !to || !from) {
     return json({ ok: false, notConfigured: true, message: 'Our contact form is not live yet. Please email us instead.' }, 503);
   }
