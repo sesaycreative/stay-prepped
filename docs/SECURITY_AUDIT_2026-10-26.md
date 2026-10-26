@@ -51,6 +51,64 @@ critical AVIF RCE in Astro's image endpoint, because `/_image` is live in
 production. Everything else is build-time only, dev-only, or needs a code path
 this site does not have.
 
-## Upgrade steps and results
+## Upgrade steps and results (branch `security-upgrade`)
 
-_(filled in below as the `security-upgrade` branch progresses)_
+Each step was followed by `npm test`, `npm run build` (which runs
+`astro check`) and `npm run linkcheck`. All three passed at every step.
+
+| Step | What changed | Audit after |
+| --- | --- | --- |
+| (a) Non-breaking updates | `npm update` for transitive packages; @astrojs/check 0.9.4 → 0.9.12; @astrojs/sitemap 3.6.0 → 3.7.4 (moves the sitemap integration onto Zod 4). | 9 (1 critical, 6 high, 2 low) |
+| (b) Targeted patches | npm `overrides`: path-to-regexp → 6.3.0 (pinned to 6.1.0 by @vercel/routing-utils) and sharp → 0.35.5 (astro 5 only allows ^0.34). Zod has no patched 3.x release, so it could only be fixed by the Astro major. | 6 (1 critical, 2 high, 1 moderate, 2 low) |
+| (c) Astro 7 | astro 5.18.2 → 7.4.2, @astrojs/react 4.4.2 → 7.1.1, @astrojs/mdx 4.3.14 → 8.1.1, @astrojs/vercel 8.2.11 → 11.0.16, plus @astrojs/markdown-remark 7.3.4 (new direct dependency). Brings zod 4.6.7, sharp 0.35.5, Vite 8, esbuild 0.28. The sharp override is no longer needed and was removed; the path-to-regexp override is still needed (@vercel/routing-utils 6.6.0 still pins 6.1.0) and a second override pins zod 4.6.7 under @vercel/cli-config (which pins 4.1.11). | **0** |
+
+**Result: 10 → 0 production vulnerabilities.** `npm audit` with dev
+dependencies included still reports three findings in vitest 3.2.7 / tinypool
+(path traversal and prototype-pollution in the test runner). They affect only
+`npm test` on a developer machine, never the site; fixing them means the
+vitest 5 major, which is outside this change.
+
+### Astro 7 migration notes
+
+`npx @astrojs/upgrade` could not run from the automated environment (it
+fetches docs.astro.build to look up the upgrade guide, which that sandbox
+blocks, and aborts with "Version latest could not be found"). The same
+versions it would have picked were installed by hand. Changes required by the
+v6 and v7 upgrade guides:
+
+- `astro.config.mjs`: `markdown.processor: unified()` from
+  `@astrojs/markdown-remark`. Astro 7's new default Markdown processor
+  (Sätteri) does not run rehype plugins, so without this
+  `rehype-stayprepped` (callouts, tables, heading ids) would silently stop
+  applying. Also `compressHTML: true` to keep Astro 5's whitespace handling
+  (the new default, `'jsx'`, can remove the space between inline elements).
+- `src/content.config.ts`: `z` is now imported from `astro/zod` (Zod 4);
+  `z.string().url()` became `z.url()`.
+- `src/pages/api/newsletter.ts` and `contact.ts`: secrets are read from
+  `process.env` instead of `import.meta.env`. Since Astro 6,
+  `import.meta.env` is inlined at build time. In a build without the Resend
+  variables the whole Resend branch was dead-code-eliminated out of the
+  serverless function (verified in `.vercel/output`); on Vercel it would have
+  baked the API key into the bundle. `process.env` is read per request, as
+  before.
+- No view transitions, `Astro.glob`, legacy collections, `src/fetch.ts` or
+  `getContainerRenderer` usage, so nothing else applied.
+
+### Verification of the Astro 7 build
+
+- Rendered HTML for all 47 pages was compared with the Astro 5 build from the
+  same content (inline `<script>`/`<style>` and hashed asset names
+  normalised): the markup is identical apart from `astro-island` `uid`
+  hashes. The only differences in inline assets are minifier output (CSS
+  property order; JS minified by oxc instead of esbuild).
+- Playwright (Chromium) rendered `/`, `/guides/how-much-water-to-store/`,
+  `/tools/water-storage-calculator/` and `/tools/power-cut-food-safety/` at
+  1366px and 390px: no console errors, no page errors, no failed requests;
+  both React islands hydrated (`ssr` attribute removed, React fiber present)
+  and responded to input (typing into the water calculator and clicking a
+  time button on the power-cut tool both updated the output).
+- `vercel.json` and `scripts/postbuild.mjs` are untouched; the five security
+  headers in `.vercel/output/config.json` are byte-for-byte the same as the
+  Astro 5 build. The serverless function runtime is `nodejs22.x` as before.
+- Astro 7.4.2 requires Node ≥ 22.23.4 (`engines` in package.json still says
+  `22.x`; the Vercel 22.x runtime satisfies this).
